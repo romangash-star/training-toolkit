@@ -156,7 +156,7 @@
     <div id="content"></div>
   </main>
 
-  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרנשטיין"><span>נבנה ע"י רומן גרנשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <input type="file" id="fileIn" accept="application/json,.json" style="display:none">
   <div class="toast" id="toast"></div>
 
@@ -383,7 +383,7 @@ const App=(()=>{
     }catch(e){ return ''; }
   }
   function fileName(x){return (data.meta.title||'סיפור-ופיץ').replace(/[\\/:*?"<>|]/g,'').slice(0,40)+'.'+x;}
-  function copyText(){const s=data.story,p=data.pitch;let t=`${data.meta.title||'הסיפור והפיץ'}${data.meta.team?' · '+data.meta.team:''}\n\n■ שלד הסיפור\nמצב: ${s.situation||'—'}\nכאב/בעיה: ${s.pain||'—'}\nהתערבות: ${s.intervention||'—'}\nעתיד: ${s.future||'—'}\nמספר: ${s.number||'—'} | ציטוט: ${s.quote||'—'}\n\n■ פיץ' 3 דקות\nוו פתיחה: ${p.hook||'—'}\nהבעיה: ${p.problem||'—'}\nהפתרון: ${p.solution||'—'}\nהבקשה: ${p.ask||'—'}\n\n— נבנה בכלי "מהנתון לסיפור ולפיץ'" מאת רומן גרנשטיין`;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
+  function copyText(){const s=data.story,p=data.pitch;let t=`${data.meta.title||'הסיפור והפיץ'}${data.meta.team?' · '+data.meta.team:''}\n\n■ שלד הסיפור\nמצב: ${s.situation||'—'}\nכאב/בעיה: ${s.pain||'—'}\nהתערבות: ${s.intervention||'—'}\nעתיד: ${s.future||'—'}\nמספר: ${s.number||'—'} | ציטוט: ${s.quote||'—'}\n\n■ פיץ' 3 דקות\nוו פתיחה: ${p.hook||'—'}\nהבעיה: ${p.problem||'—'}\nהפתרון: ${p.solution||'—'}\nהבקשה: ${p.ask||'—'}\n\n— נבנה בכלי "מהנתון לסיפור ולפיץ'" מאת רומן גרינשטיין`;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
   function saveFile(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fileName('json');a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);toast('נשמר');}
   let mc;function measure(){if(!mc)mc=document.createElement('canvas').getContext('2d');return mc;}
   function wrapLines(t,w,f){const c=measure();c.font=f;const words=(t||'').split(/\s+/).filter(Boolean);if(!words.length)return[''];const L=[];let cur=words[0];for(let i=1;i<words.length;i++){const x=cur+' '+words[i];if(c.measureText(x).width<=w)cur=x;else{L.push(cur);cur=words[i];}}L.push(cur);return L;}
@@ -401,7 +401,7 @@ const App=(()=>{
     x.textAlign='left';x.font=`700 12px ${F}`;x.fillStyle='rgba(255,255,255,.7)';x.fillText('מצב · כאב · התערבות · עתיד → פיץ',PAD,40);
     y=headerH+22;
     blk.forEach(b=>{if(b.t==='h'){x.textAlign='right';x.fillStyle=b.c;x.font=`700 18px ${F}`;x.beginPath();x.arc(W-PAD-5,y,5,0,7);x.fill();x.fillText('   '+b.x,W-PAD,y);y+=34;}else if(b.t==='k'){x.textAlign='right';x.fillStyle='#0E655C';x.font=`700 14px ${F}`;x.fillText(b.x,W-PAD,y);y+=26;}else{x.textAlign='right';x.fillStyle='#1f3540';x.font=`400 15px ${F}`;x.fillText(b.x,W-PAD-8,y);y+=22;}});
-    x.textAlign='center';x.fillStyle='#54636F';x.font=`400 12px ${F}`;x.fillText('נבנה ע"י רומן גרנשטיין · romangash@gmail.com',W/2,Ht-footerH/2);
+    x.textAlign='center';x.fillStyle='#54636F';x.font=`400 12px ${F}`;x.fillText('נבנה ע"י רומן גרינשטיין · romangash@gmail.com',W/2,Ht-footerH/2);
     return cv;
   }
   function exportPNG(){try{buildDoc().toBlob(bl=>{const u=URL.createObjectURL(bl);const a=document.createElement('a');a.href=u;a.download=fileName('png');a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);toast('התמונה הורדה');},'image/png');}catch(e){toast('שגיאה בייצוא');}}

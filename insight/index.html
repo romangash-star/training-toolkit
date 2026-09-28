@@ -88,7 +88,7 @@
 
   <main class="wrap" id="app"></main>
 
-  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרנשטיין"><span>נבנה ע"י רומן גרנשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <input type="file" id="fileIn" accept="application/json,.json" style="display:none">
   <div class="toast" id="toast"></div>
 
@@ -212,11 +212,11 @@ const App=(()=>{
     x.textAlign='left';x.font=`700 12px ${F}`;x.fillStyle='rgba(255,255,255,.7)';x.fillText('ממצא · תובנה · 5 בדיקות',PAD,40);
     y=headerH+22;
     blk.forEach(b=>{if(b.t==='h'){x.textAlign='right';x.fillStyle=b.c;x.font=`700 17px ${F}`;x.beginPath();x.arc(W-PAD-5,y,5,0,7);x.fill();x.fillText('   '+b.x,W-PAD,y);y+=32;}else if(b.t==='pb'){x.textAlign='right';x.fillStyle='#0E655C';x.font=`700 16px ${F}`;x.fillText(b.x,W-PAD,y);y+=24;}else if(b.t==='k'){x.textAlign='right';x.fillStyle='#0E655C';x.font=`700 14px ${F}`;x.fillText(b.x,W-PAD,y);y+=24;}else{x.textAlign='right';x.fillStyle='#1f3540';x.font=`400 15px ${F}`;x.fillText(b.x,W-PAD-8,y);y+=22;}});
-    x.textAlign='center';x.fillStyle='#54636F';x.font=`400 12px ${F}`;x.fillText('נבנה ע"י רומן גרנשטיין · romangash@gmail.com',W/2,Ht-footerH/2);
+    x.textAlign='center';x.fillStyle='#54636F';x.font=`400 12px ${F}`;x.fillText('נבנה ע"י רומן גרינשטיין · romangash@gmail.com',W/2,Ht-footerH/2);
     return cv;
   }
   function exportPNG(){try{const cv=drawDoc(2);cv.toBlob(b=>{const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fileName('png');a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);toast('התמונה הורדה');},'image/png');}catch(e){toast('שגיאה');}}
-  function copyText(){let t=`${data.meta.title||'חילוץ תובנה'}${data.meta.team?' · '+data.meta.team:''}\n\n■ הממצא:\n${data.finding||'—'}\n\n■ התובנה:\n${data.insight||'—'}\n\n■ 5 בדיקות:\n`+CHECKS.map((c,i)=>`${data.checks[i].done?'☑':'☐'} ${c.k}${data.checks[i].note?' — '+data.checks[i].note:''}`).join('\n')+(data.display?`\n\n■ תצוגה: ${data.display}`:'')+`\n\n— נבנה בכלי "חילוץ תובנה" מאת רומן גרנשטיין`;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
+  function copyText(){let t=`${data.meta.title||'חילוץ תובנה'}${data.meta.team?' · '+data.meta.team:''}\n\n■ הממצא:\n${data.finding||'—'}\n\n■ התובנה:\n${data.insight||'—'}\n\n■ 5 בדיקות:\n`+CHECKS.map((c,i)=>`${data.checks[i].done?'☑':'☐'} ${c.k}${data.checks[i].note?' — '+data.checks[i].note:''}`).join('\n')+(data.display?`\n\n■ תצוגה: ${data.display}`:'')+`\n\n— נבנה בכלי "חילוץ תובנה" מאת רומן גרינשטיין`;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
   function saveFile(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fileName('json');a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);toast('נשמר');}
   function makeBlob(){
     return new Promise(function(res,rej){

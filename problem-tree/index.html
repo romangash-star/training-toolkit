@@ -302,7 +302,7 @@
     </div>
   </div>
 
-  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרנשטיין"><span>נבנה ע"י רומן גרנשטיין · כל הערה תתקבל בברכה במייל: <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · כל הערה תתקבל בברכה במייל: <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
 </div>
 
 <input type="file" id="fileIn" accept="application/json,.json" style="display:none">
@@ -548,7 +548,7 @@ const App = (() => {
     drawTrunk(x,L,isObj); L.links.forEach(lk=>drawLink(x,lk,isObj)); if(!isObj) L.leaves.forEach(p=>drawLeaf(x,p)); L.nodes.forEach(n=>drawNode(x,n,isObj));
     x.restore();
     x.fillStyle=isObj?'#255939':'#54636F'; x.textAlign='center'; x.direction='rtl'; x.font='400 12px Alef, sans-serif';
-    x.fillText('נבנה ע"י רומן גרנשטיין · romangash@gmail.com', W/2, H-footerH/2);
+    x.fillText('נבנה ע"י רומן גרינשטיין · romangash@gmail.com', W/2, H-footerH/2);
     return cv;
   }
   function rr(x,X,Y,W,H,r){ if(x.roundRect){x.beginPath();x.roundRect(X,Y,W,H,r);} else{ x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+W,Y,X+W,Y+H,r);x.arcTo(X+W,Y+H,X,Y+H,r);x.arcTo(X,Y+H,X,Y,r);x.arcTo(X,Y,X+W,Y,r);x.closePath(); } }
@@ -573,7 +573,7 @@ const App = (() => {
   function fileName(ext){ const t=(data.meta.title||(mode==='objective'?'עץ-מטרות':'עץ-בעיה')).replace(/[\\/:*?"<>|]/g,'').slice(0,40); return t+'.'+ext; }
   function exportPNG(){ try{ const cv=drawCanvas(2); cv.toBlob(b=>{ const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=fileName('png'); a.click(); setTimeout(()=>URL.revokeObjectURL(u),1500); toast('התמונה הורדה'); },'image/png'); }catch(e){ toast('שגיאה בייצוא'); } }
   async function share(){ try{ const cv=drawCanvas(2); cv.toBlob(async b=>{ const file=new File([b],fileName('png'),{type:'image/png'}); if(navigator.canShare&&navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file],title:data.meta.title||'עץ הבעיה',text:'עץ הבעיה שבניתי'}); }catch(e){} } else { const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=fileName('png'); a.click(); setTimeout(()=>URL.revokeObjectURL(u),1500); toast('שיתוף ישיר לא נתמך — התמונה הורדה ואפשר לשלוח אותה'); } },'image/png'); }catch(e){ toast('שגיאה בשיתוף'); } }
-  function copyText(){ const L1=mode==='objective'?['מטרה מרכזית','פעולות','תוצאות']:['הבעיה המרכזית','השורשים — סיבות','הצמרת — השלכות']; let t=`${data.meta.title||'עץ הבעיה'}\n`; if(data.meta.authority||data.meta.author) t+=`${[data.meta.authority,data.meta.author].filter(Boolean).join(' · ')}\n`; t+=`\n■ ${L1[0]}:\n${data.core||'—'}\n`; t+=`\n■ ${L1[1]}:\n`+(data.causes.map(c=>`• ${c.text}`+(c.children&&c.children.length?'\n'+c.children.map(k=>`   ↳ ${k.text}`).join('\n'):'')).join('\n')||'—'); t+=`\n\n■ ${L1[2]}:\n`+(data.effects.map(c=>`• ${c.text}`+(c.children&&c.children.length?'\n'+c.children.map(k=>`   ↳ ${k.text}`).join('\n'):'')).join('\n')||'—'); t+=`\n\n— נבנה בכלי "עץ הבעיה" מאת רומן גרנשטיין`; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הסיכום הועתק')).catch(()=>prompt('העתיקו ידנית:',t)); }
+  function copyText(){ const L1=mode==='objective'?['מטרה מרכזית','פעולות','תוצאות']:['הבעיה המרכזית','השורשים — סיבות','הצמרת — השלכות']; let t=`${data.meta.title||'עץ הבעיה'}\n`; if(data.meta.authority||data.meta.author) t+=`${[data.meta.authority,data.meta.author].filter(Boolean).join(' · ')}\n`; t+=`\n■ ${L1[0]}:\n${data.core||'—'}\n`; t+=`\n■ ${L1[1]}:\n`+(data.causes.map(c=>`• ${c.text}`+(c.children&&c.children.length?'\n'+c.children.map(k=>`   ↳ ${k.text}`).join('\n'):'')).join('\n')||'—'); t+=`\n\n■ ${L1[2]}:\n`+(data.effects.map(c=>`• ${c.text}`+(c.children&&c.children.length?'\n'+c.children.map(k=>`   ↳ ${k.text}`).join('\n'):'')).join('\n')||'—'); t+=`\n\n— נבנה בכלי "עץ הבעיה" מאת רומן גרינשטיין`; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הסיכום הועתק')).catch(()=>prompt('העתיקו ידנית:',t)); }
   function saveFile(){ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=u; a.download=fileName('json'); a.click(); setTimeout(()=>URL.revokeObjectURL(u),1500); toast('קובץ העבודה נשמר'); }
 
   function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
