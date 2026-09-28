@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מפתחים את הפתרון — מאיצים דיגיטליים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--canvas:#EEF1F6;--paper:#F7F9FB;--card:#FFF;--ink:#15242E;--ink-soft:#54636F;--line:#D5DBE3;--brand:#127C71;--brand-deep:#0E655C;--root:#C77D3E;--root-bg:#FBF1E6;--coral:#E8544A;--leaf:#2E8B6B;--core-1:#1F5673;--sans:'Alef','Segoe UI',Arial,sans-serif;--shadow:0 10px 30px rgba(21,36,46,.12);--shadow-sm:0 3px 12px rgba(21,36,46,.08)}
+  *{box-sizing:border-box} html,body{margin:0;min-height:100%}
+  body{font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;background:var(--canvas);background-image:radial-gradient(1100px 520px at 78% -8%,rgba(18,124,113,.10),transparent 60%),radial-gradient(900px 480px at 10% 6%,rgba(31,86,115,.09),transparent 60%);display:flex;flex-direction:column;min-height:100vh}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit} textarea,input{font-family:inherit}
+  h1,h2,h3,h4{font-weight:700;line-height:1.15;margin:0} a{color:var(--brand-deep)}
+  header.bar{display:flex;align-items:center;gap:16px;padding:12px 22px;background:rgba(247,249,251,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:18px;letter-spacing:-.4px}
+  .brand .mark{width:28px;height:28px}
+  .daytag{font-size:12px;font-weight:700;color:#fff;background:var(--core-1);padding:3px 10px;border-radius:999px}
+  .hublink{margin-inline-start:auto;font-size:14px;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1px solid var(--line);background:#fff;padding:8px 14px;border-radius:10px}
+  .hublink:hover{color:var(--ink);border-color:#b3bdc9}
+  .btn{padding:10px 16px;border-radius:11px;font-weight:700;font-size:14px;transition:.15s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .btn-ghost{color:var(--ink-soft);border:1px solid var(--line);background:#fff}.btn-ghost:hover{color:var(--ink);border-color:#b3bdc9}
+  .btn-gem{background:linear-gradient(135deg,#E9A94F,var(--root));color:#fff;box-shadow:0 6px 18px rgba(199,125,62,.35)}.btn-gem:hover{filter:brightness(1.06)}
+  .wrap{flex:1;width:100%;max-width:880px;margin:0 auto;padding:20px 20px 56px}
+
+  /* goal banner */
+  .goal{background:linear-gradient(135deg,#123047,#0c2233);color:#fff;border-radius:18px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:16px}
+  .goal .g1{font-size:12.5px;font-weight:700;letter-spacing:1px;color:#8fd6c2}
+  .goal h1{font-size:clamp(23px,3.5vw,29px);letter-spacing:-.8px;margin:7px 0 0}
+  .goal p{font-size:14.5px;color:rgba(255,255,255,.85);margin:8px 0 0;max-width:640px}
+  .goal .tags{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .goal .tags span{font-size:12.5px;font-weight:700;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:4px 12px}
+
+  .toprow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;margin-bottom:16px}
+  .timer{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-sm);padding:10px 13px;display:flex;align-items:center;gap:11px}
+  .timer .presets{display:flex;flex-direction:column;gap:5px}
+  .timer .presets button{width:38px;height:25px;border-radius:8px;background:#EEF1F6;font-weight:700;font-size:12.5px;color:var(--ink-soft)}
+  .timer .presets button.on{background:var(--brand);color:#fff}
+  .timer .clock{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;min-width:96px;text-align:center}
+  .timer .clock.warn{color:var(--root)}.timer .clock.over{color:var(--coral)}
+  .timer .ctrl{display:flex;flex-direction:column;gap:5px}
+  .timer .ctrl .go{background:var(--brand);color:#fff;border-radius:9px;padding:7px 12px;font-weight:700;font-size:13px}
+  .timer .ctrl .rst{background:#EEF1F6;border-radius:9px;padding:5px;font-size:13px;color:var(--ink-soft)}
+  .modewrap{display:flex;gap:8px;align-items:center}
+  .modewrap .ml{font-size:13px;font-weight:700;color:var(--ink-soft)}
+  .modes{display:flex;background:#fff;border:1px solid var(--line);border-radius:11px;padding:4px;gap:3px}
+  .modes button{padding:8px 14px;border-radius:8px;font-weight:700;font-size:13.5px;color:var(--ink-soft)}
+  .modes button.on{background:var(--ink);color:#fff}
+
+  .tabs{display:flex;background:#fff;border:1px solid var(--line);border-radius:13px;padding:5px;margin-bottom:18px;box-shadow:var(--shadow-sm);gap:4px}
+  .tabs button{flex:1;padding:11px 6px;border-radius:9px;font-weight:700;font-size:14.5px;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;gap:6px}
+  .tabs button.on{background:linear-gradient(135deg,var(--brand),var(--brand-deep));color:#fff;box-shadow:0 4px 12px rgba(18,124,113,.3)}
+  .tabs button.star{color:var(--root);border:1.5px dashed var(--root)}
+  .tabs button.star.on{background:linear-gradient(135deg,#E9A94F,var(--root));color:#fff;border-style:solid;border-color:transparent;box-shadow:0 4px 14px rgba(199,125,62,.35)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+  .panel.hero{border:2px solid var(--root);box-shadow:0 12px 34px rgba(199,125,62,.18)}
+  .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1px;color:#fff;background:var(--brand);padding:3px 11px;border-radius:999px}
+  .eyebrow.amber{background:var(--root)}
+  h2.title{font-size:24px;margin:6px 0 0;letter-spacing:-.6px}
+  h2.title.big{font-size:31px}
+  .why{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0 4px;font-size:13.5px;color:var(--ink-soft)}
+  .why b{color:var(--ink)}
+  .metarow{display:flex;gap:8px;margin:14px 0}.metarow input{flex:1}
+  .sub-h{font-size:14px;font-weight:700;margin:18px 0 7px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sub-h .opt{font-weight:400;color:var(--ink-soft);font-size:12.5px}
+  .q{font-size:13px;color:var(--ink-soft);margin:0 0 7px}
+
+  .in-wrap{position:relative}
+  textarea,input.txt{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 12px;font-size:14.5px;background:#fff;color:var(--ink);resize:vertical;line-height:1.55}
+  textarea{min-height:70px;padding-bottom:34px}
+  textarea:focus,input.txt:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(18,124,113,.14)}
+  .mic{position:absolute;inset-inline-start:7px;bottom:7px;width:28px;height:28px;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--brand-deep);display:grid;place-items:center;font-size:13px}
+  .mic:hover{border-color:var(--brand);background:#f0faf8}
+  .mic.rec{background:#E4463A;border-color:#E4463A;color:#fff;animation:pulse 1.1s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(228,70,58,.5)}100%{box-shadow:0 0 0 12px rgba(228,70,58,0)}}
+
+  /* stage toggle */
+  .stage{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .stage button{border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:13px;text-align:right}
+  .stage button.on{border-color:var(--brand);background:#f0faf8;box-shadow:0 0 0 3px rgba(18,124,113,.1)}
+  .stage .sn{font-weight:700;font-size:14.5px}
+  .stage .sd{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+
+  .paths{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .path{border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:12px;text-align:right;position:relative}
+  .path.on{border-color:var(--brand);background:#f0faf8;box-shadow:0 0 0 3px rgba(18,124,113,.1)}
+  .path .pn{font-weight:700;font-size:14px}
+  .path .pd{font-size:12px;color:var(--ink-soft);margin-top:4px}
+  .check{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px}
+  .check label{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px 12px;cursor:pointer}
+  .check input{width:18px;height:18px;accent-color:var(--brand);margin-top:2px;flex:0 0 auto}
+  .check b{display:block}.check span{color:var(--ink-soft);font-size:12.5px}
+
+  .prompt-box{background:#0c1820;color:#dce9e6;border-radius:14px;padding:20px;font-size:14.5px;line-height:1.75;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto;border:1px solid #1d3440}
+  .pv-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .pv-actions .btn{flex:1;min-width:180px;font-size:15px;padding:13px 18px}
+  .flow3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+  .flow3 div{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px;text-align:center;font-size:12.5px;color:var(--ink-soft)}
+  .flow3 b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+  .nextnote{margin-top:14px;background:#EAF0F5;border:1px solid #B9CEDD;color:#1F5673;border-radius:11px;padding:11px 13px;font-size:13.5px}
+  .nextnote b{color:#123047}
+  .tipbox{margin-top:14px;background:var(--root-bg);border:1px solid #E7C9A6;color:#7A4A1E;border-radius:11px;padding:11px 13px;font-size:13.5px}
+  .tipbox b{color:#8a3f1e}
+  .gotoprompt{margin-top:6px;width:100%;padding:14px;border-radius:12px;font-weight:700;font-size:15.5px;background:linear-gradient(135deg,#E9A94F,var(--root));color:#fff;box-shadow:0 6px 18px rgba(199,125,62,.3)}
+  .gotoprompt:hover{filter:brightness(1.06)}
+  footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:14px 22px;text-align:center;font-size:13px;color:var(--ink-soft);background:rgba(247,249,251,.9);border-top:1px solid var(--line)}
+  footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:var(--shadow-sm)}
+  footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:var(--shadow)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media (max-width:760px){.paths,.check,.stage,.flow3{grid-template-columns:1fr}.timer .clock{font-size:29px;min-width:80px}}
+  @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}.toast{transition:none}}
+</style>
+</head>
+<body>
+  <header class="bar">
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="13" rx="2" stroke="#127C71" stroke-width="2"/><path d="M8 20h8" stroke="#127C71" stroke-width="2" stroke-linecap="round"/><path d="M7 9l2.5 2.5L7 14" stroke="#C77D3E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 14H17" stroke="#C77D3E" stroke-width="1.8" stroke-linecap="round"/></svg>מפתחים את הפתרון</div>
+    <span class="daytag">יום 3 · בלוק A</span>
+    <a class='hublink' href='../maazim/'>‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap">
+    <div class="goal">
+      <div class="g1">⭐ מטרת העמוד</div>
+      <h1>ליצור פרומפט מפורט שימשיך לפתח איתכם את החשיבה על הפתרון</h1>
+      <p>ממלאים כאן מה שיש לכם — גם אם עדיין אין פתרון. הכלי בונה פרומפט שיפתח דיון עם Gemini ויעזור לכם להגיע לכיווני פתרון.</p>
+      <div class="tags"><span>👤 עבודה אישית או בצוות</span><span>❓ שאלות פתוחות</span><span>✨ הפלט: פרומפט</span></div>
+    </div>
+
+    <div class="toprow">
+      <div class="modewrap">
+        <span class="ml">איך עובדים?</span>
+        <div class="modes" id="modes"></div>
+      </div>
+      <div class="timer">
+        <div class="presets" id="presets"></div>
+        <div class="clock" id="clock">45:00</div>
+        <div class="ctrl"><button class="go" id="startBtn" onclick="App.toggleTimer()">▶ התחל</button><button class="rst" onclick="App.resetTimer()" title="איפוס">↺</button></div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button data-tab="work" class="on" onclick="App.tab('work')">📝 דף העבודה</button>
+      <button data-tab="prompt" class="star" onclick="App.tab('prompt')">✨ הפרומפט שנוצר</button>
+    </div>
+    <div id="content"></div>
+  </main>
+
+  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרנשטיין"><span>נבנה ע"י רומן גרנשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+  <div class="toast" id="toast"></div>
+
+<script>
+const App=(()=>{
+  'use strict';
+  const LS='solution_tool_v4';
+  let cur='work';
+  const PRESETS=[60,45,30];
+  const PATHS=[
+    {k:'פרוטוטייפ דיגיטלי',d:'אתר או אפליקציה פשוטה — בלי קוד.'},
+    {k:'הצעת פתרון כתובה',d:'הצעה על דף — כיוון, מה עושים, תוצאה.'},
+    {k:'תוכנית שדורשת מחקר',d:'כיוון + מה צריך לבדוק בהמשך.'}
+  ];
+  const PRINCIPLES=[
+    {t:'מתחילים קטן',d:'פיילוט בשכונה אחת עדיף על רפורמה בעיר.'},
+    {t:'משתמש אחד ברור',d:'למי בדיוק זה פותר? דמות אחת.'},
+    {t:'נשארים קונקרטיים',d:'"מה בדיוק קורה" — לא כותרות.'},
+    {t:'בודקים מול הבעיה',d:'האם זה מקל על הכאב שאימתנו?'}
+  ];
+  let data=fresh();
+  let timer={total:2700,remain:2700,running:false,id:null};
+
+  function fresh(){ return {meta:{title:'',team:''}, mode:'צוות', stage:'', problem:'', who:'', tried:'', ideas:'', barriers:'', direction:'', does:'', path:'', prin:[false,false,false,false]}; }
+  function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
+  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function attr(s){return esc(s).replace(/"/g,'&quot;');}
+
+  function init(){ try{const s=JSON.parse(localStorage.getItem(LS)); if(s&&typeof s.problem==='string')data=Object.assign(fresh(),s);}catch(e){} paintPresets(); paintModes(); render(); }
+  function tab(t){cur=t;document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));render();window.scrollTo({top:0,behavior:'smooth'});}
+  function ta(id,val,ph){return `<div class="in-wrap"><textarea data-f="${id}" placeholder="${attr(ph)}">${esc(val)}</textarea><button class="mic" data-t="${id}">🎤</button></div>`;}
+  const hasIdea=()=>data.stage==='יש לנו כיוון';
+
+  function render(){
+    document.getElementById('content').innerHTML = cur==='work'?renderWork():renderPrompt();
+    wire();
+  }
+
+  function renderWork(){
+    return `<div class="panel">
+      <div class="eyebrow">דף עבודה</div>
+      <h2 class="title">מה יש לכם עד עכשיו?</h2>
+      <div class="why">ענו במילים שלכם — <b>אין תשובות נכונות</b>. ככל שתכתבו יותר, הפרומפט יהיה מדויק יותר. אפשר להכתיב בקול 🎤.</div>
+      <div class="metarow"><input class="txt" data-m="title" placeholder="שם האתגר" value="${attr(data.meta.title)}"><input class="txt" data-m="team" placeholder="שם ${data.mode==='אישי'?'ממלא/ת':'הצוות'}" value="${attr(data.meta.team)}"></div>
+
+      <div class="sub-h">1. הבעיה שאימתנו <span class="opt">(מימים 1–2)</span></div>
+      <div class="q">מה כואב, למי, וכמה זה רחב?</div>
+      ${ta('problem',data.problem,'לדוגמה: 40% מבקשות הרישוי ננטשות באמצע התהליך.')}
+
+      <div class="sub-h">2. מי מרגיש את הכאב הזה?</div>
+      <div class="q">מי הדמות המרכזית — ומה היא מנסה להשיג?</div>
+      ${ta('who',data.who,'לדוגמה: בעל עסק קטן שרוצה לפתוח מסעדה ברחוב הראשי.')}
+
+      <div class="sub-h">3. מה כבר ניסו לעשות בנושא? <span class="opt">(לא חובה)</span></div>
+      <div class="q">מה נוסה בעבר, ולמה זה לא פתר?</div>
+      ${ta('tried',data.tried,'לדוגמה: הוסיפו דף הסבר באתר — אבל אנשים לא מגיעים אליו.')}
+
+      <div class="sub-h">4. איפה אתם נמצאים?</div>
+      <div class="stage">
+        <button class="${data.stage==='עדיין אין פתרון'?'on':''}" onclick="App.setStage('עדיין אין פתרון')"><div class="sn">🤔 עדיין אין לנו פתרון</div><div class="sd">רוצים ש-Gemini יעזור להציע כיוונים</div></button>
+        <button class="${data.stage==='יש לנו כיוון'?'on':''}" onclick="App.setStage('יש לנו כיוון')"><div class="sn">💡 יש לנו כיוון ראשוני</div><div class="sd">רוצים לחדד ולבחון אותו</div></button>
+      </div>
+
+      <div class="sub-h">5. רעיונות גולמיים שעלו <span class="opt">(גם חצי-אפויים)</span></div>
+      <div class="q">מה כבר עלה בשיחה ביניכם — בלי לסנן?</div>
+      ${ta('ideas',data.ideas,'לדוגמה: אולי ליווי אישי? אולי לשלוח תזכורות? אולי לאחד טפסים?')}
+
+      ${hasIdea()?`
+      <div class="sub-h">6. הכיוון שגיבשנו</div>
+      <div class="q">במשפט אחד — מה משנים, ולמי?</div>
+      ${ta('direction',data.direction,'לדוגמה: מקצרים לבעלי עסקים את דרך הרישוי — ממאבק לליווי.')}
+      <div class="sub-h">7. מה הוא עושה בפועל?</div>
+      <div class="q">הצעד הקונקרטי שמסיר את הכאב</div>
+      ${ta('does',data.does,'לדוגמה: מדריך דיגיטלי אחד + ליווי אישי בנקודות הנשירה.')}
+      `:''}
+
+      <div class="sub-h">${hasIdea()?'8':'6'}. חסמים <span class="opt">(חשוב!)</span></div>
+      <div class="q">מה עלול לעצור אתכם? תקציב, רגולציה, מערכות, כוח אדם, התנגדויות, שיתוף מידע בין אגפים…</div>
+      ${ta('barriers',data.barriers,'לדוגמה: אין תקציב ייעודי; המידע יושב אצל שני אגפים שלא מדברים; חשש מעומס על המוקד.')}
+
+      <div class="sub-h">${hasIdea()?'9':'7'}. דרך הפיתוח המועדפת <span class="opt">(לא חובה)</span></div>
+      <div class="paths">${PATHS.map(p=>`<button class="path ${data.path===p.k?'on':''}" onclick="App.setPath('${p.k}')"><div class="pn">${p.k}</div><div class="pd">${p.d}</div></button>`).join('')}</div>
+
+      <div class="sub-h">עקרונות שכדאי לזכור</div>
+      <div class="check">${PRINCIPLES.map((p,i)=>`<label><input type="checkbox" data-p="${i}" ${data.prin[i]?'checked':''}><span><b>${p.t}</b><span>${p.d}</span></span></label>`).join('')}</div>
+
+      <div class="tipbox">⚡ <b>הכלל:</b> מהר, גס ו"מספיק טוב". אם קצת התביישתם להראות — כנראה עשיתם נכון.</div>
+    </div>
+    <button class="gotoprompt" onclick="App.tab('prompt')">✨ צרו את הפרומפט ←</button>`;
+  }
+
+  function buildPrompt(){
+    const noSol = data.stage!=='יש לנו כיוון';
+    let t='';
+    t+=`אתה יועץ בכיר לעיצוב שירותים ולחדשנות ברשויות מקומיות בישראל. אני רוצה לחשוב איתך יחד על פתרון לאתגר שלנו. אל תבנה מצגת ואל תכתוב קוד — המטרה בשלב הזה היא לחשוב, לפתוח כיוונים ולחדד.\n\n`;
+    t+=`== הרקע ==\n`;
+    if(data.meta.title) t+=`האתגר: ${data.meta.title}\n`;
+    t+=`עבודה: ${data.mode==='אישי'?'אישית':'בצוות'}\n`;
+    t+=`הבעיה שאימתנו: ${data.problem||'—'}\n`;
+    if(data.who) t+=`מי מרגיש את הכאב: ${data.who}\n`;
+    if(data.tried) t+=`מה כבר ניסו: ${data.tried}\n`;
+    if(data.ideas) t+=`רעיונות גולמיים שעלו: ${data.ideas}\n`;
+    if(!noSol){
+      t+=`\n== הכיוון שגיבשנו ==\n`;
+      t+=`הכיוון: ${data.direction||'—'}\n`;
+      if(data.does) t+=`מה הוא עושה: ${data.does}\n`;
+    }
+    if(data.barriers) t+=`\n== חסמים שאנחנו רואים ==\n${data.barriers}\n`;
+    if(data.path) t+=`\nדרך הפיתוח המועדפת עלינו: ${data.path}\n`;
+
+    t+=`\n== מה אני מבקש ממך ==\n`;
+    if(noSol){
+      t+=`עדיין אין לנו פתרון. עזור לנו להגיע לכיוונים:\n`;
+      t+=`1. מה עוד לא ברור לך אצלנו? שאל אותי 3 שאלות פתוחות שיעזרו לך להבין את האתגר לעומק — ואל תמשיך עד שאענה.\n`;
+      t+=`2. אילו זוויות של הבעיה אנחנו אולי לא רואים?\n`;
+      t+=`3. הצע 5 כיווני פתרון שונים באופיים — מהקל והזול ועד השאפתני. לכל אחד: מה הוא עושה, למי, ומה הצעד הראשון.\n`;
+      t+=`4. איך רשויות אחרות בישראל או בעולם התמודדו עם אתגר דומה?\n`;
+      t+=`5. איזה כיוון היית ממליץ להתחיל ממנו — ולמה דווקא הוא?\n`;
+      t+=`6. איך אפשר לעקוף את החסמים שציינו, או להתחיל בקטן למרות שהם קיימים?\n`;
+      t+=`7. מה הדבר הראשון שכדאי לבדוק מול משתמש אמיתי — ואיזו שאלה פתוחה לשאול אותו?\n`;
+    } else {
+      t+=`יש לנו כיוון ראשוני. עזור לנו לחדד ולבחון אותו:\n`;
+      t+=`1. מה עוד לא ברור לך? שאל אותי 3 שאלות פתוחות לפני שתענה — ואל תמשיך עד שאענה.\n`;
+      t+=`2. נסח מחדש את הפתרון שלנו במשפט אחד חד, כפי שהיית מציג אותו למקבל החלטות.\n`;
+      t+=`3. מה החוזק המרכזי כאן — ומה 3 נקודות התורפה הקונקרטיות?\n`;
+      t+=`4. האם הפתרון באמת מקל על הכאב שתיארנו, או פותר משהו אחר? הסבר.\n`;
+      t+=`5. הצע 3 כיוונים חלופיים או וריאציות שלא חשבנו עליהם.\n`;
+      t+=`6. איך אפשר לעקוף את החסמים שציינו, או להתחיל בקטן למרות שהם קיימים?\n`;
+      t+=`7. איך להפוך את הרעיון לפיילוט קטן שאפשר להתחיל בו מיד?\n`;
+      t+=`8. מה הדבר הראשון שכדאי לבדוק מול משתמש אמיתי — ואיזו שאלה פתוחה לשאול אותו?\n`;
+    }
+    t+=`\n== איך לענות ==\n`;
+    t+=`• בעברית, ענייני וקצר — משפט או שניים לכל סעיף.\n`;
+    t+=`• קונקרטי ומעשי לרשות מקומית בישראל — לא כללי ולא תיאורטי.\n`;
+    t+=`• התחל מהשאלות הפתוחות אליי, ורק אחר כך המשך.\n`;
+    t+=`• אחרי שאענה — המשך לשאול אותי שאלות שיחדדו את החשיבה שלנו.\n`;
+    return t;
+  }
+
+  function renderPrompt(){
+    return `<div class="panel hero">
+      <div class="eyebrow amber">⭐ הפלט של העמוד</div>
+      <h2 class="title big">הפרומפט שנוצר עבורכם</h2>
+      <div class="why">נבנה אוטומטית ממה שמילאתם. <b>זה לא פרומפט למצגת</b> — זה שותף חשיבה שיפתח איתכם דיון ויעזור להגיע לכיווני פתרון.</div>
+      <div class="prompt-box" id="promptBox">${esc(buildPrompt())}</div>
+      <div class="pv-actions">
+        <button class="btn btn-gem" onclick="App.toGemini()">✦ העתק ופתח את Gemini</button>
+        <button class="btn btn-ghost" onclick="App.copyPrompt()">📋 העתקה בלבד</button>
+      </div>
+      <div class="flow3">
+        <div><b>1. מדביקים</b>ב-Gemini ושולחים</div>
+        <div><b>2. עונים לשאלות</b>ומתדיינים איתו</div>
+        <div><b>3. חוזרים</b>ומעדכנים כאן</div>
+      </div>
+      <div class="nextnote">📊 <b>השלב הבא:</b> כשהפתרון מספיק ברור — עוברים לכלי <b>"מהנתון לפרומפט"</b> שבונה את הפרומפט לטיוטת המצגת.</div>
+      <button class="gotoprompt" style="background:#fff;color:var(--ink-soft);border:1px solid var(--line);box-shadow:none;margin-top:14px" onclick="App.tab('work')">→ חזרה לדף העבודה</button>
+    </div>`;
+  }
+
+  function wire(){
+    document.querySelectorAll('[data-f]').forEach(el=>el.addEventListener('input',()=>{data[el.dataset.f]=el.value;persist();}));
+    document.querySelectorAll('[data-m]').forEach(el=>el.addEventListener('input',()=>{data.meta[el.dataset.m]=el.value;persist();}));
+    document.querySelectorAll('[data-p]').forEach(el=>el.addEventListener('change',()=>{data.prin[+el.dataset.p]=el.checked;persist();}));
+    document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.querySelector(`[data-f="${b.dataset.t}"]`),b)));
+  }
+  function setStage(s){data.stage=(data.stage===s?'':s);persist();render();}
+  function setPath(k){data.path=(data.path===k?'':k);persist();render();}
+  function setMode(m){data.mode=m;persist();paintModes();render();}
+  function paintModes(){const el=document.getElementById('modes');if(el)el.innerHTML=['אישי','צוות'].map(m=>`<button class="${data.mode===m?'on':''}" onclick="App.setMode('${m}')">${m==='אישי'?'👤 אישי':'👥 צוות'}</button>`).join('');}
+  function copyPrompt(){const t=buildPrompt();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
+  function toGemini(){copyPrompt();window.open('https://gemini.google.com/app','_blank','noopener');}
+
+  function fmt(s){s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+  function paintPresets(){const el=document.getElementById('presets');if(el)el.innerHTML=PRESETS.map(m=>`<button class="${timer.total===m*60?'on':''}" onclick="App.preset(${m})">${m}</button>`).join('');}
+  function preset(m){timer.total=m*60;timer.remain=m*60;stopTimer();paintPresets();paint();}
+  function toggleTimer(){if(timer.running){stopTimer();}else{if(timer.remain<=0)timer.remain=timer.total;timer.running=true;beep(660,.08);timer.id=setInterval(()=>{timer.remain--;if(timer.remain<=0){stopTimer();beep(440,.4);vibrate([120,80,120]);}paint();},1000);}paintBtn();}
+  function stopTimer(){clearInterval(timer.id);timer.running=false;paintBtn();}
+  function resetTimer(){stopTimer();timer.remain=timer.total;paint();}
+  function paint(){const cl=document.getElementById('clock');if(!cl)return;cl.textContent=fmt(timer.remain);cl.className='clock'+((timer.remain<=30&&timer.remain>0)?' warn':(timer.remain<=0?' over':''));}
+  function paintBtn(){const b=document.getElementById('startBtn');if(b)b.innerHTML=timer.running?'⏸ השהה':(timer.remain<timer.total&&timer.remain>0?'▶ המשך':'▶ התחל');}
+  let actx;function beep(f,d){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;o.connect(g);g.connect(actx.destination);g.gain.setValueAtTime(.18,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d);o.start();o.stop(actx.currentTime+d);}catch(e){}}
+  function vibrate(p){try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}}
+
+  let recog=null;
+  function dictate(el,btn){if(!el)return;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('הכתבה קולית נתמכת ב-Chrome / Edge');return;}if(recog){recog.stop();return;}recog=new SR();recog.lang='he-IL';recog.interimResults=true;recog.continuous=false;const base=(el.value||'').trim();btn.classList.add('rec');recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k];if(r.isFinal)f+=r[0].transcript;else i+=r[0].transcript;}el.value=(base?base+' ':'')+(f+i).trim();el.dispatchEvent(new Event('input',{bubbles:true}));};recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();};recog.onerror=()=>{btn.classList.remove('rec');recog=null;};try{recog.start();toast('מקשיב…');}catch(e){btn.classList.remove('rec');recog=null;}}
+
+  let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
+  return {init,tab,setStage,setPath,setMode,copyPrompt,toGemini,preset,toggleTimer,resetTimer};
+})();
+window.App=App; App.init();
+</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מהנתון לפרומפט — בונים את המצגת</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--canvas:#EEF1F6;--paper:#F7F9FB;--card:#FFF;--ink:#15242E;--ink-soft:#54636F;--line:#D5DBE3;--brand:#127C71;--brand-deep:#0E655C;--root:#C77D3E;--root-bg:#FBF1E6;--coral:#D9534F;--leaf:#2E8B6B;--core-1:#1F5673;--core-2:#102A43;--sans:'Alef','Segoe UI',Arial,sans-serif;--shadow:0 10px 30px rgba(21,36,46,.12);--shadow-sm:0 3px 12px rgba(21,36,46,.08)}
+  *{box-sizing:border-box} html,body{margin:0;min-height:100%}
+  body{font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;background:var(--canvas);background-image:radial-gradient(1100px 520px at 78% -8%,rgba(18,124,113,.10),transparent 60%),radial-gradient(900px 480px at 10% 6%,rgba(31,86,115,.09),transparent 60%);display:flex;flex-direction:column;min-height:100vh}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit} textarea,input{font-family:inherit}
+  h1,h2,h3,h4{font-weight:700;line-height:1.15;margin:0} a{color:var(--brand-deep)}
+  header.bar{display:flex;align-items:center;gap:16px;padding:12px 22px;background:rgba(247,249,251,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:18px;letter-spacing:-.4px}
+  .brand .mark{width:28px;height:28px}
+  .daytag{font-size:12px;font-weight:700;color:#fff;background:var(--core-1);padding:3px 10px;border-radius:999px}
+  .hublink{margin-inline-start:auto;font-size:14px;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1px solid var(--line);background:#fff;padding:8px 14px;border-radius:10px}
+  .hublink:hover{color:var(--ink);border-color:#b3bdc9}
+  .btn{padding:10px 16px;border-radius:11px;font-weight:700;font-size:14px;transition:.15s;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+  .btn-brand{background:var(--brand);color:#fff;box-shadow:0 4px 14px rgba(18,124,113,.28)}.btn-brand:hover{background:var(--brand-deep)}
+  .btn-ghost{color:var(--ink-soft);border:1px solid var(--line);background:#fff}.btn-ghost:hover{color:var(--ink);border-color:#b3bdc9}
+  .btn-dark{background:var(--ink);color:#fff}.btn-dark:hover{background:#0c1820}
+  .wrap{flex:1;width:100%;max-width:860px;margin:0 auto;padding:22px 20px 56px}
+  .tabs{display:flex;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:13px;padding:5px;margin-bottom:20px;box-shadow:var(--shadow-sm);gap:2px}
+  .tabs button{flex:1;min-width:92px;padding:10px 6px;border-radius:9px;font-weight:700;font-size:14px;color:var(--ink-soft);display:flex;align-items:center;justify-content:center;gap:6px}
+  .tabs button.on{background:linear-gradient(135deg,var(--brand),var(--brand-deep));color:#fff;box-shadow:0 4px 12px rgba(18,124,113,.3)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;box-shadow:var(--shadow-sm)}
+  .eyebrow{display:inline-block;font-size:12px;font-weight:700;letter-spacing:1px;color:#fff;background:var(--brand);padding:3px 11px;border-radius:999px}
+  h2.title{font-size:29px;margin:6px 0 0;letter-spacing:-.8px}
+  .why{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:14px 0 4px;font-size:14px;color:var(--ink-soft)}
+  .why b{color:var(--ink)}
+
+  /* audience selector */
+  .aud{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 6px}
+  .aud button{border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:13px;text-align:right;transition:.15s}
+  .aud button .t{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:7px}
+  .aud button .d{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+  .aud button.on{border-color:var(--brand);background:#f0faf8;box-shadow:0 0 0 3px rgba(18,124,113,.1)}
+
+  .step{margin-top:14px;background:var(--paper);border:1px solid var(--line);border-inline-start:5px solid var(--line);border-radius:14px;padding:14px 16px}
+  .step.s1{border-inline-start-color:#6C7B87}.step.s2{border-inline-start-color:var(--coral)}.step.s3{border-inline-start-color:var(--brand)}.step.s4{border-inline-start-color:var(--core-1)}
+  .step .lab{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+  .step .num{width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;font-weight:700;color:#fff;font-size:15px;box-shadow:var(--shadow-sm)}
+  .step.s1 .num{background:#6C7B87}.step.s2 .num{background:var(--coral)}.step.s3 .num{background:var(--brand)}.step.s4 .num{background:var(--core-1)}
+  .step .lab h3{font-size:17px}
+  .step .lab .sub{font-weight:400;color:var(--ink-soft);font-size:12.5px}
+  .guide{list-style:none;padding:0;margin:2px 0 9px 0;display:flex;flex-direction:column;gap:4px}
+  .guide li{font-size:13px;color:var(--ink-soft);padding-inline-start:16px;position:relative}
+  .guide li::before{content:"›";position:absolute;inset-inline-start:2px;color:var(--brand);font-weight:700}
+  .in-wrap{position:relative}
+  textarea,input.txt{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 12px;font-size:14.5px;background:#fff;color:var(--ink);resize:vertical;line-height:1.55}
+  textarea{min-height:82px;padding-bottom:34px}
+  textarea.big{min-height:104px}
+  textarea:focus,input.txt:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(18,124,113,.14)}
+  .mic{position:absolute;inset-inline-start:7px;bottom:7px;width:28px;height:28px;border-radius:8px;background:#fff;border:1px solid var(--line);color:var(--brand-deep);display:grid;place-items:center;font-size:13px}
+  .mic:hover{border-color:var(--brand);background:#f0faf8}
+  .mic.rec{background:#E4463A;border-color:#E4463A;color:#fff;animation:pulse 1.1s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(228,70,58,.5)}100%{box-shadow:0 0 0 12px rgba(228,70,58,0)}}
+  .mats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:18px}
+  .mat{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--paper)}
+  .mat .h{font-size:13px;font-weight:700;margin-bottom:7px}
+  .mat textarea{min-height:52px;padding-bottom:10px;background:#fff}
+  .hero-note{margin-top:16px;background:var(--root-bg);border:1px solid #E7C9A6;color:#7A4A1E;border-radius:11px;padding:11px 13px;font-size:13.5px}
+  .hero-note b{color:#8a3f1e}
+
+  .metarow{display:flex;gap:8px;margin-bottom:16px}.metarow input{flex:1}
+  .sub-h{font-size:14px;font-weight:700;margin:18px 0 2px}
+  .imp{padding:5px 11px;font-size:12.5px;margin-inline-start:6px}
+  .check{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .check label{display:flex;align-items:center;gap:9px;font-size:14px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:9px 12px;cursor:pointer}
+  .check input{width:18px;height:18px;accent-color:var(--brand)}
+  .obj{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+  .obj .row{display:flex;gap:8px;align-items:center}.obj .row .o{flex:0 0 40%}.obj .row .a{flex:1}
+
+  /* design */
+  .opt-group{margin-top:16px}
+  .opt-group .gl{font-size:14px;font-weight:700;margin-bottom:8px}
+  .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .opts button{border:1.5px solid var(--line);background:#fff;border-radius:11px;padding:9px 14px;font-weight:700;font-size:13.5px;color:var(--ink)}
+  .opts button.on{border-color:var(--brand);background:#f0faf8;color:var(--brand-deep)}
+  .pals{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+  .pal{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px;text-align:right}
+  .pal.on{border-color:var(--brand);box-shadow:0 0 0 3px rgba(18,124,113,.1)}
+  .pal .sw{display:flex;gap:5px;margin-bottom:7px}
+  .pal .sw span{width:26px;height:26px;border-radius:7px;border:1px solid rgba(0,0,0,.06)}
+  .pal .pn{font-size:13px;font-weight:700}
+  .designtips{margin-top:16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .designtips h4{font-size:13.5px;margin-bottom:6px}
+  .designtips ul{margin:0;padding-inline-start:18px;color:var(--ink-soft);font-size:13.5px;line-height:1.7}
+
+  /* prompt */
+  .panel.hero{border:2px solid var(--root);box-shadow:0 12px 34px rgba(199,125,62,.18)}
+  .eyebrow.amber{background:var(--root)}
+  h2.title.big{font-size:32px}
+  .btn-gem{background:linear-gradient(135deg,#E9A94F,var(--root));color:#fff;box-shadow:0 6px 18px rgba(199,125,62,.35)}.btn-gem:hover{filter:brightness(1.06)}
+  .flow3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}
+  .flow3 div{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px;text-align:center;font-size:12.5px;color:var(--ink-soft)}
+  .flow3 b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
+  .gotoprompt{margin-top:16px;width:100%;padding:13px;border-radius:12px;font-weight:700;font-size:15px;background:linear-gradient(135deg,#E9A94F,var(--root));color:#fff;box-shadow:0 6px 18px rgba(199,125,62,.3)}
+  .gotoprompt:hover{filter:brightness(1.06)}
+  .drive{margin-top:18px;border:2px solid #1F5673;border-radius:16px;padding:18px;background:#EAF0F5}
+  .drive h3{font-size:18px;color:#123047;display:flex;align-items:center;gap:8px}
+  .drive p{font-size:13.5px;color:#25415a}
+  .drive .steps{margin:10px 0 0;padding-inline-start:20px;font-size:13.5px;color:#25415a;line-height:1.9}
+  .drive .steps b{color:#123047}
+  .btn-drive{display:block;width:100%;text-align:center;margin-top:12px;padding:13px;border-radius:12px;font-weight:700;font-size:15px;color:#fff;text-decoration:none;background:linear-gradient(135deg,#2f6f9e,#1F5673);box-shadow:0 6px 18px rgba(31,86,115,.32)}
+  .btn-drive:hover{filter:brightness(1.07)}
+  .prompt-box{background:#0c1820;color:#dce9e6;border-radius:14px;padding:18px;font-size:14px;line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto}
+  .pv-actions{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap}
+  .miss{background:#FFF6E9;border:1px solid #F0D9AE;color:#7A4A1E;border-radius:11px;padding:10px 13px;font-size:13px;margin-bottom:12px}
+
+  /* timer */
+  .timer-wrap{text-align:center}
+  .clock{font-size:72px;font-weight:700;letter-spacing:2px;line-height:1;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+  .clock.warn{color:var(--root)} .clock.over{color:#B23A2C}
+  .phase-now{font-size:16px;font-weight:700;color:var(--brand-deep);margin-bottom:16px}
+  .pbar{height:10px;background:#DCE2EA;border-radius:6px;overflow:hidden;margin:0 auto 6px;max-width:520px}
+  .pbar .fill{height:100%;background:var(--brand);width:0;transition:width .3s linear}
+  .phase-row{display:flex;gap:8px;max-width:520px;margin:14px auto 0}
+  .phase-row .ph{flex:1;border:1.5px solid var(--line);border-radius:11px;padding:9px 6px;font-size:12.5px;font-weight:700;color:var(--ink-soft);background:#fff;transition:.2s}
+  .phase-row .ph .d{font-size:11px;font-weight:400;color:var(--ink-soft);margin-top:2px}
+  .phase-row .ph.active{border-color:var(--brand);background:#f0faf8;color:var(--brand-deep);transform:scale(1.04)}
+  .phase-row .ph.done{border-color:var(--leaf);color:var(--leaf)}
+  .cue{max-width:600px;margin:18px auto 0;background:var(--paper);border:1px solid var(--line);border-inline-start:4px solid var(--brand);border-radius:12px;padding:14px 16px;text-align:right;min-height:70px}
+  .cue .cl{font-size:12.5px;font-weight:700;color:var(--brand-deep);margin-bottom:5px}
+  .cue .ct{font-size:15.5px}.cue .ct.empty{color:var(--ink-soft)}
+  .tctrl{display:flex;gap:10px;justify-content:center;margin-top:20px}
+  .tctrl .btn{min-width:120px;font-size:15px;padding:12px 20px}
+
+  .exportbar{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:20px}
+  .exportbar .btn{width:100%;padding:10px 8px}
+  footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:14px 22px;text-align:center;font-size:13px;color:var(--ink-soft);background:rgba(247,249,251,.9);border-top:1px solid var(--line)}
+  footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:var(--shadow-sm)}
+  footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:var(--shadow)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media (max-width:720px){.mats,.flow3{grid-template-columns:1fr}.aud,.pals{grid-template-columns:1fr}.exportbar{grid-template-columns:1fr 1fr}.clock{font-size:58px}}
+  @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}.toast{transition:none}}
+</style>
+</head>
+<body>
+  <header class="bar">
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M4 5h16M4 5v11a2 2 0 002 2h4l2 3 2-3h4a2 2 0 002-2V5" stroke="#127C71" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="11" r="2.4" fill="#C77D3E"/></svg>מהנתון לפרומפט</div>
+    <span class="daytag">יום 3 · בלוק B</span>
+    <a class='hublink' href='../maazim/'>‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap">
+    <div class="tabs">
+      <button data-tab="story" class="on" onclick="App.tab('story')">📖 תוכן המצגת</button>
+      <button data-tab="design" onclick="App.tab('design')">🎨 עיצוב</button>
+      <button data-tab="prompt" class="star" onclick="App.tab('prompt')">✨ הפרומפט למצגת</button>
+    </div>
+    <div id="content"></div>
+  </main>
+
+  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרנשטיין"><span>נבנה ע"י רומן גרנשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+  <input type="file" id="fileIn" accept="application/json,.json" style="display:none">
+  <div class="toast" id="toast"></div>
+
+<script>
+const App=(()=>{
+  'use strict';
+  const LS='pitch_story_v2', PADLET_KEY='toolkit_padlet_url';
+  const DEFAULT_PADLET='https://padlet.com/romangash/padlet-emxukhiqh96z99bl';
+  let cur='story';
+  const PHASES=[{k:'hook',label:'וו פתיחה',sec:30},{k:'problem',label:'הבעיה',sec:60},{k:'solution',label:'הפתרון',sec:60},{k:'ask',label:'הבקשה',sec:30}];
+  const TOTAL=PHASES.reduce((a,p)=>a+p.sec,0);
+  let timer={running:false,elapsed:0,id:null};
+  const MOODS=['מקצועי ורשמי','חם ואנושי','נקי ומינימליסטי','אנרגטי וצבעוני'];
+  const PALETTES=[{n:'טורקיז וכחול רשמי',c:['#127C71','#1F5673','#EEF1F6']},{n:'אדמה חמה',c:['#C77D3E','#2E8B6B','#FBF1E6']},{n:'סגול מודרני',c:['#5B4B8A','#4A5568','#F2F0F7']},{n:'חול אנרגטי',c:['#E9A94F','#D9534F','#FFF7EC']}];
+  const STYLES=['הרבה תמונה, מעט טקסט','דגש על מספר גדול','איורים וסקיצות','צילומים אמיתיים'];
+  const SLIDES=['6','8','10','12'];
+
+  let data=fresh();
+  function fresh(){ return {meta:{title:'',team:''}, story:{audience:'',situation:'',pain:'',intervention:'',future:'',number:'',quote:'',image:''}, pitch:{hook:'',problem:'',solution:'',ask:'',c1:false,c2:false,c3:false,obj:[{o:'אין תקציב',r:''},{o:'אין זמן / כוח אדם',r:''},{o:'זה לא התפקיד שלנו',r:''}]}, design:{mood:'',palette:'',slideStyle:'',slides:'8'}}; }
+  function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
+  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function attr(s){return esc(s).replace(/"/g,'&quot;');}
+
+  function init(){ try{const s=JSON.parse(localStorage.getItem(LS)); if(s&&s.story)data=Object.assign(fresh(),s);}catch(e){} document.getElementById('fileIn').addEventListener('change',onFile); render(); }
+  function onFile(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{data=Object.assign(fresh(),JSON.parse(r.result));render();toast('נטען');}catch(err){toast('קובץ לא תקין');}};r.readAsText(f);e.target.value='';}
+  function tab(t){ cur=t; document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t)); render(); }
+  function ta(id,val,ph,mic,big){ return `<div class="in-wrap"><textarea data-f="${id}" class="${big?'big':''}" placeholder="${attr(ph)}">${esc(val)}</textarea>${mic?`<button class="mic" data-t="${id}">🎤</button>`:''}</div>`; }
+  const internal=()=>data.story.audience==='internal';
+
+  function render(){
+    const c=document.getElementById('content');
+    if(cur==='story') c.innerHTML=renderStory();
+    else if(cur==='design') c.innerHTML=renderDesign();
+    else c.innerHTML=renderPrompt();
+    wire();
+  }
+
+  function stepBlock(cls,num,title,sub,guide,key,val,ph){
+    return `<div class="step ${cls}">
+      <div class="lab"><span class="num">${num}</span><div><h3>${title}</h3><span class="sub">${sub}</span></div></div>
+      <ul class="guide">${guide.map(g=>`<li>${g}</li>`).join('')}</ul>
+      ${ta('story.'+key,val,ph,true,true)}
+    </div>`;
+  }
+
+  function renderStory(){
+    const s=data.story, inn=internal();
+    const audBtns=`
+      <div class="aud">
+        <button class="${s.audience==='external'?'on':''}" onclick="App.setAud('external')"><div class="t">🏙️ מול תושבי העיר</div><div class="d">האתגר נוגע לתושבים / לקוחות של הרשות</div></button>
+        <button class="${s.audience==='internal'?'on':''}" onclick="App.setAud('internal')"><div class="t">🏛️ פנים-ארגוני</div><div class="d">האתגר בתוך המחלקה / האגף / העירייה</div></button>
+      </div>`;
+    const g1 = inn ? ['מי הדמות? (עובד/ת, צוות)','איך נראית שגרת העבודה היום?']
+                   : ['מי הדמות? (תושב/ת ספציפי/ת)','איך נראה יום רגיל שלה?'];
+    const g2 = inn ? ['מה לא עובד — ואיך זה מרגיש?','כמה זה עולה? (כאן המספר)']
+                   : ['מה לא עובד — ואיך זה מרגיש לתושב?','כמה זה עולה? (כאן המספר)'];
+    const g3 = ['מה הפתרון / הצעד הראשון?','מה משתנה בפועל?'];
+    const g4 = inn ? ['איך ייראה יום העבודה אחרי?','מה הרווח לארגון? (מדד אחד)']
+                   : ['איך ייראה היום של התושב אחרי?','מה הרווח לעיר? (מדד אחד)'];
+    const hero = inn?'העובד/ת או הצוות':'התושב/ת';
+    return `<div class="panel">
+      <div class="eyebrow">שלב 1 · תוכן</div>
+      <h2 class="title">מה ייכנס למצגת</h2>
+      <div class="why">התוכן שתמלאו כאן יהפוך לפרומפט שיבנה טיוטת מצגת ב-Gemini. <b>אין חובה למלא הכול.</b></div>
+      <div class="metarow" style="margin-top:14px"><input class="txt" data-m="title" placeholder="שם האתגר / הפרויקט" value="${attr(data.meta.title)}"><input class="txt" data-m="team" placeholder="שם הצוות" value="${attr(data.meta.team)}"></div>
+      <div class="sub-h">קודם כול — מול מי הסיפור?</div>
+      ${audBtns}
+      ${stepBlock('s1',1,'המצב','הרקע — העולם המוכר לפני שמשהו נשבר',g1,'situation',s.situation,inn?'לדוגמה: אגף הרישוי מקבל מאות בקשות בשנה, וכל בקשה עוברת בין ארבעה גורמים…':'לדוגמה: מרכז העיר שוקק ביום, ובעלי העסקים מכירים כל לקוח בשם…')}
+      ${stepBlock('s2',2,'הכאב · הגדרת הבעיה','הרגע שבו משהו נשבר — כאן נכנס המספר',g2,'pain',s.pain,inn?'לדוגמה: 40% מהבקשות תקועות כי אין מי שמרכז אותן — והעובדים שוחים בניירת…':'לדוגמה: בשעות הערב הרחוב מתרוקן, כל עסק שני סוגר מוקדם, והתחושה היא של נטישה…')}
+      ${stepBlock('s3',3,'ההתערבות','מה מציעים לעשות אחרת',g3,'intervention',s.intervention,'לדוגמה: נקודת מגע אחת שמלווה את התהליך מקצה לקצה…')}
+      ${stepBlock('s4',4,'העתיד','התמונה הטובה — איך ייראה אחרי',g4,'future',s.future,inn?'לדוגמה: בקשה נסגרת בשבועיים במקום בחודשיים, והעובדים חוזרים לעסוק במהות…':'לדוגמה: הרחוב חי גם בערב, נפתחים עסקים חדשים, והתושבים גאים במרכז…')}
+
+      <div class="sub-h">חומרי הגלם לסיפור</div>
+      <div class="mats">
+        <div class="mat"><div class="h">🔢 מספר מפתח</div>${ta('story.number',s.number,'הנתון האחד שמסכם את הכאב',false)}</div>
+        <div class="mat"><div class="h">❝ ציטוט</div>${ta('story.quote',s.quote,inn?'משפט אמיתי של עובד/ת':'משפט אמיתי של תושב/ת',false)}</div>
+        <div class="mat"><div class="h">🖼️ תמונה / ויזואל</div>${ta('story.image',s.image,'מה הוויזואל שממחיש',false)}</div>
+      </div>
+      <div class="sub-h">פעולות להמשך <span style="font-weight:400;color:var(--ink-soft);font-size:12.5px">(שקף הסיום)</span></div>
+      ${ta('pitch.ask',data.pitch.ask,'הצעד הבא הקונקרטי — מה, מי, ומתי. לדוגמה: פיילוט בשכונה אחת לשלושה חודשים.',true)}
+      <div class="hero-note">⭐ <b>הגיבור הוא ${hero} — לא הרשות.</b></div>
+      <button class="gotoprompt" onclick="App.tab('prompt')">✨ המשיכו לפרומפט למצגת ←</button>
+    </div>`;
+  }
+
+  function renderPitch(){
+    const p=data.pitch;
+    return `<div class="panel">
+      <div class="eyebrow">הפיץ' · שלוש דקות</div>
+      <h2 class="title">בונים את הפיץ'</h2>
+      <div class="why">ארבעה חלקים · שלוש דקות · בקשה אחת. <button class="btn btn-ghost imp" onclick="App.importStory()">יבוא מהסיפור →</button></div>
+      <div class="step s1"><div class="lab"><span class="num">½</span><div><h3>וו פתיחה</h3><span class="sub">0:30 — משפט או שאלה שתופסת</span></div></div>${ta('pitch.hook',p.hook,'משפט פתיחה שתופס — הגיבור והמצב.',true)}</div>
+      <div class="step s2"><div class="lab"><span class="num">1</span><div><h3>הבעיה</h3><span class="sub">1:00 — כאן שמים את הנתון שנתקע בראש</span></div></div>${ta('pitch.problem',p.problem,'הכאב והמספר שלא שוכחים.',true)}</div>
+      <div class="step s3"><div class="lab"><span class="num">1</span><div><h3>הפתרון</h3><span class="sub">1:00 — ההתערבות והעתיד, קצר וקונקרטי</span></div></div>${ta('pitch.solution',p.solution,'מה מציעים — ואיך ייראה אחרי.',true)}</div>
+      <div class="step s4"><div class="lab"><span class="num">½</span><div><h3>הבקשה</h3><span class="sub">0:30 — צעד אחד ברור מהקהל</span></div></div>${ta('pitch.ask',p.ask,'מה בדיוק אתם מבקשים — למשל: פיילוט בשכונה אחת.',true)}</div>
+      <div class="sub-h">בדיקת הבקשה</div>
+      <div class="check">
+        <label><input type="checkbox" data-c="c1" ${p.c1?'checked':''}> ספציפית — "פיילוט בשכונה אחת", לא "לשפר את השירות".</label>
+        <label><input type="checkbox" data-c="c2" ${p.c2?'checked':''}> ברת-אישור — קטנה מספיק שאפשר לומר עליה "כן" עכשיו.</label>
+        <label><input type="checkbox" data-c="c3" ${p.c3?'checked':''}> ברור מי ומה — מי צריך לעשות מה, ועד מתי.</label>
+      </div>
+      <div class="sub-h">התמודדות עם התנגדויות <span style="font-weight:400;color:var(--ink-soft);font-size:12.5px">(הקדימו אותן בעצמכם)</span></div>
+      <div class="obj">${p.obj.map((o,i)=>`<div class="row"><input class="txt o" data-obj="${i}:o" value="${attr(o.o)}" placeholder="התנגדות"><input class="txt a" data-obj="${i}:r" value="${attr(o.r)}" placeholder="המענה שלכם…"></div>`).join('')}</div>
+    </div>`;
+  }
+
+  function renderDesign(){
+    const d=data.design;
+    return `<div class="panel">
+      <div class="eyebrow">שלב 2 · עיצוב</div>
+      <h2 class="title">איך המצגת תיראה?</h2>
+      <div class="why">בוחרים כיוון — נכנס אוטומטית לפרומפט. <b>לא חובה.</b></div>
+      <div class="opt-group"><div class="gl">מצב רוח</div><div class="opts">${MOODS.map(m=>`<button class="${d.mood===m?'on':''}" onclick="App.setDesign('mood','${m}')">${m}</button>`).join('')}</div></div>
+      <div class="opt-group"><div class="gl">פלטת צבעים</div><div class="pals">${PALETTES.map(p=>`<button class="pal ${d.palette===p.n?'on':''}" onclick="App.setDesign('palette','${p.n}')"><div class="sw">${p.c.map(col=>`<span style="background:${col}"></span>`).join('')}</div><div class="pn">${p.n}</div></button>`).join('')}</div></div>
+      <div class="opt-group"><div class="gl">סגנון שקפים</div><div class="opts">${STYLES.map(sx=>`<button class="${d.slideStyle===sx?'on':''}" onclick="App.setDesign('slideStyle','${sx}')">${sx}</button>`).join('')}</div></div>
+      <div class="opt-group"><div class="gl">מספר שקפים</div><div class="opts">${SLIDES.map(n=>`<button class="${d.slides===n?'on':''}" onclick="App.setDesign('slides','${n}')">${n} שקפים</button>`).join('')}</div></div>
+      <div class="designtips"><h4>💡 כללי זהב לשקפים</h4><ul><li>שקף אחד = רעיון אחד.</li><li>פחות טקסט, יותר חלל לבן — הקהל מקשיב לכם, לא קורא.</li><li>שקף שלם למספר המפתח, בגדול.</li><li>סיימו בשקף בקשה אחד וברור.</li></ul></div>
+    </div>`;
+  }
+
+  function buildPrompt(){
+    const s=data.story,p=data.pitch,d=data.design;
+    const aud = internal()?'קהל פנים-ארגוני (עובדים / הנהלה במחלקה, באגף או בעירייה)':(s.audience==='external'?'תושבי העיר':'הקהל');
+    const hero = internal()?'העובד/ת או הצוות':'התושב/ת';
+    let t='';
+    t+=`אתה מעצב מצגות מקצועי ומספר סיפורים. בנה טיוטת מצגת בעברית (מיושרת לימין, RTL) בת כ-${d.slides||'8'} שקפים. זו טיוטה ראשונה שאמשיך ללטש — תן מבנה ברור ותוכן קונקרטי לכל שקף.\n\n`;
+    t+=`קהל היעד: ${aud}.\n`;
+    if(data.meta.title) t+=`נושא: ${data.meta.title}.\n`;
+    if(data.meta.team) t+=`מגישים: ${data.meta.team}.\n`;
+    t+=`\n== שלד הסיפור (בנֵה לפיו את רצף השקפים) ==\n`;
+    t+=`1) המצב (הרקע): ${s.situation||'—'}\n`;
+    t+=`2) הכאב / הבעיה: ${s.pain||'—'}\n`;
+    if(s.number) t+=`   • מספר מפתח להבליט בשקף נפרד: ${s.number}\n`;
+    if(s.quote) t+=`   • ציטוט אמיתי לשילוב: "${s.quote}"\n`;
+    if(s.image) t+=`   • רעיון ויזואלי: ${s.image}\n`;
+    t+=`3) ההתערבות (הפתרון): ${s.intervention||'—'}\n`;
+    t+=`4) העתיד הרצוי: ${s.future||'—'}\n`;
+    if(p.ask) t+=`\nהבקשה מהקהל (שקף הסיום): ${p.ask}\n`;
+    t+=`\n== כיוון עיצוב ==\n`;
+    t+=`• מצב רוח: ${d.mood||'מקצועי ונקי'}\n`;
+    t+=`• פלטת צבעים: ${d.palette||'טורקיז וכחול רשמי'}\n`;
+    t+=`• סגנון שקפים: ${d.slideStyle||'מעט טקסט, הרבה חלל לבן'}\n`;
+    t+=`\n== כללי זהב ==\n`;
+    t+=`• שקף אחד = רעיון אחד. מעט מלל, הרבה חלל לבן.\n`;
+    t+=`• הקדש שקף שלם למספר המפתח, בפונט גדול.\n`;
+    t+=`• הגיבור של הסיפור הוא ${hero} — לא הרשות. ספר מנקודת מבטו.\n`;
+    t+=`• שמור על קשת רגשית: מצב רגוע → כאב → תקווה → עתיד → בקשה.\n`;
+    t+=`• סיים בשקף בקשה ברור וקריא לפעולה.\n`;
+    t+=`\n== פורמט הפלט ==\nהחזר את המצגת שקף-אחר-שקף. לכל שקף: מספר וכותרת קצרה, 1-2 נקודות תוכן, והצעת ויזואל (תמונה/אייקון/גרף מתאים).`;
+    return t;
+  }
+  function renderPrompt(){
+    const s=data.story;
+    const miss='';
+    return `<div class="panel hero">
+      <div class="eyebrow amber">⭐ הפלט של הכלי</div>
+      <h2 class="title big">הפרומפט לטיוטת המצגת</h2>
+      <div class="why">נבנה אוטומטית ממה שמילאתם. מדביקים ב-<b>Gemini Canvas</b> ומקבלים <b>טיוטת מצגת</b> מוכנה לעריכה וללטש.</div>
+      ${miss}
+      <div class="prompt-box" id="promptBox">${esc(buildPrompt())}</div>
+      <div class="pv-actions">
+        <button class="btn btn-gem" onclick="App.toGemini()">✦ העתק ופתח Gemini Canvas</button>
+        <button class="btn btn-ghost" onclick="App.copyPrompt()">📋 העתקה בלבד</button>
+      </div>
+      <div class="flow3"><div><b>1. מדביקים</b>ב-Gemini Canvas</div><div><b>2. מקבלים</b>טיוטת מצגת חיה</div><div><b>3. מלטשים</b>בצ'אט עד שמרוצים</div></div>
+      <div class="drive">
+        <h3>📤 סיימתם? העלו את המצגת</h3>
+        <p>כשהמצגת מוכנה — מעלים אותה לתיקייה המשותפת בדרייב.</p>
+        <ol class="steps">
+          <li>ב-Gemini Canvas: <b>ייצוא / הורדה</b> של המצגת (PDF או PowerPoint).</li>
+          <li>לוחצים על הכפתור למטה — נפתחת התיקייה בדרייב.</li>
+          <li><b>גוררים</b> את הקובץ לתוך התיקייה (או: חדש ← העלאת קובץ).</li>
+          <li>שם הקובץ: <b>שם הצוות + שם האתגר</b>.</li>
+        </ol>
+        <a class="btn-drive" href="https://drive.google.com/drive/folders/12ByC4VZ4akVA_p7-zd-6Rl1AYDJJQ3l9?usp=drive_link" target="_blank" rel="noopener">↗ פתיחת תיקיית הדרייב להעלאה</a>
+      </div>
+    </div>`;
+  }
+
+  function renderTimer(){
+    return `<div class="panel timer-wrap">
+      <div class="eyebrow">חזרה על הפיץ' · 3:00</div>
+      <div class="clock" id="clock">3:00</div>
+      <div class="phase-now" id="phaseNow">מוכנים? לחצו התחל</div>
+      <div class="pbar"><div class="fill" id="pfill"></div></div>
+      <div class="phase-row" id="phaseRow"></div>
+      <div class="cue" id="cue"><div class="cl">כרטיסיית עזר</div><div class="ct empty">הטקסט של השלב הנוכחי יופיע כאן בזמן החזרה.</div></div>
+      <div class="tctrl"><button class="btn btn-brand" id="startBtn" onclick="App.toggleTimer()">▶ התחל</button><button class="btn btn-ghost" onclick="App.resetTimer()">↺ איפוס</button></div>
+      <div style="font-size:12.5px;color:var(--ink-soft);margin-top:12px">אם חורגים — חותכים, לא מדברים מהר יותר. שתיקה אחרי נתון חזק נותנת לו לשקוע.</div>
+    </div>`;
+  }
+
+  function wire(){
+    document.querySelectorAll('[data-f]').forEach(el=>el.addEventListener('input',()=>{ const [a,b]=el.dataset.f.split('.'); data[a][b]=el.value; persist(); }));
+    document.querySelectorAll('[data-m]').forEach(el=>el.addEventListener('input',()=>{ data.meta[el.dataset.m]=el.value; persist(); }));
+    document.querySelectorAll('[data-c]').forEach(el=>el.addEventListener('change',()=>{ data.pitch[el.dataset.c]=el.checked; persist(); }));
+    document.querySelectorAll('[data-obj]').forEach(el=>el.addEventListener('input',()=>{ const [i,k]=el.dataset.obj.split(':'); data.pitch.obj[+i][k]=el.value; persist(); }));
+    document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.querySelector(`[data-f="${b.dataset.t}"]`),b)));
+  }
+  function setAud(a){ data.story.audience=a; persist(); render(); }
+  function setDesign(k,v){ data.design[k]=(data.design[k]===v?'':v); persist(); render(); }
+  function importStory(){ const s=data.story,p=data.pitch; if(!p.hook)p.hook=s.situation; if(!p.problem)p.problem=(s.pain+(s.number?` (${s.number})`:'')).trim(); if(!p.solution)p.solution=[s.intervention,s.future].filter(Boolean).join(' '); persist(); render(); toast('יובא מהסיפור — ערכו וקצרו'); }
+  function copyPrompt(){ const t=buildPrompt(); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓ — הדביקו ב-Gemini / Base44')).catch(()=>prompt('העתיקו:',t)); }
+  function toGemini(){ copyPrompt(); window.open('https://gemini.google.com/app','_blank','noopener'); }
+  function toBase44(){ copyPrompt(); window.open('https://base44.com','_blank','noopener'); }
+
+  /* timer */
+  function fmt(s){s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+  function phaseAt(el){let acc=0;for(let i=0;i<PHASES.length;i++){acc+=PHASES[i].sec;if(el<acc)return{i,remain:acc-el};}return{i:PHASES.length-1,remain:0};}
+  function toggleTimer(){ if(timer.running){clearInterval(timer.id);timer.running=false;document.getElementById('startBtn').innerHTML='▶ המשך';return;} if(timer.elapsed>=TOTAL)timer.elapsed=0; timer.running=true; document.getElementById('startBtn').innerHTML='⏸ השהה'; beep(660,.08); timer.id=setInterval(()=>{const prev=phaseAt(timer.elapsed).i;timer.elapsed++;const now=phaseAt(timer.elapsed).i;if(now!==prev&&timer.elapsed<TOTAL){beep(880,.12);vibrate(120);}if(timer.elapsed>=TOTAL){clearInterval(timer.id);timer.running=false;document.getElementById('startBtn').innerHTML='▶ שוב';beep(440,.4);vibrate([120,80,120]);}paintTimer();},1000); }
+  function resetTimer(){clearInterval(timer.id);timer.running=false;timer.elapsed=0;const b=document.getElementById('startBtn');if(b)b.innerHTML='▶ התחל';paintTimer();}
+  function paintTimer(){const clock=document.getElementById('clock');if(!clock)return;const rem=TOTAL-timer.elapsed;clock.textContent=fmt(rem);clock.className='clock'+(rem<=10&&rem>0?' warn':'')+(rem<=0?' over':'');const{i,remain}=phaseAt(timer.elapsed);const ph=PHASES[i];document.getElementById('pfill').style.width=Math.min(100,(timer.elapsed/TOTAL*100))+'%';document.getElementById('phaseNow').textContent=timer.elapsed>=TOTAL?'סיום — 3 דקות מלאות ✓':`${ph.label} · נותרו ${fmt(remain)} לשלב`;document.getElementById('phaseRow').innerHTML=PHASES.map((pp,idx)=>{const cls=idx<i||timer.elapsed>=TOTAL?'done':(idx===i&&timer.elapsed<TOTAL?'active':'');return `<div class="ph ${cls}">${pp.label}<div class="d">${fmt(pp.sec)}</div></div>`;}).join('');const cueText=data.pitch[ph.k]||'';var cueFallback='(לא מולא עדיין)';document.getElementById('cue').innerHTML='<div class="cl">'+esc(ph.label)+'</div><div class="ct '+(cueText?'':'empty')+'">'+(cueText?esc(cueText):cueFallback)+'</div>';}
+  let actx;function beep(f,d){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;o.connect(g);g.connect(actx.destination);g.gain.setValueAtTime(.18,actx.currentTime);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d);o.start();o.stop(actx.currentTime+d);}catch(e){}}
+  function vibrate(p){try{navigator.vibrate&&navigator.vibrate(p);}catch(e){}}
+
+  /* dictation */
+  let recog=null;
+  function dictate(el,btn){if(!el)return;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('הכתבה קולית נתמכת ב-Chrome / Edge');return;}if(recog){recog.stop();return;}recog=new SR();recog.lang='he-IL';recog.interimResults=true;recog.continuous=false;const base=(el.value||'').trim();btn.classList.add('rec');recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k];if(r.isFinal)f+=r[0].transcript;else i+=r[0].transcript;}el.value=(base?base+' ':'')+(f+i).trim();el.dispatchEvent(new Event('input',{bubbles:true}));};recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();};recog.onerror=()=>{btn.classList.remove('rec');recog=null;};try{recog.start();toast('מקשיב…');}catch(e){btn.classList.remove('rec');recog=null;}}
+
+  /* export */
+  function identity(){
+    try{ var s=JSON.parse(localStorage.getItem('toolkit_identity')||'{}');
+      return [s.name,s.dept,s.role].filter(Boolean).join(' · ');
+    }catch(e){ return ''; }
+  }
+  function fileName(x){return (data.meta.title||'סיפור-ופיץ').replace(/[\\/:*?"<>|]/g,'').slice(0,40)+'.'+x;}
+  function copyText(){const s=data.story,p=data.pitch;let t=`${data.meta.title||'הסיפור והפיץ'}${data.meta.team?' · '+data.meta.team:''}\n\n■ שלד הסיפור\nמצב: ${s.situation||'—'}\nכאב/בעיה: ${s.pain||'—'}\nהתערבות: ${s.intervention||'—'}\nעתיד: ${s.future||'—'}\nמספר: ${s.number||'—'} | ציטוט: ${s.quote||'—'}\n\n■ פיץ' 3 דקות\nוו פתיחה: ${p.hook||'—'}\nהבעיה: ${p.problem||'—'}\nהפתרון: ${p.solution||'—'}\nהבקשה: ${p.ask||'—'}\n\n— נבנה בכלי "מהנתון לסיפור ולפיץ'" מאת רומן גרנשטיין`;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
+  function saveFile(){const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=fileName('json');a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);toast('נשמר');}
+  let mc;function measure(){if(!mc)mc=document.createElement('canvas').getContext('2d');return mc;}
+  function wrapLines(t,w,f){const c=measure();c.font=f;const words=(t||'').split(/\s+/).filter(Boolean);if(!words.length)return[''];const L=[];let cur=words[0];for(let i=1;i<words.length;i++){const x=cur+' '+words[i];if(c.measureText(x).width<=w)cur=x;else{L.push(cur);cur=words[i];}}L.push(cur);return L;}
+  function buildDoc(){
+    const W=820,PAD=40,cw=W-PAD*2,F='Alef, sans-serif',s=data.story,p=data.pitch;
+    const blk=[];const H=(t,c)=>blk.push({t:'h',x:t,c});const P=(l,v)=>{blk.push({t:'k',x:l});wrapLines(v||'—',cw-20,`400 15px ${F}`).forEach(ln=>blk.push({t:'p',x:ln}));};
+    H('שלד הסיפור','#127C71');P('מצב',s.situation);P('כאב / בעיה',s.pain);P('התערבות',s.intervention);P('עתיד',s.future);
+    if(s.number||s.quote){blk.push({t:'k',x:'חומרי גלם'});if(s.number)wrapLines('🔢 '+s.number,cw-20,`400 14px ${F}`).forEach(ln=>blk.push({t:'p',x:ln}));if(s.quote)wrapLines('❝ '+s.quote,cw-20,`400 14px ${F}`).forEach(ln=>blk.push({t:'p',x:ln}));}
+    H("פיץ' · 3 דקות",'#C77D3E');P('וו פתיחה (0:30)',p.hook);P('הבעיה (1:00)',p.problem);P('הפתרון (1:00)',p.solution);P('הבקשה (0:30)',p.ask);
+    const headerH=80,footerH=40;let y=headerH+22;blk.forEach(b=>{y+=b.t==='h'?34:b.t==='k'?26:22;});const Ht=y+footerH+16;
+    const cv=document.createElement('canvas'),sc=2;cv.width=W*sc;cv.height=Ht*sc;const x=cv.getContext('2d');x.scale(sc,sc);
+    x.fillStyle='#f6f8fb';x.fillRect(0,0,W,Ht);x.fillStyle='#102A43';x.fillRect(0,0,W,headerH);
+    x.direction='rtl';x.textBaseline='middle';x.fillStyle='#fff';x.textAlign='right';x.font=`700 24px ${F}`;x.fillText(data.meta.title||'הסיפור והפיץ׳',W-PAD,32);
+    x.font=`400 14px ${F}`;x.fillStyle='rgba(255,255,255,.8)';var __s=[identity(),data.meta.team].filter(Boolean).join(' · ');if(__s)x.fillText(__s,W-PAD,58);
+    x.textAlign='left';x.font=`700 12px ${F}`;x.fillStyle='rgba(255,255,255,.7)';x.fillText('מצב · כאב · התערבות · עתיד → פיץ',PAD,40);
+    y=headerH+22;
+    blk.forEach(b=>{if(b.t==='h'){x.textAlign='right';x.fillStyle=b.c;x.font=`700 18px ${F}`;x.beginPath();x.arc(W-PAD-5,y,5,0,7);x.fill();x.fillText('   '+b.x,W-PAD,y);y+=34;}else if(b.t==='k'){x.textAlign='right';x.fillStyle='#0E655C';x.font=`700 14px ${F}`;x.fillText(b.x,W-PAD,y);y+=26;}else{x.textAlign='right';x.fillStyle='#1f3540';x.font=`400 15px ${F}`;x.fillText(b.x,W-PAD-8,y);y+=22;}});
+    x.textAlign='center';x.fillStyle='#54636F';x.font=`400 12px ${F}`;x.fillText('נבנה ע"י רומן גרנשטיין · romangash@gmail.com',W/2,Ht-footerH/2);
+    return cv;
+  }
+  function exportPNG(){try{buildDoc().toBlob(bl=>{const u=URL.createObjectURL(bl);const a=document.createElement('a');a.href=u;a.download=fileName('png');a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);toast('התמונה הורדה');},'image/png');}catch(e){toast('שגיאה בייצוא');}}
+  function makeBlob(){
+    return new Promise(function(res,rej){
+      try{ buildDoc().toBlob(function(b){ b?res(b):rej(new Error('blob')); },'image/png'); }
+      catch(e){ rej(e); }
+    });
+  }
+  function downloadBlob(bl){
+    var u=URL.createObjectURL(bl); var a=document.createElement('a');
+    a.href=u; a.download=fileName('png'); document.body.appendChild(a); a.click();
+    setTimeout(function(){ try{document.body.removeChild(a);}catch(e){} URL.revokeObjectURL(u); },1500);
+  }
+  function sharePadlet(){
+    var padlet='';
+    try{ padlet=localStorage.getItem(PADLET_KEY)||''; }catch(e){}
+    var inp=document.getElementById('padletUrl');
+    if(inp&&inp.value&&inp.value.trim()) padlet=inp.value.trim();
+    if(!padlet) padlet=DEFAULT_PADLET;
+
+    // 1) נייד: שיתוף ישיר לאפליקציית Padlet
+    var isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if(isMobile && navigator.canShare && navigator.share){
+      makeBlob().then(function(bl){
+        var file=new File([bl],fileName('png'),{type:'image/png'});
+        if(navigator.canShare({files:[file]})){
+          navigator.share({files:[file],title:data.meta.title||'הסיפור והפיץ'}).catch(function(){
+            downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){}
+            toast('התמונה הורדה — העלו אותה ללוח');
+          });
+        } else { downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){} }
+      }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
+      return;
+    }
+
+    // 2) מחשב: מעתיקים את התמונה ללוח ההעתקה ופותחים את Padlet
+    var win=null;
+    try{ win=window.open(padlet,'_blank','noopener'); }catch(e){}
+    var canClip = !!(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
+    if(canClip){
+      try{
+        navigator.clipboard.write([new ClipboardItem({'image/png': makeBlob()})]).then(function(){
+          toast('התמונה הועתקה ✓ — בלוח: פתחו פוסט חדש והדביקו (Ctrl+V)');
+        }).catch(function(){
+          makeBlob().then(function(bl){ downloadBlob(bl); toast('התמונה הורדה — גררו אותה ללוח שנפתח'); });
+        });
+        return;
+      }catch(e){}
+    }
+    makeBlob().then(function(bl){
+      downloadBlob(bl);
+      toast(win?'התמונה הורדה — גררו אותה ללוח שנפתח':'התמונה הורדה — אפשרו חלונות קופצים');
+    }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
+  }
+
+  let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2600);}
+  return {init,tab,setAud,setDesign,importStory,copyPrompt,toGemini,toBase44,toggleTimer,resetTimer,exportPNG,sharePadlet,copyText,saveFile};
+})();
+window.App=App; App.init();
+</script>
+</body>
+</html>

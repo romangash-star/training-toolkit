@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מקרה הבוחן: עיריית אלון-ים — קבלת החלטות מבוססת נתונים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dd.css">
+<style>
+  .story{font-size:15.5px;line-height:1.85}
+  .files{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .file{border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;background:#fff}
+  .file .ic{font-size:26px}
+  .file b{font-size:15px}
+  .file span{font-size:13px;color:var(--ink-soft);flex:1}
+  .file .btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
+  .task{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+  .task.on{border-color:var(--leaf);background:#f4faf6}
+  .task .top{display:flex;gap:11px;align-items:flex-start;cursor:pointer}
+  .task .n{width:30px;height:30px;border-radius:9px;background:var(--core-1);color:#fff;font-weight:700;display:grid;place-items:center;flex:0 0 auto}
+  .task.on .n{background:var(--leaf)}
+  .task h3{font-size:16px}
+  .task .q{font-size:13.5px;color:var(--ink-soft);margin-top:2px}
+  .task textarea{margin-top:10px;min-height:48px}
+  @media (max-width:640px){.files{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+  <header class="bar">
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V10l5-3v14M10 21V4l9 4v13" stroke="#C77D3E" stroke-width="2" stroke-linejoin="round"/><path d="M13 11h3M13 14h3M13 17h3" stroke="#127C71" stroke-width="1.8" stroke-linecap="round"/></svg>מקרה הבוחן: עיריית אלון-ים</div>
+    <span class="daytag">יום 1 · יום 2</span>
+    <a class="hublink" href="../">‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap">
+    <div class="head">
+      <div class="eyebrow">דאטהסט סינתטי · בלי אף תושב אמיתי</div>
+      <h1>עיריית אלון-ים</h1>
+      <p>מקרה הבוחן של ההכשרה. מי שלא הצליח להוציא קובץ מהרשות עובד כאן, ואפשר להתקדם בלי לפגר. זו אופציה לגיטימית לכל ההכשרה.</p>
+    </div>
+
+    <nav class="tabs">
+      <button data-tab="t-story">🏙️ הסיפור</button>
+      <button data-tab="t-files">⬇️ הקבצים ומילון העמודות</button>
+      <button data-tab="t-tasks">🧩 שש המשימות</button>
+    </nav>
+
+    <section class="tab-pane" id="t-story">
+      <div class="panel">
+        <h2>הרקע</h2>
+        <div class="story">
+          <p>אלון-ים היא עיר של כ-60 אלף תושבים, מחולקת לחמישה אזורים (א׳–ה׳). המוקד העירוני קולט פניות תושבים על מפגעים: תברואה ופינוי אשפה, גינון ועצים, תשתיות מים וביוב, כבישים ומדרכות ועוד.</p>
+          <p>בישיבת ההנהלה האחרונה עלתה טענה חוזרת: <b>"התושבים מתלוננים שלא מטפלים בהם."</b> מנהל אגף שפ"ע הגיע עם פתרון מוכן: לתגבר את הפיקוח בארבעה פקחים.</p>
+          <p>לפני שמאשרים, מנכ"ל העירייה ביקש לבדוק מה הנתונים אומרים. יש לכם את קובץ פניות המוקד של השנה האחרונה, וקובץ נתוני רקע על האזורים.</p>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>יום 1 · התרגיל בשולחנות</h2>
+        <p class="lead">20 דקות, בקבוצה. אחר כך אותו דבר לבד, על האתגר שלכם.</p>
+        <div class="check"><div class="ttl">1. עץ בעיה עם שלושה ענפים</div><div class="q">הבעיה: התושבים מתלוננים שלא מטפלים בהם. שימו לב: "אין מספיק פקחים" הוא פתרון מחופש לבעיה.</div></div>
+        <div class="check"><div class="ttl">2. שאלה עסקית בתבנית המלאה</div><div class="q">[מי מחליט] צריך להחליט [מה] עד [מתי], כדי [תוצאה מדידה], במסגרת [אילוץ].</div></div>
+        <div class="check"><div class="ttl">3. ארבע שאלות מידע</div><div class="q">כל אחת מתורגמת לחיתוך נתונים בקובץ.</div></div>
+        <a class="btn btn-brand" href="../question/" style="margin-top:6px">לבונה השאלה העסקית ←</a>
+      </div>
+    </section>
+
+    <section class="tab-pane" id="t-files">
+      <div class="panel">
+        <h2>הקבצים</h2>
+        <p class="lead">הקובץ הגולמי כולל בכוונה את הבעיות שמתרגלים עליהן ביום 2. מי שלא סיים לנקות בזמן ממשיך עם הקובץ הנקי. לא עוצרים את היום על ניקוי.</p>
+        <div class="files" id="files"></div>
+      </div>
+      <div class="panel">
+        <h2>מילון העמודות</h2>
+        <p class="lead">מה יש בכל עמודה, ואיזה סוג משתנה היא. סוג המשתנה קובע מה מותר לחשב ואיזה גרף מתאים.</p>
+        <div class="scroll-x"><table class="tbl" id="dict"></table></div>
+      </div>
+    </section>
+
+    <section class="tab-pane" id="t-tasks">
+      <div class="panel">
+        <h2>שש משימות על אלון-ים</h2>
+        <p class="lead">45 דקות. התוצר: שישה חיתוכים, ומה בולט בכל אחד. <b>משימות 5 ו-6 ישנו לכם את התמונה שקיבלתם ממשימה 1. אל תדלגו עליהן.</b></p>
+        <div id="tasks"></div>
+        <div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+          <button class="btn btn-ghost btn-sm" onclick="Case.copy()">📋 העתקת הממצאים</button>
+          <a class="btn btn-ghost btn-sm" href="../analysis/#t-tech">מחשבון Pareto ונרמול ←</a>
+          <a class="btn btn-ghost btn-sm" href="../prompts/">פרומפטים ליום 2 ←</a>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>לפני שמתחילים</h2>
+        <div class="callout info"><b>AI לא סופר טוב.</b> את המספרים מחשבים באקסל. תמיד לאמת שלוש שורות ידנית, ולבקש "תסביר איך הגעת למספר".</div>
+        <div class="callout warn">שתי מלכודות מחכות לכם בקובץ: אחת בעמודת הפניות, ואחת דווקא אצל המצטיין.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+  <div class="toast" id="toast"></div>
+
+<script src="../assets/dd.js"></script>
+<script>
+const Case=(()=>{
+  'use strict';
+  const LS='dd_case_v1', E=DD.esc;
+  /* The files live in data/case/files/. Set `href` once a file is uploaded; until then the card shows "בקרוב". */
+  const FILES=[
+    {ic:'🧾', t:'קובץ פניות גולמי', d:'לתרגול ניקוי: כפילויות, כתיב לא עקבי, תאריכים כטקסט וימי טיפול שליליים.', href:''},
+    {ic:'✨', t:'קובץ פניות נקי', d:'למי שרוצה לדלג ישר לניתוח, או לא סיים לנקות בזמן.', href:''},
+    {ic:'👥', t:'נתוני רקע לפי אזור', d:'מספר תושבים בכל אזור. בלעדיו אין נרמול ואין Zoom Out.', href:''}
+  ];
+  /* Draft dictionary: to be verified against the actual files. */
+  const DICT=[
+    ['מזהה פנייה','מספר סידורי של הפנייה','מזהה','לבדוק כפילויות'],
+    ['תאריך פתיחה','מתי נפתחה הפנייה','תאריך','לבדוק שהוא תאריך ולא טקסט'],
+    ['תאריך סגירה','מתי נסגרה הפנייה (ריק אם פתוחה)','תאריך',''],
+    ['ימי טיפול','סגירה פחות פתיחה, בימים','מספרי רציף','חציון, לא ממוצע · ערכים שליליים = שגיאה'],
+    ['אזור','א׳ עד ה׳','קטגורי','לאחד כתיב: אזור ג׳ / ג\' / ג'],
+    ['רחוב','רחוב הפנייה, בלי מספר בית','קטגורי','לפניות חוזרות ול-Pareto רחובות'],
+    ['קטגוריה','סוג המפגע','קטגורי','Pareto'],
+    ['ערוץ','טלפון / אפליקציה / אתר / וואטסאפ','קטגורי','השוואה בין שנים'],
+    ['יעד SLA','מספר הימים שנקבע כיעד לקטגוריה','מספרי','לחישוב שיעור חריגה'],
+    ['חריגה מהיעד','האם ימי הטיפול עברו את היעד','קטגורי (כן/לא)','שיעור חריגה לפי אזור']
+  ];
+  const TASKS=[
+    {t:'טבלת ציר לפי אזור', q:'כמה פניות, חציון ימי טיפול, ושיעור חריגה בכל אזור.'},
+    {t:'Pareto: קטגוריות ורחובות', q:'אילו קטגוריות מרכזות 80% מהנפח? ואילו רחובות?'},
+    {t:'עונתיות לפי חודש', q:'לכל קטגוריה מרכזית: מגמה, עונתיות או קפיצה חד-פעמית?'},
+    {t:'שיעור חריגה מ-SLA לפי אזור', q:'ובתוך האזור הבעייתי: מאילו קטגוריות מגיעות החריגות? (Zoom In)'},
+    {t:'פניות חוזרות לפי אזור', q:'אותה כתובת + אותה קטגוריה תוך 30 יום. איזה אזור בולט?'},
+    {t:'נרמול ל-1,000 תושבים', q:'לפי קובץ נתוני הרקע. האם הדירוג ממשימה 1 משתנה?'}
+  ];
+  let data=DD.load(LS,{done:TASKS.map(()=>false), notes:TASKS.map(()=>'')});
+
+  document.getElementById('files').innerHTML=FILES.map(f=>`<div class="file"><div class="ic">${f.ic}</div><b>${f.t}</b><span>${f.d}</span>
+    ${f.href?`<a class="btn btn-brand btn-sm" href="${f.href}" download>⬇️ הורדה</a>`:'<a class="btn btn-ghost btn-sm" aria-disabled="true">בקרוב</a>'}</div>`).join('');
+  document.getElementById('dict').innerHTML='<thead><tr><th>עמודה</th><th>מה יש בה</th><th>סוג משתנה</th><th>שימו לב</th></tr></thead><tbody>'+DICT.map(r=>'<tr>'+r.map((c,i)=>i===0?`<td><b>${c}</b></td>`:`<td>${c}</td>`).join('')+'</tr>').join('')+'</tbody>';
+
+  function render(){
+    document.getElementById('tasks').innerHTML=TASKS.map((t,i)=>`
+      <div class="task ${data.done[i]?'on':''}"><div class="top" onclick="Case.toggle(${i})"><div class="n">${data.done[i]?'✓':i+1}</div><div><h3>${t.t}</h3><div class="q">${t.q}</div></div></div>
+      <textarea data-note="${i}" placeholder="מה בולט?">${E(data.notes[i])}</textarea></div>`).join('');
+    document.querySelectorAll('[data-note]').forEach(el=>el.addEventListener('input',()=>{data.notes[+el.dataset.note]=el.value;DD.save(LS,data);}));
+  }
+  function toggle(i){ data.done[i]=!data.done[i]; DD.save(LS,data); render(); }
+  function copy(){ DD.copy('אלון-ים · שש משימות\n'+TASKS.map((t,i)=>`${data.done[i]?'✓':'☐'} ${i+1}. ${t.t}: ${data.notes[i]||'—'}`).join('\n')); }
+  render();
+  DD.tabs(document,'dd_case_tab');
+  return {toggle,copy};
+})();
+</script>
+</body>
+</html>

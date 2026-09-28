@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ארגז הניתוח — קבלת החלטות מבוססת נתונים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dd.css">
+<style>
+  .tech{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+  .tech h3{font-size:17px}
+  .tech .how{font-size:13.5px;color:var(--ink-soft);margin-top:4px}
+  .bar-row{display:grid;grid-template-columns:minmax(90px,160px) 1fr 70px;gap:8px;align-items:center;font-size:13.5px;margin:4px 0}
+  .bar-row .b{height:18px;border-radius:5px;background:#C5CED7}
+  .bar-row.in80 .b{background:var(--brand)}
+  .bar-row .v{font-weight:700;text-align:left;direction:ltr}
+  .ins{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .ins h3{font-size:16px;margin-bottom:4px}
+  .wc{font-size:12.5px;font-weight:700;margin-top:6px}
+  .wc.over{color:var(--warn)}
+  .weights{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .weights label{font-size:13px;font-weight:700;display:flex;flex-direction:column;gap:4px}
+  .weights input{width:80px;text-align:center;border:1.5px solid var(--line);border-radius:9px;padding:7px;font-size:14px}
+  .wsum{font-weight:700;font-size:14px;padding:7px 12px;border-radius:9px}
+  .wsum.okk{background:#E7F4EC;color:#1e5e45}.wsum.bad{background:#FBE9E6;color:#7d2a20}
+  .locked input{background:var(--paper)}
+</style>
+</head>
+<body>
+  <header class="bar">
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M4 20h16M7 20V12M12 20V6M17 20v-5" stroke="#1F5673" stroke-width="2.4" stroke-linecap="round"/><circle cx="17" cy="9" r="2.6" fill="#C77D3E"/></svg>ארגז הניתוח</div>
+    <span class="daytag">יום 2 · תבניות 02–04</span>
+    <a class="hublink" href="../">‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap">
+    <div class="head">
+      <div class="eyebrow">יום 2 · מנתונים לתובנות ולהחלטה</div>
+      <h1>ארגז הניתוח</h1>
+      <p>נתון ≠ תובנה ≠ החלטה. מנקים, מנתחים בארבע טכניקות, מנסחים שלוש תובנות, ובוחרים בין שלוש חלופות.</p>
+    </div>
+
+    <nav class="tabs">
+      <button data-tab="t-clean">🧹 ניקוי</button>
+      <button data-tab="t-tech">🔎 ארבע טכניקות</button>
+      <button data-tab="t-ins">💡 תובנות</button>
+      <button data-tab="t-matrix">⚖️ מטריצת חלופות</button>
+      <button data-tab="t-export">⬇️ ייצוא</button>
+    </nav>
+
+    <section class="tab-pane" id="t-clean">
+      <div class="panel">
+        <h2>יומן ניקוי נתונים <span class="pill">תבנית 02</span></h2>
+        <p class="lead">רוב הזמן בפרויקט דאטה הולך לניקוי, לא לניתוח. זה לא באג, זו העבודה. הבדיקות הראשונות טכניות. <b>השביעית היא זו שמשנה מסקנות.</b></p>
+        <div class="field-label">הקובץ</div>
+        <input class="txt" id="fileName" placeholder="לדוגמה: פניות מוקד אלון-ים 2025, גולמי">
+        <div class="callout warn">לפני שמעלים קובץ לכלי AI: <a href="../security/#t-anon">שבעת שלבי ניטרול המזהים ←</a></div>
+        <div id="cleanList" style="margin-top:14px"></div>
+      </div>
+      <div class="panel">
+        <h2>שלושת הכללים של יום הנתונים</h2>
+        <div class="check"><div class="ttl">1. AI לא סופר טוב</div><div class="q">מצוין בהסבר, בזיהוי דפוסים ובכתיבת נוסחאות, וטועה בחישוב. את המספרים מחשבים באקסל.</div></div>
+        <div class="check"><div class="ttl">2. תמיד לאמת שלוש שורות ידנית</div><div class="q">לפני שמאמינים לתוצאה.</div></div>
+        <div class="check"><div class="ttl">3. לבקש את הדרך, לא רק את התשובה</div><div class="q">"תסביר איך הגעת למספר". אם ההסבר לא מחזיק, גם המספר לא.</div></div>
+      </div>
+    </section>
+
+    <section class="tab-pane" id="t-tech">
+      <div class="panel">
+        <h2>ארבע טכניקות. זה כל מה שצריך.</h2>
+        <p class="lead">לא צריך סטטיסטיקה. ארבע פעולות באקסל מכסות את רוב מה שרשות צריכה. לכל טכניקה: מה עשיתי, ומה בולט.</p>
+        <div id="techList"></div>
+      </div>
+
+      <div class="panel">
+        <h2>📊 מחשבון Pareto</h2>
+        <p class="lead">איפה מרוכז רוב האפקט? מדביקים שורות בפורמט <b>קטגוריה, מספר</b> (אפשר להעתיק שתי עמודות מאקסל). המחשבון ממיין, מחשב אחוז מצטבר ומסמן את מה שנכנס ל-80%.</p>
+        <textarea id="pareto" style="min-height:130px;direction:rtl" placeholder="תברואה ופינוי אשפה, 1585&#10;גינון ועצים, 1094&#10;תשתיות מים וביוב, 931&#10;כבישים ומדרכות, 596&#10;תאורה, 420"></textarea>
+        <div id="paretoOut" style="margin-top:12px"></div>
+      </div>
+
+      <div class="panel">
+        <h2>👥 מחשבון נרמול: ל-1,000 תושבים</h2>
+        <p class="lead">בלי נרמול משווים תפוחים לתפוזים: שכונה של 12,000 מול שכונה של 3,000. מדביקים <b>אזור, מספר פניות, מספר תושבים</b>.</p>
+        <textarea id="norm" style="min-height:110px" placeholder="אזור א׳, 634, 7200&#10;אזור ב׳, 809, 9500&#10;אזור ג׳, 1609, 11800"></textarea>
+        <div id="normOut" style="margin-top:12px"></div>
+      </div>
+
+      <div class="panel">
+        <h2>שש מלכודות שנופלים בהן ברשות</h2>
+        <div class="scroll-x"><table class="tbl">
+          <thead><tr><th>המלכודת</th><th>התיקון</th></tr></thead>
+          <tbody>
+            <tr><td>ממוצע במקום חציון: "23 ימים" בגלל ארבע פניות תקועות</td><td>חציון, ולבדוק את החריגים בנפרד</td></tr>
+            <tr><td>אחוז בלי בסיס: "עלייה של 200%!" מ-2 ל-6</td><td>תמיד גם את המספר המוחלט</td></tr>
+            <tr><td>תפוחים מול תפוזים: שכונה של 12,000 מול 3,000</td><td>לנרמל ל-1,000 תושבים</td></tr>
+            <tr><td>להשוות ינואר לאפריל ולהכריז על התדרדרות</td><td>אותה תקופה בשנה הקודמת</td></tr>
+            <tr><td>קורלציה כסיבתיות: "מאז הקמפיין", וגם נגמר החורף</td><td>לחפש הסבר חלופי אחד</td></tr>
+            <tr><td>נתון חסר שהושמט · דיוג נתונים</td><td>לבדוק אם החסרים שונים · לכתוב את השאלות מראש</td></tr>
+          </tbody>
+        </table></div>
+        <div class="callout info"><b>"אין הבדל" הוא ממצא.</b> היעדר הבדל מונע החלטה שגויה והשקעה מיותרת. דווחו גם עליו.</div>
+      </div>
+    </section>
+
+    <section class="tab-pane" id="t-ins">
+      <div class="panel">
+        <h2>תובנה = מספר + השוואה + השלכה <span class="pill">תבנית 03</span></h2>
+        <p class="lead">עד 35 מילים, בעברית ניהולית ולא אקדמית. תובנה בלי השוואה היא נתון. תובנה בלי השלכה היא טריוויה.</p>
+        <details class="more"><summary>הדוגמה מאלון-ים</summary>
+          <div class="hint" style="font-size:14px;line-height:1.8"><b>מספר:</b> חציון 7 ימים באזור ג׳ · <b>השוואה:</b> פי 1.75 מהחציון העירוני · <b>השלכה:</b> צוואר בקבוק בתאגיד, לא מחסור בפקחים<br>"זמן הטיפול החציוני באזור ג׳ הוא 7 ימים, פי 1.75 מהחציון העירוני, ו-63% מחריגות היעד בו הן פניות מים וביוב, מה שמצביע על צוואר בקבוק אצל תאגיד המים ולא על מחסור בפקחים."</div>
+        </details>
+        <div id="insList" style="margin-top:14px"></div>
+      </div>
+    </section>
+
+    <section class="tab-pane" id="t-matrix">
+      <div class="panel">
+        <h2>מטריצת חלופות <span class="pill">תבנית 04</span></h2>
+        <p class="lead">חלופה אחת היא לא בחירה, היא הצדקה. שתיים הן דיכוטומיה מזויפת. שלוש מכריחות חשיבה, ואחת מהן תמיד: <b>לא לעשות כלום</b>.</p>
+        <div class="field-label">1. קודם קובעים משקלים <span class="t">לפני הדירוג. אחרת מתאימים אותם לחלופה שכבר אהבתם.</span></div>
+        <div class="weights" id="weights"></div>
+        <div class="field-label" style="margin-top:18px">2. אחר כך מדרגים 1–5 <span class="t">ציון = סכום (ציון × משקל)</span></div>
+        <div class="scroll-x" id="matrix"></div>
+        <div id="matrixNote"></div>
+        <details class="more"><summary>מה בדיוק שואלים בכל עמודה?</summary>
+          <div class="hint" style="font-size:14px;line-height:1.9"><b>השפעה:</b> אם יצליח, כמה גדול השינוי במדד היעד?<br><b>סיכון:</b> מה קורה אם נכשל? הפיך או בלתי הפיך? מי נפגע? (5 = סיכון נמוך)<br><b>ישימות:</b> יש תקציב, כוח אדם וסמכות לבצע בשישה חודשים?<br><b>תמיכת נתונים:</b> עד כמה הנתונים שאספתי תומכים בכך שזה יעבוד?<br>מותר לשנות משקלים לפי הרשות, אבל לכתוב למה. ברשות בגירעון, ישימות תקבל 35%.</div>
+        </details>
+        <div class="noprint" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="A.addAlt()">＋ חלופה</button><button class="btn btn-ghost btn-sm" onclick="A.exampleMatrix()">📋 הדוגמה מאלון-ים</button></div>
+        <div class="field-label" style="margin-top:16px">🧪 מבחן ההפרכה: איזה נתון היה גורם לי לשנות את ההמלצה?</div>
+        <textarea id="refute" placeholder="אם יתברר ש... הייתי ממליץ על חלופה אחרת"></textarea>
+        <div class="hint">אם אין נתון כזה, ההמלצה לא באמת מבוססת נתונים.</div>
+      </div>
+    </section>
+
+    <section class="tab-pane" id="t-export">
+      <div class="panel">
+        <h2>⬇️ דף התובנות ומטריצת החלופות</h2>
+        <p class="lead">ביום 3 מעלים את המסמך הזה, יחד עם מסמך השאלה העסקית, כדי לבנות את שלד המצגת. <b>ליום 3 להביא:</b> שלוש תובנות סופיות, החלופה המומלצת, ושם ותפקיד של מקבל ההחלטה שאליו תציגו.</p>
+        <div class="field-label">למי אציג?</div>
+        <input class="txt" id="audience" placeholder="שם ותפקיד של מקבל ההחלטה">
+        <div class="exportbar" style="margin-top:14px">
+          <button class="btn btn-brand" onclick="A.doc()">📄 מסמך Word</button>
+          <button class="btn btn-ghost" onclick="A.copyAll()">📋 העתקה</button>
+          <button class="btn btn-ghost" onclick="A.saveJson()">💾 שמירה</button>
+          <button class="btn btn-ghost" onclick="A.loadJson()">📂 טעינה</button>
+        </div>
+        <div style="text-align:center;margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="A.reset()">🗑️ ניקוי הכול</button></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+  <div class="toast" id="toast"></div>
+
+<script src="../assets/dd.js"></script>
+<script>
+const A=(()=>{
+  'use strict';
+  const LS='dd_analysis_v1', E=DD.esc;
+  const CLEAN=[
+    {t:'שורות כפולות', q:'מזהה פנייה שחוזר?', a:'מוחקים או מסמנים'},
+    {t:'ערכים חסרים', q:'כמה תאים ריקים בכל עמודה?', a:'מעל 30% חסר: לא משתמשים בעמודה'},
+    {t:'חוסר עקביות בכתיב', q:'"אזור ג׳" / "אזור ג\'" / "אזור ג"', a:'מאחדים לערך אחד'},
+    {t:'תאריכים כטקסט', q:'אקסל מזהה את העמודה כתאריך?', a:'ממירים לתאריך'},
+    {t:'טווח לא הגיוני', q:'ימי טיפול שליליים, תאריך סגירה לפני פתיחה, שנה עתידית', a:'מתקנים או מסירים'},
+    {t:'ערכים חריגים', q:'פניות שנתקעו שנה ויותר', a:'לא מוחקים: עובדים עם חציון ובודקים אותם בנפרד'},
+    {t:'מה חסר לגמרי?', q:'איזה חלק מהמציאות לא מיוצג? מאגר פניות המוקד לא מכיל את מי שלא פנה.', a:'מציינים כמגבלה בכל תוצר'}
+  ];
+  const TECH=[
+    {t:'1 · פילוח', s:'ממוצע הוא שקר מנומס', h:'טבלת ציר: חציון ומספר פניות לפי אזור / קטגוריה / ערוץ. סה"כ 4 ימים, עד שמפלחים.'},
+    {t:'2 · Pareto', s:'איפה מרוכז רוב האפקט', h:'ממיינים יורד ← אחוז מצטבר ← מוצאים איפה עוברים 80%. יש מחשבון למטה.'},
+    {t:'3 · מגמה', s:'מגמה · עונתיות · קפיצה חד-פעמית', h:'לפי חודש. תמיד להשוות לאותו חודש בשנה שעברה, לא לחודש הקודם.'},
+    {t:'4 · Zoom Out / Zoom In', s:'Zoom Out נותן הקשר. Zoom In נותן מוקד.', h:'Out: כמה זה ל-1,000 תושבים? מה היה אשתקד? מה היעד? · In: איפה בדיוק, בתוך הקבוצה הבעייתית?'}
+  ];
+  const CRIT=[{k:'impact',l:'השפעה'},{k:'risk',l:'סיכון'},{k:'feas',l:'ישימות'},{k:'data',l:'נתונים'}];
+  function fresh(){ return {
+    fileName:'', clean:CLEAN.map(()=>({found:'',action:''})), tech:TECH.map(()=>({did:'',saw:''})),
+    pareto:'', norm:'',
+    ins:[0,1,2].map(()=>({num:'',cmp:'',impl:'',text:'',alt:'',missing:'',ceo:''})),
+    weights:{impact:25,risk:20,feas:25,data:30},
+    alts:[{name:'',s:{}},{name:'',s:{}},{name:'לא לעשות כלום',s:{}}],
+    refute:'', audience:''
+  }; }
+  let data=DD.load(LS,fresh());
+  function save(){ DD.save(LS,data); }
+
+  /* ---- cleaning log ---- */
+  function renderClean(){
+    document.getElementById('fileName').value=data.fileName;
+    document.getElementById('cleanList').innerHTML=CLEAN.map((c,i)=>{const r=data.clean[i];return `
+      <div class="check ${r.found?'on':''}" ${i===6?'style="border-width:2px;border-color:var(--root)"':''}>
+        <div class="top" style="cursor:default"><div style="flex:1"><div class="ttl">${i+1}. ${c.t}</div><div class="q">${c.q} · <b>מה עושים:</b> ${c.a}</div></div></div>
+        <div class="note grid2"><input data-cl="${i}-found" placeholder="${i===6?'מי לא מיוצג, ולמה?':'מה מצאתי (כמה?)'}" value="${E(r.found)}"><input data-cl="${i}-action" placeholder="מה עשיתי" value="${E(r.action)}"></div>
+      </div>`;}).join('');
+    document.querySelectorAll('[data-cl]').forEach(el=>el.addEventListener('input',()=>{const[i,k]=el.dataset.cl.split('-');data.clean[+i][k]=el.value;save();el.closest('.check').classList.toggle('on',!!data.clean[+i].found);}));
+  }
+  /* ---- techniques ---- */
+  function renderTech(){
+    document.getElementById('techList').innerHTML=TECH.map((t,i)=>`
+      <div class="tech"><h3>${t.t} <span style="font-weight:400;color:var(--ink-soft);font-size:14px">· ${t.s}</span></h3><div class="how">${t.h}</div>
+        <div class="grid2" style="margin-top:9px"><input class="txt" data-te="${i}-did" placeholder="מה חתכתי" value="${E(data.tech[i].did)}"><input class="txt" data-te="${i}-saw" placeholder="מה בולט" value="${E(data.tech[i].saw)}"></div></div>`).join('');
+    document.querySelectorAll('[data-te]').forEach(el=>el.addEventListener('input',()=>{const[i,k]=el.dataset.te.split('-');data.tech[+i][k]=el.value;save();}));
+  }
+  function parseRows(txt){
+    return txt.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+      const parts=l.split(/\t|,(?=\s*[\d.])|;/).map(s=>s.trim());
+      return [parts[0], ...parts.slice(1).map(x=>parseFloat(x.replace(/[^\d.\-]/g,'')))];
+    }).filter(r=>r[0] && r.length>1 && r.slice(1).every(n=>!isNaN(n)));
+  }
+  const fmt=(n,d=1)=>n.toLocaleString('he-IL',{maximumFractionDigits:d});
+  function paintPareto(){
+    const rows=parseRows(data.pareto).map(r=>({k:r[0],v:r[1]})).sort((a,b)=>b.v-a.v), out=document.getElementById('paretoOut');
+    if(!rows.length){ out.innerHTML=''; return; }
+    const tot=rows.reduce((a,r)=>a+r.v,0), max=rows[0].v; let cum=0, cut=-1;
+    // "the vital few": every category whose cumulative share stays within 80% (at least one)
+    const html=rows.map((r,i)=>{ cum+=r.v; const pc=cum/tot*100; const vital=pc<=80.05||i===0; if(vital) cut=i;
+      return `<div class="bar-row ${vital?'in80':''}"><span>${E(r.k)}</span><div><div class="b" style="width:${r.v/max*100}%"></div></div><span class="v">${fmt(r.v/tot*100)}% · ${fmt(pc)}%</span></div>`; }).join('');
+    const topPc=rows.slice(0,cut+1).reduce((a,r)=>a+r.v,0)/tot*100;
+    out.innerHTML=`<div class="hint" style="margin-bottom:6px">עמודה ימנית: % מהסך · % מצטבר. סה"כ ${fmt(tot,0)}.</div>${html}
+      <div class="callout ok"><b>${cut+1} מתוך ${rows.length}</b> קטגוריות = ${fmt(topPc)}% מהנפח. שם אותו שקל קונה הכי הרבה שינוי. (ובדקו גם את זמני הטיפול: הגדולה בנפח היא לא תמיד זו שכואבת.)</div>`;
+  }
+  function paintNorm(){
+    const rows=parseRows(data.norm).filter(r=>r.length>=3&&r[2]>0).map(r=>({k:r[0],n:r[1],pop:r[2],rate:r[1]/r[2]*1000})), out=document.getElementById('normOut');
+    if(!rows.length){ out.innerHTML=''; return; }
+    const tn=rows.reduce((a,r)=>a+r.n,0), tp=rows.reduce((a,r)=>a+r.pop,0), city=tn/tp*1000;
+    out.innerHTML=`<div class="scroll-x"><table class="tbl"><thead><tr><th>אזור</th><th>פניות</th><th>דירוג לפי נפח</th><th>ל-1,000 תושבים</th><th>דירוג אחרי נרמול</th><th>מול העירוני</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td>${E(r.k)}</td><td>${fmt(r.n,0)}</td><td>${[...rows].sort((a,b)=>b.n-a.n).indexOf(r)+1}</td><td><b>${fmt(r.rate)}</b></td><td>${[...rows].sort((a,b)=>b.rate-a.rate).indexOf(r)+1}</td><td>${r.rate>=city?'▲':'▼'} פי ${fmt(r.rate/city,2)}</td></tr>`).join('')}
+      <tr><td><b>עירוני</b></td><td>${fmt(tn,0)}</td><td></td><td><b>${fmt(city)}</b></td><td></td><td></td></tr></tbody></table></div>
+      <div class="hint">שימו לב לאזורים שהדירוג שלהם משתנה אחרי הנרמול. בדיוק שם התמונה מהספירה הגולמית מטעה.</div>`;
+  }
+  /* ---- insights ---- */
+  function insText(x){ return x.text.trim() || [x.num,x.cmp,x.impl].map(s=>s.trim()).filter(Boolean).join(', '); }
+  function renderIns(){
+    document.getElementById('insList').innerHTML=data.ins.map((x,i)=>`
+      <div class="ins"><h3>תובנה ${i+1}</h3>
+        <div class="grid3"><div><div class="field-label" style="margin-top:0">1 · העובדה המספרית</div><input class="txt" data-in="${i}-num" placeholder="חציון 7 ימים באזור ג׳" value="${E(x.num)}"></div>
+        <div><div class="field-label" style="margin-top:0">2 · ההשוואה</div><input class="txt" data-in="${i}-cmp" placeholder="פי 1.75 מהחציון העירוני" value="${E(x.cmp)}"></div>
+        <div><div class="field-label" style="margin-top:0">3 · ההשלכה</div><input class="txt" data-in="${i}-impl" placeholder="צוואר בקבוק בתאגיד, לא מחסור בפקחים" value="${E(x.impl)}"></div></div>
+        <div class="field-label">התובנה במשפט <span class="t">אפשר להשאיר ריק, ואז היא מורכבת משלושת החלקים</span></div>
+        <textarea data-in="${i}-text" placeholder="${E([x.num,x.cmp,x.impl].filter(Boolean).join(', ')||'המשפט המלא')}">${E(x.text)}</textarea>
+        <div class="wc" id="wc${i}"></div>
+        <details class="more"><summary>😈 עורך הדין של השטן · בזוגות, 4 דקות, תקפו</summary>
+          <div class="field-label">מה עוד יכול להסביר את זה?</div><input class="txt" data-in="${i}-alt" value="${E(x.alt)}">
+          <div class="field-label">מי חסר בנתונים האלה, ולמה?</div><input class="txt" data-in="${i}-missing" value="${E(x.missing)}">
+          <div class="field-label">אם הייתי המנכ"ל, למה הייתי אומר לא?</div><input class="txt" data-in="${i}-ceo" value="${E(x.ceo)}">
+        </details>
+      </div>`).join('');
+    document.querySelectorAll('[data-in]').forEach(el=>el.addEventListener('input',()=>{const[i,k]=el.dataset.in.split('-');data.ins[+i][k]=el.value;save();paintWc();}));
+    paintWc();
+  }
+  function paintWc(){
+    data.ins.forEach((x,i)=>{ const n=insText(x).split(/\s+/).filter(Boolean).length, el=document.getElementById('wc'+i);
+      const miss=['num','cmp','impl'].filter(k=>!x[k].trim()).map(k=>({num:'מספר',cmp:'השוואה',impl:'השלכה'})[k]);
+      el.className='wc'+(n>35?' over':''); el.textContent = n ? `${n} / 35 מילים${n>35?' · ארוך מדי':''}${miss.length?' · חסר: '+miss.join(', '):''}` : ''; });
+  }
+  /* ---- matrix ---- */
+  function wsum(){ return CRIT.reduce((a,c)=>a+(+data.weights[c.k]||0),0); }
+  function score(a){ return CRIT.every(c=>a.s[c.k]) ? CRIT.reduce((t,c)=>t+a.s[c.k]*(+data.weights[c.k]||0)/100,0) : null; }
+  function renderMatrix(){
+    const ws=wsum();
+    document.getElementById('weights').innerHTML=CRIT.map(c=>`<label>${c.l}<input type="number" min="0" max="100" step="5" data-w="${c.k}" value="${data.weights[c.k]}"></label>`).join('')+`<span class="wsum ${ws===100?'okk':'bad'}">סה"כ ${ws}%${ws===100?' ✓':' · צריך 100%'}</span>`;
+    const scores=data.alts.map(score), best=Math.max(...scores.filter(s=>s!=null));
+    document.getElementById('matrix').innerHTML=`<table class="tbl"><thead><tr><th style="min-width:170px">חלופה</th>${CRIT.map(c=>`<th>${c.l} ${data.weights[c.k]}%</th>`).join('')}<th>ציון</th><th></th></tr></thead><tbody>
+      ${data.alts.map((a,i)=>`<tr class="${scores[i]!=null&&scores[i]===best?'best':''}"><td><input data-an="${i}" placeholder="חלופה ${'אבגדה'[i]||i+1}׳" value="${E(a.name)}"></td>
+        ${CRIT.map(c=>`<td><input class="n" type="number" min="1" max="5" data-as="${i}-${c.k}" value="${a.s[c.k]||''}"></td>`).join('')}
+        <td class="score">${scores[i]!=null?scores[i].toFixed(2):'—'}</td><td>${data.alts.length>2?`<button class="btn btn-ghost btn-sm" onclick="A.delAlt(${i})">✕</button>`:''}</td></tr>`).join('')}</tbody></table>`;
+    const hasNothing=data.alts.some(a=>/לא לעשות/.test(a.name));
+    document.getElementById('matrixNote').innerHTML = (data.alts.length<3?'<div class="callout warn">פחות משלוש חלופות. שתיים הן דיכוטומיה מזויפת.</div>':'')
+      + (!hasNothing?'<div class="callout warn">חסרה החלופה <b>לא לעשות כלום</b>. היא הבסיס להשוואה, ובלעדיה אי אפשר לדעת אם ההמלצה שווה את העלות שלה.</div>':'')
+      + (ws!==100?'<div class="callout warn">סכום המשקלים הוא '+ws+'%. הציון מחושב, אבל לא ניתן להשוות אותו לסולם 1–5.</div>':'');
+    document.querySelectorAll('[data-w]').forEach(el=>el.addEventListener('change',()=>{data.weights[el.dataset.w]=+el.value||0;save();renderMatrix();}));
+    document.querySelectorAll('[data-an]').forEach(el=>el.addEventListener('input',()=>{data.alts[+el.dataset.an].name=el.value;save();}));
+    document.querySelectorAll('[data-an]').forEach(el=>el.addEventListener('change',()=>renderMatrix()));
+    document.querySelectorAll('[data-as]').forEach(el=>el.addEventListener('change',()=>{const[i,k]=el.dataset.as.split('-');let v=Math.round(+el.value);data.alts[+i].s[k]=v>=1&&v<=5?v:0;save();renderMatrix();}));
+  }
+  function addAlt(){ data.alts.push({name:'',s:{}}); save(); renderMatrix(); }
+  function delAlt(i){ data.alts.splice(i,1); save(); renderMatrix(); }
+  function exampleMatrix(){
+    if(data.alts.some(a=>a.name&&a.name!=='לא לעשות כלום') && !confirm('להחליף את החלופות שלכם בדוגמה?')) return;
+    data.weights={impact:25,risk:20,feas:25,data:30};
+    data.alts=[{name:'א׳. SLA מחייב מול תאגיד המים + בקרה חודשית',s:{impact:5,risk:4,feas:3,data:5}},
+               {name:'ב׳. תגבור ארבעה פקחים לאזור ג׳',s:{impact:2,risk:3,feas:2,data:1}},
+               {name:'ג׳. לא לעשות כלום',s:{impact:1,risk:1,feas:5,data:1}}];
+    save(); renderMatrix();
+  }
+  /* ---- export ---- */
+  function bestAlt(){ const s=data.alts.map(score); const m=Math.max(...s.filter(x=>x!=null)); const i=s.indexOf(m); return i>-1?data.alts[i]:null; }
+  function asText(){
+    const L=['דף תובנות ומטריצת חלופות (תבניות 02–04)'+(DD.identity()?' · '+DD.identity():''),''];
+    if(data.audience) L.push('מקבל ההחלטה: '+data.audience,'');
+    L.push('יומן ניקוי'+(data.fileName?' · '+data.fileName:''));
+    CLEAN.forEach((c,i)=>{const r=data.clean[i]; if(r.found||r.action) L.push(`  ${i+1}. ${c.t}: ${r.found||'—'}${r.action?' ← '+r.action:''}`);});
+    L.push('','ארבע טכניקות'); TECH.forEach((t,i)=>{const r=data.tech[i]; if(r.did||r.saw) L.push(`  ${t.t}: ${r.did}${r.saw?' · בולט: '+r.saw:''}`);});
+    L.push('','תובנות'); data.ins.forEach((x,i)=>{ const t=insText(x); if(t){ L.push(`  ${i+1}. ${t}`); if(x.alt) L.push('     הסבר חלופי: '+x.alt); if(x.missing) L.push('     מי חסר: '+x.missing); if(x.ceo) L.push('     למה המנכ"ל יגיד לא: '+x.ceo); } });
+    L.push('','מטריצת חלופות · משקלים: '+CRIT.map(c=>c.l+' '+data.weights[c.k]+'%').join(', '));
+    data.alts.forEach(a=>{ const s=score(a); L.push(`  ${a.name||'—'}: ${CRIT.map(c=>c.l+' '+(a.s[c.k]||'-')).join(' · ')} = ${s!=null?s.toFixed(2):'—'}`); });
+    const b=bestAlt(); if(b) L.push('  החלופה המובילה: '+b.name);
+    if(data.refute) L.push('','מבחן ההפרכה: '+data.refute);
+    return L.join('\n');
+  }
+  function doc(){
+    const h=s=>'<h2>'+E(s)+'</h2>';
+    let b='<h1>דף תובנות ומטריצת חלופות</h1><p>'+E(DD.identity())+(data.audience?'<br>מקבל ההחלטה: '+E(data.audience):'')+'</p>';
+    b+=h('יומן ניקוי'+(data.fileName?' · '+data.fileName:''))+'<table><tr><th>בדיקה</th><th>מה מצאתי</th><th>מה עשיתי</th></tr>'+CLEAN.map((c,i)=>'<tr><td>'+(i+1)+'. '+c.t+'</td><td>'+E(data.clean[i].found)+'</td><td>'+E(data.clean[i].action)+'</td></tr>').join('')+'</table>';
+    b+=h('ארבע טכניקות')+'<table><tr><th>טכניקה</th><th>מה חתכתי</th><th>מה בולט</th></tr>'+TECH.map((t,i)=>'<tr><td>'+t.t+'</td><td>'+E(data.tech[i].did)+'</td><td>'+E(data.tech[i].saw)+'</td></tr>').join('')+'</table>';
+    b+=h('שלוש תובנות')+'<ol>'+data.ins.filter(x=>insText(x)).map(x=>'<li><b>'+E(insText(x))+'</b>'+(x.alt||x.missing||x.ceo?'<br><small>הסבר חלופי: '+E(x.alt)+' · מי חסר: '+E(x.missing)+' · למה לא: '+E(x.ceo)+'</small>':'')+'</li>').join('')+'</ol>';
+    b+=h('מטריצת חלופות')+'<table><tr><th>חלופה</th>'+CRIT.map(c=>'<th>'+c.l+' '+data.weights[c.k]+'%</th>').join('')+'<th>ציון</th></tr>'+data.alts.map(a=>{const s=score(a);return '<tr><td>'+E(a.name)+'</td>'+CRIT.map(c=>'<td>'+(a.s[c.k]||'')+'</td>').join('')+'<td><b>'+(s!=null?s.toFixed(2):'')+'</b></td></tr>';}).join('')+'</table>';
+    if(data.refute) b+=h('מבחן ההפרכה')+'<p>'+E(data.refute)+'</p>';
+    DD.downloadDoc('דף תובנות ומטריצת חלופות','דף תובנות',b); DD.toast('המסמך הורד');
+  }
+  function copyAll(){ DD.copy(asText()); }
+  function saveJson(){ DD.download('ארגז הניתוח.json', JSON.stringify(data,null,2)); }
+  function loadJson(){ DD.loadFile(d=>{ data=Object.assign(fresh(),d); save(); renderAll(); }); }
+  function reset(){ if(confirm('למחוק את כל מה שמילאתם בכלי הזה?')){ data=fresh(); save(); renderAll(); } }
+
+  function renderAll(){
+    renderClean(); renderTech(); renderIns(); renderMatrix();
+    [['pareto',paintPareto],['norm',paintNorm],['refute'],['audience']].forEach(([id,fn])=>{ const el=document.getElementById(id); el.value=data[id]; if(fn) fn(); });
+  }
+  document.getElementById('fileName').addEventListener('input',e=>{data.fileName=e.target.value;save();});
+  [['pareto',paintPareto],['norm',paintNorm],['refute'],['audience']].forEach(([id,fn])=>document.getElementById(id).addEventListener('input',e=>{data[id]=e.target.value;save();if(fn)fn();}));
+  renderAll();
+  DD.tabs(document,'dd_analysis_tab');
+  return {addAlt,delAlt,exampleMatrix,doc,copyAll,saveJson,loadJson,reset};
+})();
+</script>
+</body>
+</html>

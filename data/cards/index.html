@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כרטיסי הכיס — קבלת החלטות מבוססת נתונים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dd.css">
+<style>
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-sm);margin-bottom:22px;overflow:hidden}
+  .card .ch{background:linear-gradient(155deg,#123040,#0C2233);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+  .card .ch .d{font-size:12.5px;font-weight:700;background:#7FD8C6;color:#0C2233;border-radius:999px;padding:2px 10px}
+  .card .ch h2{font-size:20px}
+  .card .sides{display:grid;grid-template-columns:1fr 1fr}
+  .card .side{padding:16px 20px}
+  .card .side+.side{border-inline-start:1px dashed var(--line)}
+  .card .side h3{font-size:13px;color:var(--root);margin-bottom:8px}
+  .card ul{margin:0;padding:0 18px 0 0}
+  .card li{margin-bottom:7px;font-size:14.5px}
+  .card .next{background:#FBF1E6;border-top:1px solid #EBD3A0;padding:10px 20px;font-size:14px}
+  @media (max-width:640px){.card .sides{grid-template-columns:1fr}.card .side+.side{border-inline-start:none;border-top:1px dashed var(--line)}}
+  @media print{.card{break-inside:avoid;page-break-after:always;box-shadow:none}.card .ch{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+  <header class="bar">
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="15" height="12" rx="2" stroke="#C77D3E" stroke-width="2"/><path d="M7 3h12a2 2 0 012 2v9" stroke="#127C71" stroke-width="2" stroke-linecap="round"/></svg>כרטיסי הכיס</div>
+    <span class="daytag">בסוף כל יום</span>
+    <a class="hublink" href="../">‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap">
+    <div class="head">
+      <div class="eyebrow">להדפסה · A5</div>
+      <h1>כרטיסי הכיס</h1>
+      <p>מי שאסף את שלושתם מחזיק את כל ההכשרה על שלושה כרטיסים.</p>
+      <button class="btn btn-brand noprint" style="margin-top:14px" onclick="window.print()">🖨️ הדפסה</button>
+    </div>
+
+    <article class="card">
+      <div class="ch"><span class="d">יום 1</span><h2>מהבעיה לשאלה</h2></div>
+      <div class="sides">
+        <div class="side"><h3>צד א׳</h3><ul>
+          <li><b>תבנית השאלה העסקית:</b> [מי מחליט] · [מה] · [מתי] · [תוצאה] · [אילוץ]</li>
+          <li><b>מבחן 5 השאלות:</b> מחליט · משנה משהו · תאריך · נתון · מפתיע</li>
+          <li><b>חציון, לא ממוצע</b></li>
+          <li><b>5 Whys:</b> עד לשורש שאפשר לפעול עליו</li>
+        </ul></div>
+        <div class="side"><h3>צד ב׳</h3><ul>
+          <li><b>ששת רכיבי ה-KPI:</b> שם · נוסחה · מקור · בסיס · יעד+תאריך · תדירות</li>
+          <li><b>לכל מדד: מדד-נגד</b></li>
+          <li>נתונים אמיתיים ← Copilot. שפה כללית ← Gemini</li>
+          <li><b>בלי פרטי תושבים בכלי ציבורי. לעולם.</b></li>
+        </ul></div>
+      </div>
+      <div class="next"><b>ליום 2:</b> קובץ נתונים אחד: 50 שורות · 4 עמודות · מנוטרל מזהים. אין לכם? עובדים על אלון-ים.</div>
+    </article>
+
+    <article class="card">
+      <div class="ch"><span class="d">יום 2</span><h2>מנתונים לתובנות</h2></div>
+      <div class="sides">
+        <div class="side"><h3>צד א׳</h3><ul>
+          <li><b>שבע בדיקות איכות</b>, והשביעית: מה חסר לגמרי</li>
+          <li><b>ארבע טכניקות:</b> פילוח · Pareto · מגמה · Zoom In/Out</li>
+          <li>חציון, לא ממוצע. <b>לנרמל לפני שמשווים.</b></li>
+          <li>להשוות לאותו חודש בשנה שעברה</li>
+        </ul></div>
+        <div class="side"><h3>צד ב׳</h3><ul>
+          <li><b>תובנה = מספר + השוואה + השלכה</b></li>
+          <li>שלוש חלופות, אחת מהן "לא לעשות כלום"</li>
+          <li><b>עורך הדין של השטן:</b> מה עוד מסביר · מי חסר · למה לא</li>
+          <li><b>מבחן ההפרכה:</b> איזה נתון היה משנה את ההמלצה</li>
+        </ul></div>
+      </div>
+      <div class="next"><b>ליום 3 להביא:</b> שלוש תובנות סופיות · החלופה המומלצת · שם ותפקיד של מקבל ההחלטה שאליו תציגו.</div>
+    </article>
+
+    <article class="card">
+      <div class="ch"><span class="d">יום 3</span><h2>מתובנה להחלטה</h2></div>
+      <div class="sides">
+        <div class="side"><h3>צד א׳</h3><ul>
+          <li><b>המסר ← הגרף:</b> השוואה=עמודות · זמן=קו · מספר בודד=מספר גדול</li>
+          <li><b>הכותרת היא המסר</b>, לא תיאור</li>
+          <li>הכול אפור חוץ ממה שחשוב</li>
+          <li><b>מבחן היושרה:</b> חמש שניות, מסקנה נכונה?</li>
+        </ul></div>
+        <div class="side"><h3>צד ב׳</h3><ul>
+          <li><b>SCR:</b> מצב · סיבוך · פתרון</li>
+          <li><b>חמשת המשפטים:</b> המלצה · נתון · בקשה · עלות אי-פעולה · מדד</li>
+          <li><b>מבנה 5 דקות:</b> 7 שקופיות, ההמלצה ראשונה</li>
+          <li>אין שקופית תודה. שקופית 7 היא מגן.</li>
+        </ul></div>
+      </div>
+      <div class="next"><b>לפני שמציגים למנכ"ל:</b> כל מספר אומת · יש שלוש חלופות · ברור מה מבקשים לאשר · יש KPI עם יעד ותאריך · אין נתון מזהה של תושב בשום שקופית.</div>
+    </article>
+  </main>
+
+  <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+</body>
+</html>

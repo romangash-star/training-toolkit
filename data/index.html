@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>קבלת החלטות מבוססת נתונים · ארגז הכלים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--canvas:#EEF1F6;--paper:#F7F9FB;--card:#FFF;--ink:#15242E;--ink-soft:#54636F;--line:#D5DBE3;--brand:#127C71;--brand-deep:#0E655C;--root:#C77D3E;--leaf:#2E8B6B;--core-1:#1F5673;--sans:'Alef','Segoe UI',Arial,sans-serif;--shadow:0 14px 40px rgba(21,36,46,.14);--shadow-sm:0 3px 12px rgba(21,36,46,.08)}
+  *{box-sizing:border-box} html,body{margin:0;min-height:100%}
+  body{font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;background:var(--canvas);display:flex;flex-direction:column;min-height:100vh}
+  h1,h2,h3{font-weight:700;line-height:1.12;margin:0} a{text-decoration:none;color:inherit}
+
+  .cover{position:relative;overflow:hidden;color:#fff;padding:44px 24px 46px;
+    background:radial-gradient(1000px 500px at 82% -20%,rgba(31,86,115,.6),transparent 60%),linear-gradient(155deg,#123040 0%,#0C2233 100%)}
+  .cover-main{position:relative;z-index:2;max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:38px;flex-wrap:wrap;justify-content:center}
+  .cover-text{flex:1;min-width:290px;text-align:right}
+  .cover-text .eyebrow{font-size:13px;font-weight:700;letter-spacing:2px;color:#7FD8C6}
+  .cover-text h1{font-size:clamp(36px,5.6vw,58px);letter-spacing:-1.6px;margin:8px 0 0}
+  .cover-text .sub{font-size:17px;font-weight:700;color:#cfe6df;margin-top:8px}
+  .cover-text p{font-size:15.5px;color:rgba(255,255,255,.8);max-width:540px;margin:12px 0 0}
+  .cover-art{flex:0 0 auto;width:min(340px,80vw)}
+  .cover-art svg{width:100%;height:auto;display:block}
+  .back{position:relative;z-index:3;display:inline-flex;align-items:center;gap:6px;color:#cfe6df;font-weight:700;font-size:14px}
+
+  .hub{flex:1;max-width:1080px;width:100%;margin:0 auto;padding:34px 24px 40px}
+  .road{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 30px}
+  .road a{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 12px 11px;box-shadow:var(--shadow-sm);transition:.15s}
+  .road a:hover{border-color:var(--brand)}
+  .road .n{font-size:12px;font-weight:700;color:var(--brand)}
+  .road .k{font-size:17px;font-weight:700;margin-top:2px}
+  .road .d{font-size:12.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
+  .road .dy{display:inline-block;margin-top:7px;font-size:11.5px;font-weight:700;color:#fff;background:var(--core-1);border-radius:999px;padding:1px 9px}
+
+  .day{margin-bottom:32px}
+  .day-h{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .day-badge{font-size:13px;font-weight:700;color:#fff;background:var(--core-1);padding:5px 13px;border-radius:999px;flex:0 0 auto}
+  .day-badge.all{background:var(--brand)}
+  .day-h .t{font-size:19px;font-weight:700}
+  .day-h .sub{font-size:13.5px;color:var(--ink-soft)}
+  .day-h .line{flex:1;height:1px;background:var(--line);min-width:30px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .cards.two{grid-template-columns:1fr 1fr}
+  .tool{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow-sm);transition:.2s}
+  .tool:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#c2ccd6}
+  .tool.star{border:2px solid var(--brand)}
+  .tool .tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;color:var(--brand-deep);background:#E7F1EE;border-radius:999px;padding:2px 9px}
+  .tool .tag.copy{color:var(--ink-soft);background:var(--paper);border:1px solid var(--line)}
+  .ico{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;margin-bottom:12px;font-size:24px}
+  .c-teal .ico{background:#E7F1EE}.c-blue .ico{background:#EAF0F5}.c-amber .ico{background:#FBF1E6}
+  .tool h2{font-size:19px;letter-spacing:-.3px}
+  .tool .desc{font-size:14px;color:var(--ink-soft);margin-top:7px;flex:1}
+  .tool .when{font-size:12.5px;color:var(--brand-deep);font-weight:700;margin-top:10px}
+  .go{margin-top:12px;align-self:flex-start;padding:9px 16px;border-radius:10px;font-weight:700;font-size:14px;color:#fff;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  .c-teal .go{background:var(--brand)}.c-teal .go:hover{background:var(--brand-deep)}
+  .c-blue .go{background:var(--core-1)}.c-blue .go:hover{background:#16405c}
+  .c-amber .go{background:var(--root)}.c-amber .go:hover{background:#a9662e}
+  .saved{max-width:720px;margin:0 auto 26px;text-align:center;font-size:14px;color:var(--ink-soft)}
+
+  footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:16px 22px;text-align:center;font-size:13px;color:var(--ink-soft);background:rgba(247,249,251,.9);border-top:1px solid var(--line)}
+  footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:var(--shadow-sm)}
+  footer.credit a{color:var(--brand-deep);font-weight:700}
+
+  .idcard{max-width:620px;margin:0 auto 26px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow);text-align:right}
+  .idcard h3{font-size:20px;letter-spacing:-.4px}
+  .idcard p{font-size:14px;color:var(--ink-soft);margin:7px 0 0}
+  .idcard .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .idcard input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff}
+  .idcard input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(18,124,113,.14)}
+  .idcard input.full{grid-column:1 / -1}
+  .idcard .save{margin-top:12px;width:100%;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-deep))}
+  .idbar{max-width:620px;margin:0 auto 22px;display:flex;align-items:center;gap:10px;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 18px;box-shadow:var(--shadow-sm);font-size:14px}
+  .idbar .who{font-weight:700}
+  .idbar button{background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--brand-deep);text-decoration:underline}
+
+  @media (max-width:900px){.cards{grid-template-columns:1fr 1fr}.road{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:620px){.cards,.cards.two{grid-template-columns:1fr}.road{grid-template-columns:1fr 1fr}.cover-text{text-align:center}.idcard .fields{grid-template-columns:1fr}.hub{padding:26px 16px 34px}}
+</style>
+</head>
+<body>
+  <section class="cover">
+    <a class="back" href="../">‹ כל ההכשרות</a>
+    <div class="cover-main">
+      <div class="cover-text">
+        <div class="eyebrow">מערך הדיגיטל הלאומי · הדיגיטלית · המיזם הלאומי 265</div>
+        <h1>קבלת החלטות מבוססת נתונים</h1>
+        <div class="sub">שלושה ימים · שאלה ← תובנה ← החלטה</div>
+        <p>האתר המלווה של ההכשרה. כל כלי מסומן ביום ובשלב שבו משתמשים בו. מה שתמלאו נשמר במחשב שלכם בלבד, ואפשר לחזור אליו גם אחרי ההכשרה.</p>
+      </div>
+      <div class="cover-art" aria-hidden="true">
+        <svg viewBox="0 0 340 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="20" y1="222" x2="320" y2="222" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+          <rect x="44" y="150" width="40" height="72" rx="4" fill="rgba(255,255,255,.14)"/>
+          <rect x="100" y="120" width="40" height="102" rx="4" fill="rgba(255,255,255,.14)"/>
+          <rect x="156" y="62" width="40" height="160" rx="4" fill="#4FD6BE"/>
+          <rect x="212" y="138" width="40" height="84" rx="4" fill="rgba(255,255,255,.14)"/>
+          <rect x="268" y="156" width="40" height="66" rx="4" fill="rgba(255,255,255,.14)"/>
+          <path d="M176 44v-18" stroke="#E9A94F" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="176" cy="18" r="10" fill="#E9A94F"/>
+          <text x="176" y="100" text-anchor="middle" fill="#0C2233" font-family="Alef, sans-serif" font-weight="700" font-size="18">136</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="hub">
+    <div id="idZone"></div>
+
+    <div class="road" aria-label="מפת הדרך">
+      <a href="#day1"><div class="n">01</div><div class="k">שאלה</div><div class="d">ההחלטה שצריך לקבל, לא הנתון שרוצים לראות</div><span class="dy">יום 1</span></a>
+      <a href="#day1"><div class="n">02</div><div class="k">מדד</div><div class="d">מה ייחשב הצלחה, ומה ימנע רמאות במדד</div><span class="dy">יום 1</span></a>
+      <a href="#day2"><div class="n">03</div><div class="k">ניתוח</div><div class="d">מנקים, מפלחים, מחפשים ריכוז ומגמה</div><span class="dy">יום 2</span></a>
+      <a href="#day2"><div class="n">04</div><div class="k">תובנה</div><div class="d">מספר + השוואה + השלכה, ושלוש חלופות</div><span class="dy">יום 2</span></a>
+      <a href="#day3"><div class="n">05</div><div class="k">החלטה</div><div class="d">המלצה שמנהל מבין ב-30 שניות</div><span class="dy">יום 3</span></a>
+    </div>
+
+    <div class="day" id="all">
+      <div class="day-h"><span class="day-badge all">לכל הימים</span><span class="t">פותחים כאן</span><span class="line"></span></div>
+      <div class="cards">
+        <a class="tool c-teal" href="security/">
+          <div class="ico">🛡️</div>
+          <h2>מה מטעה אותנו, ואיפה הגבול</h2>
+          <p class="desc">חמש הטיות, מה אסור להעלות לכלי AI, שבעה שלבי ניטרול מזהים, תרגיל "מותר או אסור?" וכלל ההכרעה Copilot מול Gemini.</p>
+          <div class="when">יום 1 · חטיבה 1, ולפני כל העלאת קובץ</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-blue" href="prompts/">
+          <div class="ico">✨</div>
+          <h2>ערכת הפרומפטים</h2>
+          <p class="desc">23 פרומפטים לפי יום ולפי שלב, מוכנים להעתקה. ממלאים פעם אחת תפקיד ורשות, והם נכנסים לכל הפרומפטים.</p>
+          <div class="when">כל שלושת הימים</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-amber" href="case/">
+          <div class="ico">🏙️</div>
+          <h2>מקרה הבוחן: עיריית אלון-ים</h2>
+          <p class="desc">הסיפור, הורדת הקבצים, מילון העמודות ושש משימות הניתוח. מי שאין לו קובץ משלו עובד כאן.</p>
+          <div class="when">יום 1 (בעיה ושאלה) · יום 2 (ניתוח)</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="day" id="day1">
+      <div class="day-h"><span class="day-badge">יום 1</span><span class="t">מהבעיה לשאלה שאפשר לענות עליה</span><span class="sub">בעיה · שאלה עסקית · מדד · מקורות</span><span class="line"></span></div>
+      <div class="cards two">
+        <a class="tool c-teal star" href="question/">
+          <span class="tag">התוצר של יום 1</span>
+          <div class="ico">❓</div>
+          <h2>בונה השאלה העסקית</h2>
+          <p class="desc">עץ בעיה, 5 Whys, המשפט נבנה אוטומטית מחמשת הרכיבים, מבחן 5 השאלות, KPI ומדד-נגד, מפת מקורות, וייצוא מסמך (תבנית 01).</p>
+          <div class="when">חטיבות 2–4</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-teal" href="problem-tree/">
+          <span class="tag copy">מתוך מאיצים</span>
+          <div class="ico">🌳</div>
+          <h2>עץ הבעיה</h2>
+          <p class="desc">עץ בעיה אינטראקטיבי: סימפטומים, בעיית ליבה ושורשים, עם ייצוא כתמונה.</p>
+          <div class="when">חטיבה 2 · פירוק הבעיה</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-teal" href="challenge/">
+          <span class="tag copy">מתוך מאיצים</span>
+          <div class="ico">🎯</div>
+          <h2>הגדרת האתגר</h2>
+          <p class="desc">מגדירים אתגר, ממפים בעלי עניין ומזהים נתונים רלוונטיים, עם הצעות וקישורים למקורות מידע.</p>
+          <div class="when">חטיבה 3 · מקורות נתונים</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-teal" href="role-worksheet/">
+          <span class="tag copy">מתוך מאיצים</span>
+          <div class="ico">📋</div>
+          <h2>מה אני עושה ברשות?</h2>
+          <p class="desc">דף עבודה אישי: התפקיד, המשימות הגדולות והיומיומיות. נקודת פתיחה לבחירת האתגר.</p>
+          <div class="when">חטיבה 1 · "האתגר שלי"</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="day" id="day2">
+      <div class="day-h"><span class="day-badge">יום 2</span><span class="t">מנתונים לתובנות ולהחלטה</span><span class="sub">ניקוי · ארבע טכניקות · תובנות · חלופות</span><span class="line"></span></div>
+      <div class="cards">
+        <a class="tool c-blue star" href="analysis/">
+          <span class="tag">התוצר של יום 2</span>
+          <div class="ico">🧮</div>
+          <h2>ארגז הניתוח</h2>
+          <p class="desc">יומן ניקוי (7 בדיקות), ארבע הטכניקות עם מחשבון Pareto ונרמול, בונה תובנה, עורך הדין של השטן ומטריצת חלופות עם ציון משוקלל (תבניות 02–04).</p>
+          <div class="when">כל היום</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-blue" href="insight/">
+          <span class="tag copy">מתוך מאיצים</span>
+          <div class="ico">💡</div>
+          <h2>חילוץ תובנה</h2>
+          <p class="desc">תובנה אחת חזקה, דרך 5 בדיקות ביקורתיות: מתאם≠סיבתיות · מי אסף · מתי · מדגם · מה חסר.</p>
+          <div class="when">חטיבות 3–4 · ביקורת עמיתים</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-blue" href="prompt/">
+          <span class="tag copy">מתוך מאיצים</span>
+          <div class="ico">🤖</div>
+          <h2>בונה הפרומפט ל-AI</h2>
+          <p class="desc">מרכיבים פרומפט לניתוח נתונים: תפקיד · הקשר · משימה · פורמט, עם תזכורות תיקוף ופרטיות.</p>
+          <div class="when">חטיבה 2 · ניתוח עם Copilot / Gemini</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="day" id="day3">
+      <div class="day-h"><span class="day-badge">יום 3</span><span class="t">מתובנה לתוצר שמכוון החלטה</span><span class="sub">ויזואליזציה · סיפור · מצגת ניהולית</span><span class="line"></span></div>
+      <div class="cards two">
+        <a class="tool c-amber star" href="chart/">
+          <span class="tag">התוצר של יום 3</span>
+          <div class="ico">📊</div>
+          <h2>בוחר הגרף וחמשת המשפטים</h2>
+          <p class="desc">אומרים מה המסר ומקבלים איזה גרף, מה על כל ציר ומה למחוק. אחר כך SCR, חמשת המשפטים ופרומפט מוכן ל-Gemini Canvas.</p>
+          <div class="when">כל היום</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-amber" href="pitch/">
+          <span class="tag copy">מתוך מאיצים</span>
+          <div class="ico">🎤</div>
+          <h2>מהנתון לפרומפט</h2>
+          <p class="desc">ממלאים את תוכן המצגת ובוחרים עיצוב, ומקבלים פרומפט מפורט לטיוטת מצגת ב-Gemini Canvas.</p>
+          <div class="when">חטיבה 3 · בונים את המצגת</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-amber" href="prototype/">
+          <span class="tag copy">מתוך מאיצים</span>
+          <div class="ico">🛠️</div>
+          <h2>מפתחים את הפתרון</h2>
+          <p class="desc">דף עבודה אישי או צוותי, גם אם עדיין אין פתרון. הפלט: פרומפט שפותח דיון עם Gemini על כיווני פתרון.</p>
+          <div class="when">לפני בחירת החלופה המומלצת</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+        <a class="tool c-amber" href="cards/">
+          <div class="ico">🗂️</div>
+          <h2>כרטיסי הכיס</h2>
+          <p class="desc">שלושה כרטיסי A5, אחד לכל יום. כל ההכשרה על שלושה כרטיסים, מוכנים להדפסה.</p>
+          <div class="when">בסוף כל יום</div>
+          <span class="go">פתיחה ←</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · כל הערה תתקבל בברכה במייל: <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+
+<script>
+(function(){
+  var K='toolkit_identity';
+  function get(){ try{ return JSON.parse(localStorage.getItem(K)||'{}'); }catch(e){ return {}; } }
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function render(edit){
+    var d=get(), zone=document.getElementById('idZone');
+    if(d.name && !edit){
+      zone.innerHTML='<div class="idbar"><span>👤</span><span class="who">'+esc([d.name,d.dept,d.role].filter(Boolean).join(' · '))+'</span><button id="idEdit">שינוי</button></div>';
+      document.getElementById('idEdit').onclick=function(){ render(true); };
+      return;
+    }
+    zone.innerHTML='<div class="idcard">'+
+      '<h3>לפני שמתחילים: כמה פרטים</h3>'+
+      '<p>הפרטים יופיעו על המסמכים והתמונות שתייצאו, כדי שיהיה ברור מי הגיש. הם נשמרים במחשב שלכם בלבד.</p>'+
+      '<div class="fields">'+
+        '<input class="full" id="idName" placeholder="שם מלא" value="'+esc(d.name||'')+'">'+
+        '<input id="idDept" placeholder="אגף / מחלקה" value="'+esc(d.dept||'')+'">'+
+        '<input id="idRole" placeholder="תפקיד" value="'+esc(d.role||'')+'">'+
+      '</div>'+
+      '<button class="save" id="idSave">שמירה והמשך ←</button>'+
+    '</div>';
+    document.getElementById('idSave').onclick=function(){
+      var v={name:(document.getElementById('idName').value||'').trim(),
+             dept:(document.getElementById('idDept').value||'').trim(),
+             role:(document.getElementById('idRole').value||'').trim()};
+      if(!v.name){ document.getElementById('idName').focus(); return; }
+      try{ localStorage.setItem(K,JSON.stringify(v)); }catch(e){}
+      render(false);
+    };
+  }
+  render(false);
+})();
+</script>
+</body>
+</html>
