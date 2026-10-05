@@ -6,8 +6,8 @@
 <title>קבלת החלטות מבוססת נתונים · ארגז הכלים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/hub.css?v=7">
-<link rel="stylesheet" href="../assets/site.css?v=7">
+<link rel="stylesheet" href="../assets/hub.css?v=9">
+<link rel="stylesheet" href="../assets/site.css?v=9">
 </head>
 <body>
   <header class="hero">
@@ -123,14 +123,15 @@
   function render(edit){
     var d=get(), zone=document.getElementById('idZone');
     if(d.name && !edit){
-      zone.innerHTML='<div class="idbar"><span class="who">'+esc([d.name,d.dept,d.role].filter(Boolean).join(' · '))+'</span><button id="idEdit">שינוי</button></div>';
+      zone.innerHTML='<div class="idbar"><span class="who">'+esc([d.name,d.org,d.dept,d.role].filter(Boolean).join(' · '))+'</span><button id="idEdit">שינוי</button></div>';
       document.getElementById('idEdit').onclick=function(){ render(true); };
       return;
     }
     zone.innerHTML='<div class="idcard">'+
-      '<h3>מי אתם? <button type="button" class="help" aria-label="הסבר" data-help="השם יופיע על המסמכים והתמונות שתייצאו, כדי שיהיה ברור מי הגיש. <b>הפרטים נשמרים רק במחשב שלכם</b> ולא נשלחים לשום מקום.">?</button></h3>'+
+      '<h3>מי אתם? <button type="button" class="help" aria-label="הסבר" data-help="השם ושם הרשות יופיעו על המסמכים והתמונות שתייצאו, כדי שיהיה ברור מי הגיש. <b>הפרטים נשמרים רק במחשב שלכם</b> ולא נשלחים לשום מקום.">?</button></h3>'+
       '<div class="fields">'+
         '<input class="full" id="idName" placeholder="שם מלא" value="'+esc(d.name||'')+'">'+
+        '<input class="full" id="idOrg" placeholder="שם הרשות (עירייה / מועצה)" value="'+esc(d.org||'')+'">'+
         '<input id="idDept" placeholder="אגף / מחלקה" value="'+esc(d.dept||'')+'">'+
         '<input id="idRole" placeholder="תפקיד" value="'+esc(d.role||'')+'">'+
       '</div>'+
@@ -138,9 +139,11 @@
     '</div>';
     document.getElementById('idSave').onclick=function(){
       var v={name:(document.getElementById('idName').value||'').trim(),
+             org:(document.getElementById('idOrg').value||'').trim(),
              dept:(document.getElementById('idDept').value||'').trim(),
              role:(document.getElementById('idRole').value||'').trim()};
       if(!v.name){ document.getElementById('idName').focus(); return; }
+      if(!v.org){ document.getElementById('idOrg').focus(); return; }
       try{ localStorage.setItem(K,JSON.stringify(v)); }catch(e){}
       render(false);
     };
@@ -148,6 +151,6 @@
   render(false);
 })();
 </script>
-<script src="../assets/site.js?v=7" data-crumbs='כל ההכשרות|../'></script>
+<script src="../assets/site.js?v=9" data-crumbs='כל ההכשרות|../'></script>
 </body>
 </html>

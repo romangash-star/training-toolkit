@@ -88,7 +88,7 @@
   @media (max-width:640px){.cols{grid-template-columns:1fr}.exportbar{grid-template-columns:1fr 1fr}}
   @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}.toast{transition:none}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=7">
+<link rel="stylesheet" href="../../assets/site.css?v=9">
 </head>
 <body>
   <header class="bar">
@@ -213,7 +213,7 @@ const App=(()=>{
   /* export */
   function identity(){
     try{ var s=JSON.parse(localStorage.getItem('toolkit_identity')||'{}');
-      return [s.name,s.dept,s.role].filter(Boolean).join(' · ');
+      return [s.name,s.org,s.dept,s.role].filter(Boolean).join(' · ');
     }catch(e){ return ''; }
   }
   function fileName(x){return 'מה-אני-עושה-ברשות.'+x;}
@@ -299,6 +299,6 @@ const App=(()=>{
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=7" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=9" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

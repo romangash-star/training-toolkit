@@ -9,7 +9,7 @@ window.DD = (function(){
   }
   function save(key, data){ try{ localStorage.setItem(key, JSON.stringify(data)); }catch(e){} }
   function identity(){
-    try{ var s=JSON.parse(localStorage.getItem('toolkit_identity')||'{}'); return [s.name,s.dept,s.role].filter(Boolean).join(' · '); }
+    try{ var s=JSON.parse(localStorage.getItem('toolkit_identity')||'{}'); return [s.name,s.org,s.dept,s.role].filter(Boolean).join(' · '); }
     catch(e){ return ''; }
   }
   var tt;

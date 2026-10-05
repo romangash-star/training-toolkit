@@ -6,7 +6,7 @@
 <title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=7">
+<link rel="stylesheet" href="../assets/dd.css?v=9">
 <style>
   .wrap{max-width:900px}
   body{padding-bottom:62px}
@@ -14,7 +14,8 @@
   .qbox .ql{font-size:13px;font-weight:700;color:var(--teal,#1f5f5b);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .qbox .ql a{color:var(--teal,#1f5f5b)}
   .qbox.missing{border-color:var(--warning,#9a6514);background:#fbf1e0}
-  .grp>h2 .cnt{margin-inline-start:auto;font-size:13px;font-weight:700;color:var(--ink-soft);background:var(--paper);border-radius:999px;padding:2px 12px}
+  .grp>h2{flex-wrap:wrap}
+  .grp>h2 .cnt{margin-inline-start:auto;white-space:nowrap;font-size:13px;font-weight:700;color:var(--ink-soft);background:var(--paper);border-radius:999px;padding:2px 12px}
   .rows{display:flex;flex-direction:column;gap:8px}
   .row{display:grid;grid-template-columns:2fr 1.3fr 1.3fr 38px;gap:8px;align-items:center}
   .row.heads{font-size:12.5px;font-weight:700;color:var(--ink-soft);padding:0 2px}
@@ -52,12 +53,12 @@
     .row input:nth-of-type(1){grid-column:1}.row .del{grid-row:1;grid-column:2}
     .row input:nth-of-type(2),.row input:nth-of-type(3){grid-column:1 / -1}
     .row.heads{display:none}
-    .savebar .msg{flex-basis:100%}.savebar .btn{flex:1}
-    body{padding-bottom:108px}
+    .savebar{padding:8px 10px}.savebar .in{gap:6px}.savebar .msg{flex-basis:100%;font-size:13px}.savebar .btn{flex:1;padding:8px 4px;font-size:13px}.savebar .wide-only{display:none}
+    body{padding-bottom:84px}
   }
   @media print{.savebar,.add,.sites,.del,.noprint{display:none!important}body{padding-bottom:0}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=7">
+<link rel="stylesheet" href="../../assets/site.css?v=9">
 </head>
 <body>
   <header class="bar">
@@ -74,7 +75,7 @@
       <button class="btn btn-brand" onclick="S.doc()">Word</button>
       <button class="btn btn-ghost" onclick="S.mail()">מייל לעצמי</button>
       <button class="btn btn-ghost" onclick="S.copyAll()">העתקה</button>
-      <button class="btn btn-ghost" onclick="window.print()">הדפסה</button>
+      <button class="btn btn-ghost wide-only" onclick="window.print()">הדפסה</button>
       <button class="btn btn-ghost" onclick="S.saveJson()">קובץ</button>
       <button class="btn btn-ghost" onclick="S.loadJson()">טעינה</button>
     </div>
@@ -83,7 +84,7 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=7"></script>
+<script src="../assets/dd.js?v=9"></script>
 <script>
 const S=(()=>{
   'use strict';
@@ -183,7 +184,7 @@ const S=(()=>{
           <div class="rows">
             <div class="row heads">${g.cols.map(c=>`<span>${c}</span>`).join('')}<span></span></div>
             ${data[g.k].map((r,i)=>`<div class="row">
-              ${r.map((c,j)=>`<input class="txt" data-c="${g.k}-${i}-${j}" placeholder="${E(i===0?g.ph[j]:g.cols[j])}" value="${E(c)}">`).join('')}
+              ${r.map((c,j)=>`<input class="txt" data-c="${g.k}-${i}-${j}" placeholder="${E(g.cols[j]+(i===0?' · למשל: '+g.ph[j]:''))}" aria-label="${E(g.cols[j])}" value="${E(c)}">`).join('')}
               <button class="del" onclick="S.del('${g.k}',${i})" title="מחיקת השורה">✕</button></div>`).join('')}
           </div>
           <button class="btn btn-ghost btn-sm add" onclick="S.add('${g.k}')">+ עוד נתון</button>
@@ -251,6 +252,6 @@ const S=(()=>{
   return {go,search,add,del,site,doc,copyAll,mail,saveJson,loadJson};
 })();
 </script>
-<script src="../../assets/site.js?v=7" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=9" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

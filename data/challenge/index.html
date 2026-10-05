@@ -160,7 +160,7 @@
   @media (max-width:760px){ .src-list{grid-template-columns:1fr} .exp-grid{grid-template-columns:1fr} .item-fields .lvl,.item-fields .src{width:100%} }
   @media (prefers-reduced-motion:reduce){ .mic.rec,.shake{animation:none} .toast{transition:none} }
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=7">
+<link rel="stylesheet" href="../../assets/site.css?v=9">
 </head>
 <body>
 <div class="app">
@@ -398,7 +398,7 @@ const App = (() => {
   /* export */
   function identity(){
     try{ var s=JSON.parse(localStorage.getItem('toolkit_identity')||'{}');
-      return [s.name,s.dept,s.role].filter(Boolean).join(' · ');
+      return [s.name,s.org,s.dept,s.role].filter(Boolean).join(' · ');
     }catch(e){ return ''; }
   }
   function fileName(ext){ const t=(data.meta.title||'הגדרת-אתגר').replace(/[\\/:*?"<>|]/g,'').slice(0,40); return t+'.'+ext; }
@@ -506,6 +506,6 @@ const App = (() => {
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=7" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=9" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

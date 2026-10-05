@@ -87,7 +87,8 @@ textarea:focus,input.txt:focus,select.txt:focus{outline:none;border-color:var(--
 .pill.b{background:#DCEDEA;border-color:#A9D3CC;color:#1F5F5B}
 
 .exportbar{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:6px}
-.exportbar .btn{width:100%}
+.exportbar>*{min-width:0}
+.exportbar .btn{width:100%;white-space:normal}
 details.more{border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-top:10px;background:var(--paper)}
 details.more summary{cursor:pointer;font-weight:700;font-size:14px}
 

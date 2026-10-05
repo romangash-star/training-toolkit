@@ -77,7 +77,7 @@
   .pastehint kbd{font:700 12.5px var(--font-sans,Arial);background:#fffdf8;border:1px solid var(--line);border-radius:5px;padding:1px 6px}
   .toast{max-width:90vw}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=7">
+<link rel="stylesheet" href="../../assets/site.css?v=9">
 </head>
 <body>
   <header class="bar">
@@ -181,10 +181,11 @@ const App=(()=>{
     box.innerHTML = q ? `<div class="ql"><span>השאלה העסקית שלכם</span><a href="../question/">לעריכה ←</a></div>${esc(q)}`
                       : `<div class="ql"><span>עדיין אין שאלה עסקית</span><a href="../question/">לבונה השאלה העסקית ←</a></div>אפשר להמשיך גם כך: בחרו דוגמה והדביקו את השאלה שלכם בשדה "הקשר".`;
     document.getElementById('sources').innerHTML=SOURCES.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">↗ ${s[0]}</a>`).join('');
-    F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; el.addEventListener('input',()=>{data[id]=el.value; persist(); preview();}); });
+    F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; el.addEventListener('input',()=>{data[id]=el.value; persist(); preview(); grow(el);}); grow(el); });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
     preview();
   }
+  function grow(el){ el.style.height='auto'; el.style.height=Math.max(92,el.scrollHeight+34)+'px'; }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
   function build(){
@@ -199,7 +200,7 @@ const App=(()=>{
     const t=build(); const el=document.getElementById('preview');
     el.innerHTML = t? esc(t) : '<span class="ph">בחרו דוגמה או מלאו את השדות, והפרומפט ייבנה כאן</span>';
   }
-  function fill(k){ const e=EX[k](); data={...e}; document.querySelectorAll('.ex.main').forEach(b=>b.classList.add('used')); F.forEach(id=>document.getElementById(id).value=data[id]); persist(); preview(); toast('הפרומפט נבנה. אפשר לערוך, ואז להעתיק'); }
+  function fill(k){ const e=EX[k](); data={...e}; document.querySelectorAll('.ex.main').forEach(b=>b.classList.add('used')); F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]; grow(el); }); persist(); preview(); toast('הפרומפט נבנה. אפשר לערוך, ואז להעתיק'); }
   function clear(){ document.querySelectorAll('.ex.main').forEach(b=>b.classList.remove('used')); data={role:'',context:'',task:'',format:''}; F.forEach(id=>document.getElementById(id).value=''); persist(); preview(); }
   function openWith(url,name){ if(!build()){ toast('אין עדיין פרומפט'); return; } copy('הועתק ✓ ב-'+name+': לחצו בתיבה והדביקו עם Ctrl+V'); window.open(url,'_blank','noopener'); }
   function toGemini(){ openWith('https://gemini.google.com/app','Gemini'); }
@@ -214,6 +215,6 @@ const App=(()=>{
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=7" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=9" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

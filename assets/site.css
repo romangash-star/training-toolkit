@@ -79,7 +79,9 @@ footer.credit{display:none!important}
 @media (max-width:760px){.brandfoot .in{justify-content:center;text-align:center}.brandfoot .sym{flex-basis:100%;order:3}}
 
 /* ---------- small "?" help ---------- */
-.help{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--teal);background:var(--surface-card);color:var(--teal);font:700 13px/1 var(--font-sans);cursor:pointer;padding:0;margin-inline-start:6px;vertical-align:middle;flex:0 0 auto}
+.help{display:inline-grid;place-items:center;width:26px;height:26px;position:relative;border-radius:50%;border:1.5px solid var(--teal);background:var(--surface-card);color:var(--teal);font:700 13px/1 var(--font-sans);cursor:pointer;padding:0;margin-inline-start:6px;vertical-align:middle;flex:0 0 auto}
+/* a finger needs more than 26px: the invisible ring widens the tap area */
+.help::after{content:"";position:absolute;inset:-8px}
 .help:hover,.help[aria-expanded="true"]{background:var(--teal);color:var(--on-teal)}
 .help-pop{position:absolute;z-index:200;max-width:300px;background:var(--ink);color:#fffdf8;border-radius:var(--radius-md);padding:12px 14px;font:400 14.5px/1.55 var(--font-sans);direction:rtl;text-align:right;box-shadow:0 10px 30px rgba(42,33,27,.3)}
 .help-pop b{color:#f0b95a}

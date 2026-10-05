@@ -212,7 +212,7 @@
   }
   @media (prefers-reduced-motion:reduce){ .node,.welcome::before,.mic.rec,.start-hint,.btn.blink,.shake{animation:none} .toast{transition:none} }
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=7">
+<link rel="stylesheet" href="../../assets/site.css?v=9">
 </head>
 <body>
 <div class="app">
@@ -568,7 +568,7 @@ const App = (() => {
 
   function identity(){
     try{ var s=JSON.parse(localStorage.getItem('toolkit_identity')||'{}');
-      return [s.name,s.dept,s.role].filter(Boolean).join(' · ');
+      return [s.name,s.org,s.dept,s.role].filter(Boolean).join(' · ');
     }catch(e){ return ''; }
   }
   function fileName(ext){ const t=(data.meta.title||(mode==='objective'?'עץ-מטרות':'עץ-בעיה')).replace(/[\\/:*?"<>|]/g,'').slice(0,40); return t+'.'+ext; }
@@ -638,6 +638,6 @@ const App = (() => {
 if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(()=>{ if(document.getElementById('work').style.display!=='none') App._reflow(); }); }
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=7" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=9" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
