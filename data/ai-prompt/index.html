@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>בונה הפרומפט — קבלת החלטות מבוססת נתונים</title>
+<title>מתייעצים עם ה-AI — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -64,6 +64,15 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   @media (max-width:820px){.grid{grid-template-columns:1fr}.preview{position:static}}
   @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}.toast{transition:none}}
+  .qbox{border:1.5px solid var(--teal,#1f5f5b);background:var(--teal-tint,#dcedea);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:15px;line-height:1.6}
+  .qbox .ql{font-size:13px;font-weight:700;color:var(--teal,#1f5f5b);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .qbox .ql a{color:var(--teal,#1f5f5b)}
+  .qbox.missing{border-color:var(--warning,#9a6514);background:#fbf1e0}
+  .exlabel{font-weight:700;font-size:14.5px;margin-bottom:8px;display:flex;align-items:center}
+  .ex.main{background:var(--brand);border-color:var(--brand);color:#fffdf8;font-size:15px;padding:9px 18px;animation:consultPulse 1.5s ease-in-out infinite}
+  @keyframes consultPulse{0%,100%{box-shadow:0 0 0 0 rgba(217,154,43,0);transform:scale(1)}50%{box-shadow:0 0 0 7px rgba(217,154,43,.6);transform:scale(1.04)}}
+  .ex.main.used{animation:none}
+  @media (prefers-reduced-motion:reduce){.ex.main{animation:none}}
 </style>
 <link rel="stylesheet" href="../../assets/site.css?v=5">
 </head>
@@ -76,29 +85,31 @@
 
   <main class="wrap">
     <div class="head">
-      <div class="eyebrow">AI ככלי עבודה · אנטומיה של פרומפט</div>
-      <h1>בונים פרומפט טוב לניתוח נתונים</h1>
-      <p>ככל שנותנים יותר הקשר — התשובה חדה, שימושית ופחות "המצאתית". מלאו את ארבעת החלקים, והעתיקו את הפרומפט ל‑Gemini או לכלי אחר.</p>
+      <div class="eyebrow">יום 1 · שלב 3</div>
+      <h1>מתייעצים עם ה-AI על השאלה העסקית</h1>
+      <p>יש לכם שאלה עסקית. עכשיו בונים פרומפט שמבקש מה-AI לעזור לדייק אותה. בחרו דוגמה, ערכו, והעתיקו ל-Gemini או ל-Copilot.</p>
     </div>
 
     <div class="grid">
       <div class="panel">
+        <div class="qbox" id="qbox"></div>
+        <div class="exlabel">מה רוצים מה-AI? <button type="button" class="help" aria-label="הסבר" data-help="לחיצה על דוגמה ממלאת את ארבעת השדות למטה, עם השאלה העסקית שלכם בפנים. אחר כך אפשר לערוך כל שדה. מומלץ להתחיל ב<b>להתייעץ</b>.">?</button></div>
         <div class="examples" id="examples"></div>
         <div class="field">
-          <div class="lab"><span class="n">1</span>תפקיד <span class="sub">מי ה‑AI אמור להיות</span></div>
-          <div class="in-wrap"><textarea id="role" placeholder="אתה אנליסט נתונים ברשות מקומית."></textarea><button class="mic" data-t="role"></button></div>
+          <div class="lab"><span class="n">1</span>תפקיד <span class="sub">מי ה‑AI אמור להיות</span><button type="button" class="help" aria-label="הסבר" data-help="כשאומרים ל-AI מי הוא (״אתה יועץ לרשויות מקומיות״), התשובות ממוקדות יותר.">?</button></div>
+          <div class="in-wrap"><textarea id="role" placeholder="אתה יועץ לקבלת החלטות מבוססת נתונים ברשויות מקומיות."></textarea><button class="mic" data-t="role"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">2</span>הקשר <span class="sub">הרקע והחומר שלכם</span></div>
-          <div class="in-wrap"><textarea id="context" placeholder="מצורפות פניות מוקד 106 בנושא רישוי עסקים."></textarea><button class="mic" data-t="context"></button></div>
+          <div class="lab"><span class="n">2</span>הקשר <span class="sub">השאלה העסקית והרקע</span><button type="button" class="help" aria-label="הסבר" data-help="כאן נכנסת השאלה העסקית שלכם, ואפשר להוסיף רקע: גודל הרשות, מה כבר ניסיתם. <b>בלי שמות ופרטים של תושבים.</b>">?</button></div>
+          <div class="in-wrap"><textarea id="context" placeholder="זו השאלה העסקית שניסחתי: ..."></textarea><button class="mic" data-t="context"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">3</span>משימה <span class="sub">מה בדיוק לעשות</span></div>
-          <div class="in-wrap"><textarea id="task" placeholder="זהה את שלושת הנושאים החוזרים ביותר."></textarea><button class="mic" data-t="task"></button></div>
+          <div class="lab"><span class="n">3</span>משימה <span class="sub">מה בדיוק לעשות</span><button type="button" class="help" aria-label="הסבר" data-help="בקשה אחת וברורה. למשל: ״שאל אותי שלוש שאלות הבהרה ואז הצע ניסוח מדויק יותר״.">?</button></div>
+          <div class="in-wrap"><textarea id="task" placeholder="שאל אותי שלוש שאלות הבהרה, ואז הצע ניסוח מדויק יותר."></textarea><button class="mic" data-t="task"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">4</span>פורמט <span class="sub">איך שתחזור התשובה</span></div>
-          <div class="in-wrap"><textarea id="format" placeholder="טבלה קצרה + משפט מסקנה אחד."></textarea><button class="mic" data-t="format"></button></div>
+          <div class="lab"><span class="n">4</span>פורמט <span class="sub">איך שתחזור התשובה</span><button type="button" class="help" aria-label="הסבר" data-help="איך אתם רוצים לקבל את התשובה: שיחה, רשימה, טבלה, משפט אחד.">?</button></div>
+          <div class="in-wrap"><textarea id="format" placeholder="שיחה קצרה, ובסוף השאלה המשופרת במשפט אחד."></textarea><button class="mic" data-t="format"></button></div>
         </div>
       </div>
 
@@ -129,11 +140,27 @@ const App=(()=>{
   'use strict';
   const LS='dd_ai_prompt_builder_v1';
   const F=['role','context','task','format'];
+  const QKEY='dd_question_v2', MAIN='להתייעץ על השאלה שלי';
+  /* the business question written in the previous tool (בונה השאלה העסקית) */
+  function myQuestion(){
+    try{
+      const d=JSON.parse(localStorage.getItem(QKEY)||'{}'), q=d.q||{};
+      if(!(q.who||q.what||q.question)) return '';
+      const v=(x,ph)=>(x||'').trim()||'['+ph+']';
+      let t=`${v(q.who,'מי מחליט')} צריך להחליט ${v(q.what,'מה')} עד ${v(q.when,'מתי')}, כדי ${v(q.goal,'תוצאה מדידה')}, ${v(q.limit,'אילוץ')}.`;
+      if((q.question||'').trim()) t+=' השאלה: '+q.question.trim();
+      return t;
+    }catch(e){ return ''; }
+  }
+  const ROLE='אתה יועץ מנוסה לקבלת החלטות מבוססת נתונים ברשויות מקומיות בישראל.';
+  const ctx=()=>'זו השאלה העסקית שניסחתי:\n"'+(myQuestion()||'[הדביקו כאן את השאלה העסקית שלכם]')+'"';
+  const TEMPLATE='[מי מחליט] צריך להחליט [מה] עד [מתי], כדי [תוצאה מדידה], במסגרת [אילוץ].';
   const EX={
-    'לאתר מקורות':{role:'אתה חוקר נתונים ברשות מקומית.',context:'הבעיה: רחוב המסחר המרכזי ריק בערב ועסקים נסגרים.',task:'אילו מקורות נתונים ציבוריים בישראל יעזרו לתקף את הבעיה, ומה כדאי לנתח בכל אחד?',format:'רשימה: מקור + כיוון ניתוח לכל אחד.'},
-    'לנתח טבלה':{role:'אתה אנליסט נתונים ברשות מקומית.',context:'מצורפת טבלת פניות מוקד 106 בנושא רישוי.',task:'זהה את שלושת הנושאים החוזרים ביותר.',format:'טבלה קצרה + משפט מסקנה אחד.'},
-    'להעריך מהימנות':{role:'אתה מומחה לנתונים ציבוריים.',context:'יש לי כמה מקורות נתונים על סגירת עסקים ברחוב.',task:'על מי אפשר להסתמך, ומה החולשות של כל מקור?',format:'טבלה: מקור · מהימנות · חולשות.'},
-    'לקטלג פניות':{role:'אתה עוזר מחקר ברשות מקומית.',context:'להלן טקסט חופשי של פניות תושבים.',task:'מיין את הפניות לקטגוריות עקביות וספור כל קטגוריה.',format:'טבלה: קטגוריה · מספר פניות · דוגמה.'}
+    [MAIN]:()=>({role:ROLE,context:ctx(),task:'התייעץ איתי על השאלה. שאל אותי שלוש שאלות הבהרה, אחת בכל פעם, וחכה לתשובה שלי. אחר כך אמור מה חזק בשאלה ומה חלש בה, והצע ניסוח מדויק יותר.',format:'שיחה קצרה בעברית פשוטה. בסוף: השאלה המשופרת במשפט אחד, בתבנית: '+TEMPLATE}),
+    'לבדוק אותה ב-5 מבחנים':()=>({role:ROLE,context:ctx(),task:'בדוק את השאלה מול חמישה מבחנים: יש מחליט מזוהה? התשובה תשנה משהו בפועל? יש תאריך להחלטה? יש נתון שיכול לענות? התשובה עשויה להפתיע, או שאני בעצם מחפש אישוש?',format:'טבלה: המבחן · כן/לא · נימוק במשפט. אם יש "לא", הצע ניסוח מתוקן אחד.'}),
+    'שלושה ניסוחים אחרים':()=>({role:ROLE,context:ctx(),task:'הצע שלושה ניסוחים חלופיים לשאלה. כל אחד עם מדד מספרי ומסגרת זמן, עד 30 מילים. אל תמציא מספרים: סמן [להשלים] במקום שחסר נתון.',format:'רשימה ממוספרת, ומתחת לכל ניסוח משפט אחד: מה הוא משפר.'}),
+    'אילו נתונים צריך':()=>({role:ROLE,context:ctx(),task:'פרק את השאלה לארבע שאלות מידע. לכל אחת: מה סופרים, לפי מה מפלחים, איזו תקופה, ובאיזו מערכת ברשות הנתון בדרך כלל נמצא.',format:'טבלה: שאלת מידע · מה סופרים · פילוח · תקופה · מקור אפשרי.'}),
+    'לאתגר אותי':()=>({role:'אתה מנכ"ל ספקן של רשות מקומית, עם חמש דקות ותשומת לב חלקית.',context:ctx(),task:'אל תהיה מנומס. אמור למה השאלה הזו עלולה לא להוביל להחלטה, מה חסר בה, ואיזו שאלה היית שואל במקומה.',format:'שלוש נקודות קצרות, ואז משפט אחד: מה לתקן קודם.'})
   };
   const SOURCES=[
     ['data.gov.il','https://data.gov.il/he'],['הלמ״ס','https://www.cbs.gov.il/he'],['GovMap','https://www.govmap.gov.il/'],
@@ -143,7 +170,11 @@ const App=(()=>{
 
   function init(){
     try{const s=JSON.parse(localStorage.getItem(LS)); if(s)data=s;}catch(e){}
-    document.getElementById('examples').innerHTML=Object.keys(EX).map(k=>`<button class="ex" onclick="App.fill('${k}')">${k}</button>`).join('');
+    document.getElementById('examples').innerHTML=Object.keys(EX).map(k=>`<button class="ex ${k===MAIN?'main'+(data.context?' used':''):''}" onclick="App.fill('${k}')">${k}</button>`).join('');
+    const q=myQuestion(), box=document.getElementById('qbox');
+    box.className='qbox'+(q?'':' missing');
+    box.innerHTML = q ? `<div class="ql"><span>השאלה העסקית שלכם</span><a href="../question/">לעריכה ←</a></div>${esc(q)}`
+                      : `<div class="ql"><span>עדיין אין שאלה עסקית</span><a href="../question/">לבונה השאלה העסקית ←</a></div>אפשר להמשיך גם כך: בחרו דוגמה והדביקו את השאלה שלכם בשדה "הקשר".`;
     document.getElementById('sources').innerHTML=SOURCES.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">↗ ${s[0]}</a>`).join('');
     F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; el.addEventListener('input',()=>{data[id]=el.value; persist(); preview();}); });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
@@ -161,10 +192,10 @@ const App=(()=>{
   }
   function preview(){
     const t=build(); const el=document.getElementById('preview');
-    el.innerHTML = t? esc(t) : '<span class="ph">מלאו את השדות משמאל — והפרומפט ייבנה כאן אוטומטית…</span>';
+    el.innerHTML = t? esc(t) : '<span class="ph">בחרו דוגמה או מלאו את השדות, והפרומפט ייבנה כאן</span>';
   }
-  function fill(k){ const e=EX[k]; data={...e}; F.forEach(id=>document.getElementById(id).value=data[id]); persist(); preview(); toast('דוגמה נטענה — ערכו לפי האתגר שלכם'); }
-  function clear(){ data={role:'',context:'',task:'',format:''}; F.forEach(id=>document.getElementById(id).value=''); persist(); preview(); }
+  function fill(k){ const e=EX[k](); data={...e}; document.querySelectorAll('.ex.main').forEach(b=>b.classList.add('used')); F.forEach(id=>document.getElementById(id).value=data[id]); persist(); preview(); toast('הפרומפט נבנה. אפשר לערוך, ואז להעתיק'); }
+  function clear(){ document.querySelectorAll('.ex.main').forEach(b=>b.classList.remove('used')); data={role:'',context:'',task:'',format:''}; F.forEach(id=>document.getElementById(id).value=''); persist(); preview(); }
   function toGemini(){ copy(); window.open('https://gemini.google.com/app','_blank','noopener'); }
   function copy(){ const t=build(); if(!t){toast('אין עדיין פרומפט'); return;} (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו ידנית:',t)); }
 
