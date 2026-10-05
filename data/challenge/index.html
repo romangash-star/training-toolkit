@@ -163,7 +163,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=14">
+<link rel="stylesheet" href="../../assets/site.css?v=15">
 </head>
 <body>
 <div class="app">
@@ -187,8 +187,7 @@
 <script>
 const App = (() => {
   'use strict';
-  const LS_KEY='dd_challenge_def_v1', CLOUD_KEY='dd_challenge_cloud_url', PADLET_KEY='toolkit_padlet_url';
-  const DEFAULT_PADLET='https://padlet.com/romangash/padlet-emxukhiqh96z99bl';
+  const LS_KEY='dd_challenge_def_v1', CLOUD_KEY='dd_challenge_cloud_url';
   let data, step=1, uid=1;
   const nid=()=>'n'+(uid++);
 
@@ -319,7 +318,6 @@ const App = (() => {
     const stk = data.stakeholders.length? `<ul>`+data.stakeholders.map(s=>`<li><b>${esc(s.name)}</b> — ${esc(s.level||'')}${s.note?` · ${esc(s.note)}`:''}</li>`).join('')+`</ul>` : '—';
     const dat = data.dataItems.length? `<ul>`+data.dataItems.map(d=>`<li><b>${esc(d.name)}</b>${d.source?` — מקור: ${esc(d.source)}`:''}${d.note?` · ${esc(d.note)}`:''}</li>`).join('')+`</ul>` : '—';
     const cloudUrl = (()=>{try{return localStorage.getItem(CLOUD_KEY)||''}catch(e){return''}})();
-    const padletUrl = (()=>{try{return localStorage.getItem(PADLET_KEY)||DEFAULT_PADLET}catch(e){return DEFAULT_PADLET}})();
     return `<div class="eyebrow">שלב 4 · סיכום</div><h2 class="title">סיכום האתגר</h2>
       <div class="meta-grid" style="margin-top:16px">
         <input class="txt" id="mTitle" placeholder="שם האתגר / הפרויקט" value="${attr(data.meta.title)}">
@@ -338,11 +336,6 @@ const App = (() => {
         <button class="btn btn-ghost" onclick="document.getElementById('fileIn').click()">טעינת קובץ</button>
       </div>
 
-      <div class="cloud">
-          <h4>הלוח המשותף (Padlet)</h4>
-          <a href="https://padlet.com/romangash/padlet-emxukhiqh96z99bl" target="_blank" rel="noopener" class="btn btn-dark" style="margin-top:10px;width:100%;text-decoration:none">↗ פתיחת הלוח</a>
-          <div class="hint" style="margin-top:10px;line-height:1.75"><b>איך מעלים ללוח:</b><br>1. לוחצים על <b>תמונה</b> — התמונה נשמרת במחשב.<br>2. לוחצים על <b>פתיחת הלוח</b> למעלה.<br>3. בלוח לוחצים על כפתור <b>+</b> (הוספת פוסט).<br>4. גוררים את התמונה לפוסט, או לוחצים על סמל התמונה ובוחרים אותה.<br>5. לוחצים <b>פרסום</b>. זהו!</div>
-        </div>
 
       <div class="cloud">
         <h4>שמירה לענן <span style="font-weight:400;color:var(--ink-soft);font-size:12.5px">(אופציונלי — לאיסוף כל התשובות בגיליון Google)</span></h4>
@@ -390,7 +383,6 @@ const App = (() => {
     document.querySelectorAll('[data-src]').forEach(el=>el.addEventListener('input',e=>{ const it=data.dataItems.find(x=>x.id===el.dataset.src); if(it){it.source=e.target.value; persist();} }));
     document.querySelectorAll('[data-edit]').forEach(el=>el.addEventListener('blur',e=>{ const [t,id]=el.dataset.edit.split(':'); const arr=t==='stk'?data.stakeholders:data.dataItems; const it=arr.find(x=>x.id===id); if(it){it.name=el.innerText.trim(); persist();} }));
     const cu=document.getElementById('cloudUrl'); if(cu) cu.addEventListener('input',e=>{ try{ localStorage.setItem(CLOUD_KEY, e.target.value.trim()); }catch(e){} });
-    const pu=document.getElementById('padletUrl'); if(pu) pu.addEventListener('input',e=>{ try{ localStorage.setItem(PADLET_KEY, e.target.value.trim()); }catch(e){} });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>{ const t=document.getElementById(b.dataset.target); if(t) dictate(t,b); }));
   }
 
@@ -459,56 +451,15 @@ const App = (() => {
     a.href=u; a.download=fileName('png'); document.body.appendChild(a); a.click();
     setTimeout(function(){ try{document.body.removeChild(a);}catch(e){} URL.revokeObjectURL(u); },1500);
   }
-  function sharePadlet(){
-    var padlet='';
-    try{ padlet=localStorage.getItem(PADLET_KEY)||''; }catch(e){}
-    var inp=document.getElementById('padletUrl');
-    if(inp&&inp.value&&inp.value.trim()) padlet=inp.value.trim();
-    if(!padlet) padlet=DEFAULT_PADLET;
-
-    // 1) נייד: שיתוף ישיר לאפליקציית Padlet
-    var isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isMobile && navigator.canShare && navigator.share){
-      makeBlob().then(function(bl){
-        var file=new File([bl],fileName('png'),{type:'image/png'});
-        if(navigator.canShare({files:[file]})){
-          navigator.share({files:[file],title:data.meta.title||'הגדרת האתגר'}).catch(function(){
-            downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){}
-            toast('התמונה הורדה — העלו אותה ללוח');
-          });
-        } else { downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){} }
-      }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
-      return;
-    }
-
-    // 2) מחשב: מעתיקים את התמונה ללוח ההעתקה ופותחים את Padlet
-    var win=null;
-    try{ win=window.open(padlet,'_blank','noopener'); }catch(e){}
-    var canClip = !!(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
-    if(canClip){
-      try{
-        navigator.clipboard.write([new ClipboardItem({'image/png': makeBlob()})]).then(function(){
-          toast('התמונה הועתקה ✓ — בלוח: פתחו פוסט חדש והדביקו (Ctrl+V)');
-        }).catch(function(){
-          makeBlob().then(function(bl){ downloadBlob(bl); toast('התמונה הורדה — גררו אותה ללוח שנפתח'); });
-        });
-        return;
-      }catch(e){}
-    }
-    makeBlob().then(function(bl){
-      downloadBlob(bl);
-      toast(win?'התמונה הורדה — גררו אותה ללוח שנפתח':'התמונה הורדה — אפשרו חלונות קופצים');
-    }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
-  }
 
   async function saveCloud(){ let url=''; try{ url=localStorage.getItem(CLOUD_KEY)||''; }catch(e){} const inp=document.getElementById('cloudUrl'); if(inp&&inp.value.trim()) url=inp.value.trim(); if(!url){ toast('קודם הדביקו כתובת Web App'); return; } try{ await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({...data,savedAt:new Date().toISOString()})}); toast('נשלח לענן ✓ — בדקו בגיליון'); }catch(e){ toast('השליחה נכשלה — בדקו את הכתובת'); } }
 
   let toastT; function toast(m){ const el=document.getElementById('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),2600); }
 
-  return { init, setStep, addStk, addStkCustom, delStk, addData, addDataCustom, addSource, delData, resetAll, exportPNG, copyText, saveFile, saveCloud, sharePadlet };
+  return { init, setStep, addStk, addStkCustom, delStk, addData, addDataCustom, addSource, delData, resetAll, exportPNG, copyText, saveFile, saveCloud };
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=14" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=15" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

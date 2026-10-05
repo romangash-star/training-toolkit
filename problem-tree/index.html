@@ -215,7 +215,7 @@
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../assets/site.css?v=14">
+<link rel="stylesheet" href="../assets/site.css?v=15">
 </head>
 <body>
 <div class="app">
@@ -316,7 +316,6 @@
 const App = (() => {
   'use strict';
   const LS_KEY = 'problem_tree_v1';
-  const DEFAULT_PADLET='https://padlet.com/romangash/padlet-emxukhiqh96z99bl';
   let data, mode = 'problem';
   let step = 1;
   let blinkHome = false;
@@ -430,9 +429,7 @@ const App = (() => {
         <div class="exp-grid">
           <button class="btn btn-brand" onclick="App.exportPNG()">הורדה כתמונה (PNG)</button>
           <button class="btn btn-dark" onclick="App.share()">שיתוף</button>
-          <a href="https://padlet.com/romangash/padlet-emxukhiqh96z99bl" target="_blank" rel="noopener" class="btn btn-dark" style="text-decoration:none">↗ פתיחת לוח Padlet</a>
         </div>
-        <div style="font-size:12.5px;color:var(--ink-soft);margin-top:12px;line-height:1.75;border-top:1px solid var(--line);padding-top:12px"><b>איך מעלים ללוח:</b><br>1. לוחצים על <b>הורדה כתמונה</b>.<br>2. לוחצים על <b>פתיחת לוח Padlet</b>.<br>3. בלוח לוחצים על <b>+</b> (הוספת פוסט).<br>4. גוררים את התמונה פנימה, או בוחרים אותה דרך סמל התמונה.<br>5. לוחצים <b>פרסום</b>.</div>
         <div style="display:none">
           <button class="btn btn-ghost" onclick="App.copyText()">העתקת סיכום כטקסט</button>
           <button class="btn btn-ghost" onclick="App.saveFile()">שמירת קובץ עבודה</button>
@@ -594,53 +591,12 @@ const App = (() => {
     a.href=u; a.download=fileName('png'); document.body.appendChild(a); a.click();
     setTimeout(function(){ try{document.body.removeChild(a);}catch(e){} URL.revokeObjectURL(u); },1500);
   }
-  function sharePadlet(){
-    var padlet='';
-    try{ padlet=localStorage.getItem(PADLET_KEY)||''; }catch(e){}
-    var inp=document.getElementById('padletUrl');
-    if(inp&&inp.value&&inp.value.trim()) padlet=inp.value.trim();
-    if(!padlet) padlet=DEFAULT_PADLET;
-
-    // 1) נייד: שיתוף ישיר לאפליקציית Padlet
-    var isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isMobile && navigator.canShare && navigator.share){
-      makeBlob().then(function(bl){
-        var file=new File([bl],fileName('png'),{type:'image/png'});
-        if(navigator.canShare({files:[file]})){
-          navigator.share({files:[file],title:data.meta.title||'עץ הבעיה'}).catch(function(){
-            downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){}
-            toast('התמונה הורדה — העלו אותה ללוח');
-          });
-        } else { downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){} }
-      }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
-      return;
-    }
-
-    // 2) מחשב: מעתיקים את התמונה ללוח ההעתקה ופותחים את Padlet
-    var win=null;
-    try{ win=window.open(padlet,'_blank','noopener'); }catch(e){}
-    var canClip = !!(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
-    if(canClip){
-      try{
-        navigator.clipboard.write([new ClipboardItem({'image/png': makeBlob()})]).then(function(){
-          toast('התמונה הועתקה ✓ — בלוח: פתחו פוסט חדש והדביקו (Ctrl+V)');
-        }).catch(function(){
-          makeBlob().then(function(bl){ downloadBlob(bl); toast('התמונה הורדה — גררו אותה ללוח שנפתח'); });
-        });
-        return;
-      }catch(e){}
-    }
-    makeBlob().then(function(bl){
-      downloadBlob(bl);
-      toast(win?'התמונה הורדה — גררו אותה ללוח שנפתח':'התמונה הורדה — אפשרו חלונות קופצים');
-    }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
-  }
-  return { init, start, loadExample, resume, goHome, setStep, addItem, addChild, del, setText, setMode, resetAll, exportPNG, share, sharePadlet, copyText, saveFile, _reflow };
+  return { init, start, loadExample, resume, goHome, setStep, addItem, addChild, del, setText, setMode, resetAll, exportPNG, share, copyText, saveFile, _reflow };
 })();
 
 if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(()=>{ if(document.getElementById('work').style.display!=='none') App._reflow(); }); }
 window.App=App; App.init();
 </script>
-<script src="../assets/site.js?v=14" data-crumbs='כל ההכשרות|../;מאיצים דיגיטליים|../maazim/'></script>
+<script src="../assets/site.js?v=15" data-crumbs='כל ההכשרות|../;מאיצים דיגיטליים|../maazim/'></script>
 </body>
 </html>

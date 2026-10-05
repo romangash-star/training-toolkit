@@ -142,7 +142,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=14">
+<link rel="stylesheet" href="../../assets/site.css?v=15">
 </head>
 <body>
   <header class="bar">
@@ -167,8 +167,7 @@
 <script>
 const App=(()=>{
   'use strict';
-  const LS='dd_pitch_story_v2', PADLET_KEY='toolkit_padlet_url';
-  const DEFAULT_PADLET='https://padlet.com/romangash/padlet-emxukhiqh96z99bl';
+  const LS='dd_pitch_story_v2';
   let cur='story';
   const PHASES=[{k:'hook',label:'וו פתיחה',sec:30},{k:'problem',label:'הבעיה',sec:60},{k:'solution',label:'הפתרון',sec:60},{k:'ask',label:'הבקשה',sec:30}];
   const TOTAL=PHASES.reduce((a,p)=>a+p.sec,0);
@@ -420,53 +419,12 @@ const App=(()=>{
     a.href=u; a.download=fileName('png'); document.body.appendChild(a); a.click();
     setTimeout(function(){ try{document.body.removeChild(a);}catch(e){} URL.revokeObjectURL(u); },1500);
   }
-  function sharePadlet(){
-    var padlet='';
-    try{ padlet=localStorage.getItem(PADLET_KEY)||''; }catch(e){}
-    var inp=document.getElementById('padletUrl');
-    if(inp&&inp.value&&inp.value.trim()) padlet=inp.value.trim();
-    if(!padlet) padlet=DEFAULT_PADLET;
-
-    // 1) נייד: שיתוף ישיר לאפליקציית Padlet
-    var isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isMobile && navigator.canShare && navigator.share){
-      makeBlob().then(function(bl){
-        var file=new File([bl],fileName('png'),{type:'image/png'});
-        if(navigator.canShare({files:[file]})){
-          navigator.share({files:[file],title:data.meta.title||'הסיפור והפיץ'}).catch(function(){
-            downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){}
-            toast('התמונה הורדה — העלו אותה ללוח');
-          });
-        } else { downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){} }
-      }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
-      return;
-    }
-
-    // 2) מחשב: מעתיקים את התמונה ללוח ההעתקה ופותחים את Padlet
-    var win=null;
-    try{ win=window.open(padlet,'_blank','noopener'); }catch(e){}
-    var canClip = !!(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
-    if(canClip){
-      try{
-        navigator.clipboard.write([new ClipboardItem({'image/png': makeBlob()})]).then(function(){
-          toast('התמונה הועתקה ✓ — בלוח: פתחו פוסט חדש והדביקו (Ctrl+V)');
-        }).catch(function(){
-          makeBlob().then(function(bl){ downloadBlob(bl); toast('התמונה הורדה — גררו אותה ללוח שנפתח'); });
-        });
-        return;
-      }catch(e){}
-    }
-    makeBlob().then(function(bl){
-      downloadBlob(bl);
-      toast(win?'התמונה הורדה — גררו אותה ללוח שנפתח':'התמונה הורדה — אפשרו חלונות קופצים');
-    }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
-  }
 
   let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2600);}
-  return {init,tab,setAud,setDesign,importStory,copyPrompt,toGemini,toBase44,toggleTimer,resetTimer,exportPNG,sharePadlet,copyText,saveFile};
+  return {init,tab,setAud,setDesign,importStory,copyPrompt,toGemini,toBase44,toggleTimer,resetTimer,exportPNG,copyText,saveFile};
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=14" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=15" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

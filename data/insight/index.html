@@ -81,7 +81,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=14">
+<link rel="stylesheet" href="../../assets/site.css?v=15">
 </head>
 <body>
   <header class="bar">
@@ -99,8 +99,7 @@
 <script>
 const App=(()=>{
   'use strict';
-  const LS='dd_insight_tool_v1', PADLET_KEY='toolkit_padlet_url';
-  const DEFAULT_PADLET='https://padlet.com/romangash/padlet-emxukhiqh96z99bl';
+  const LS='dd_insight_tool_v1';
   const CHECKS=[
     {k:'מתאם ≠ סיבתיות', q:'ששני דברים עולים יחד לא אומר שאחד גורם לשני. מה עוד יכול להסביר את זה?', e:''},
     {k:'מי אסף ולמה?', q:'לגוף שאסף את הנתון יש לפעמים אינטרס. מאיפה הגיע?', e:''},
@@ -123,7 +122,6 @@ const App=(()=>{
 
   function render(){
     const done=data.checks.filter(c=>c.done).length;
-    const padletUrl=(()=>{try{return localStorage.getItem(PADLET_KEY)||DEFAULT_PADLET}catch(e){return DEFAULT_PADLET}})();
     document.getElementById('app').innerHTML=`
       <div class="head">
         <div class="eyebrow">מנתון — לתובנה · חשיבה ביקורתית</div>
@@ -168,11 +166,6 @@ const App=(()=>{
           <button class="btn btn-ghost" onclick="App.saveFile()">שמירה</button>
           <button class="btn btn-ghost" onclick="document.getElementById('fileIn').click()">טעינה</button>
         </div>
-        <div class="cloud">
-          <h4>הלוח המשותף (Padlet)</h4>
-          <a href="https://padlet.com/romangash/padlet-emxukhiqh96z99bl" target="_blank" rel="noopener" class="btn btn-dark" style="margin-top:10px;width:100%;text-decoration:none">↗ פתיחת הלוח</a>
-          <div class="hint" style="margin-top:10px;line-height:1.75"><b>איך מעלים ללוח:</b><br>1. לוחצים על <b>תמונה</b> — התמונה נשמרת במחשב.<br>2. לוחצים על <b>פתיחת הלוח</b> למעלה.<br>3. בלוח לוחצים על כפתור <b>+</b> (הוספת פוסט).<br>4. גוררים את התמונה לפוסט, או לוחצים על סמל התמונה ובוחרים אותה.<br>5. לוחצים <b>פרסום</b>. זהו!</div>
-        </div>
       </div>`;
     wire();
   }
@@ -182,7 +175,6 @@ const App=(()=>{
     bind('finding','finding'); bind('insight','insight');
     ['mTitle:title','mTeam:team'].forEach(p=>{const[id,k]=p.split(':');const el=document.getElementById(id);if(el)el.addEventListener('input',()=>{data.meta[k]=el.value;persist();});});
     document.querySelectorAll('[data-note]').forEach(el=>el.addEventListener('input',()=>{data.checks[+el.dataset.note].note=el.value;persist();}));
-    const pu=document.getElementById('padletUrl'); if(pu)pu.addEventListener('input',e=>{try{localStorage.setItem(PADLET_KEY,e.target.value.trim());}catch(e){}});
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
   }
   function toggle(i){ data.checks[i].done=!data.checks[i].done; persist(); render(); }
@@ -233,53 +225,12 @@ const App=(()=>{
     a.href=u; a.download=fileName('png'); document.body.appendChild(a); a.click();
     setTimeout(function(){ try{document.body.removeChild(a);}catch(e){} URL.revokeObjectURL(u); },1500);
   }
-  function sharePadlet(){
-    var padlet='';
-    try{ padlet=localStorage.getItem(PADLET_KEY)||''; }catch(e){}
-    var inp=document.getElementById('padletUrl');
-    if(inp&&inp.value&&inp.value.trim()) padlet=inp.value.trim();
-    if(!padlet) padlet=DEFAULT_PADLET;
-
-    // 1) נייד: שיתוף ישיר לאפליקציית Padlet
-    var isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if(isMobile && navigator.canShare && navigator.share){
-      makeBlob().then(function(bl){
-        var file=new File([bl],fileName('png'),{type:'image/png'});
-        if(navigator.canShare({files:[file]})){
-          navigator.share({files:[file],title:data.meta.title||'תובנה'}).catch(function(){
-            downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){}
-            toast('התמונה הורדה — העלו אותה ללוח');
-          });
-        } else { downloadBlob(bl); try{window.open(padlet,'_blank','noopener');}catch(e){} }
-      }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
-      return;
-    }
-
-    // 2) מחשב: מעתיקים את התמונה ללוח ההעתקה ופותחים את Padlet
-    var win=null;
-    try{ win=window.open(padlet,'_blank','noopener'); }catch(e){}
-    var canClip = !!(window.ClipboardItem && navigator.clipboard && navigator.clipboard.write);
-    if(canClip){
-      try{
-        navigator.clipboard.write([new ClipboardItem({'image/png': makeBlob()})]).then(function(){
-          toast('התמונה הועתקה ✓ — בלוח: פתחו פוסט חדש והדביקו (Ctrl+V)');
-        }).catch(function(){
-          makeBlob().then(function(bl){ downloadBlob(bl); toast('התמונה הורדה — גררו אותה ללוח שנפתח'); });
-        });
-        return;
-      }catch(e){}
-    }
-    makeBlob().then(function(bl){
-      downloadBlob(bl);
-      toast(win?'התמונה הורדה — גררו אותה ללוח שנפתח':'התמונה הורדה — אפשרו חלונות קופצים');
-    }).catch(function(){ toast('שגיאה ביצירת התמונה'); });
-  }
 
   let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,toggle,setDisp,exportPNG,copyText,saveFile,sharePadlet};
+  return {init,toggle,setDisp,exportPNG,copyText,saveFile};
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=14" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=15" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
