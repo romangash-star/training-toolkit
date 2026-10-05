@@ -20,7 +20,7 @@
   .cover-text h1{font-size:clamp(36px,5.6vw,58px);letter-spacing:-1.6px;margin:8px 0 0}
   .cover-text .sub{font-size:17px;font-weight:700;color:#cfe6df;margin-top:8px}
   .cover-text p{font-size:15.5px;color:rgba(255,255,255,.8);max-width:540px;margin:12px 0 0}
-  .cover-art{flex:0 0 auto;width:min(340px,80vw)}
+  .cover-art{flex:0 0 auto;width:min(300px,80vw)}
   .cover-art svg{width:100%;height:auto;display:block}
   .back{position:relative;z-index:3;display:inline-flex;align-items:center;gap:6px;color:#cfe6df;font-weight:700;font-size:14px}
 
@@ -47,7 +47,8 @@
   .tool.star{border:2px solid var(--brand)}
   .tool .tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;color:var(--brand-deep);background:#E7F1EE;border-radius:999px;padding:2px 9px}
   .tool .tag.copy{color:var(--ink-soft);background:var(--paper);border:1px solid var(--line)}
-  .ico{width:48px;height:48px;border-radius:13px;display:grid;place-items:center;margin-bottom:12px;font-size:24px}
+  .ico{width:84px;height:60px;border-radius:13px;display:grid;place-items:center;margin-bottom:12px;padding:5px 9px}
+  .tool .step{position:absolute;top:14px;left:14px;width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;font-size:18px;display:grid;place-items:center}
   .c-teal .ico{background:#E7F1EE}.c-blue .ico{background:#EAF0F5}.c-amber .ico{background:#FBF1E6}
   .tool h2{font-size:19px;letter-spacing:-.3px}
   .tool .desc{font-size:14px;color:var(--ink-soft);margin-top:7px;flex:1}
@@ -77,104 +78,51 @@
   @media (max-width:900px){.cards{grid-template-columns:1fr 1fr}.road{grid-template-columns:repeat(3,1fr)}}
   @media (max-width:620px){.cards,.cards.two{grid-template-columns:1fr}.road{grid-template-columns:1fr 1fr}.cover-text{text-align:center}.idcard .fields{grid-template-columns:1fr}.hub{padding:26px 16px 34px}}
 </style>
+<link rel="stylesheet" href="../assets/site.css">
 </head>
 <body>
   <section class="cover">
-    <a class="back" href="../">‹ כל ההכשרות</a>
     <div class="cover-main">
       <div class="cover-text">
         <div class="eyebrow">מערך הדיגיטל הלאומי · הדיגיטלית · המיזם הלאומי 265</div>
         <h1>קבלת החלטות מבוססת נתונים</h1>
         <div class="sub">שלושה ימים · שאלה ← תובנה ← החלטה</div>
-        <p>האתר המלווה של ההכשרה. כל כלי מסומן ביום ובשלב שבו משתמשים בו. מה שתמלאו נשמר במחשב שלכם בלבד, ואפשר לחזור אליו גם אחרי ההכשרה.</p>
+        <p>האתר המלווה של ההכשרה. מתקדמים לפי הסדר, יום אחרי יום. מה שתמלאו נשמר במחשב שלכם בלבד.</p>
       </div>
-      <div class="cover-art" aria-hidden="true">
-        <svg viewBox="0 0 340 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <line x1="20" y1="222" x2="320" y2="222" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
-          <rect x="44" y="150" width="40" height="72" rx="4" fill="rgba(255,255,255,.14)"/>
-          <rect x="100" y="120" width="40" height="102" rx="4" fill="rgba(255,255,255,.14)"/>
-          <rect x="156" y="62" width="40" height="160" rx="4" fill="#4FD6BE"/>
-          <rect x="212" y="138" width="40" height="84" rx="4" fill="rgba(255,255,255,.14)"/>
-          <rect x="268" y="156" width="40" height="66" rx="4" fill="rgba(255,255,255,.14)"/>
-          <path d="M176 44v-18" stroke="#E9A94F" stroke-width="2.5" stroke-linecap="round"/>
-          <circle cx="176" cy="18" r="10" fill="#E9A94F"/>
-          <text x="176" y="100" text-anchor="middle" fill="#0C2233" font-family="Alef, sans-serif" font-weight="700" font-size="18">136</text>
-        </svg>
-      </div>
+      <div class="cover-art vz-dark"><div class="vz-row"><div class="vz-card" data-viz="dash"></div><div class="vz-card" data-viz="bars"></div><div class="vz-card" data-viz="line"></div><div class="vz-card" data-viz="donut"></div></div></div>
     </div>
   </section>
 
   <div class="hub">
     <div id="idZone"></div>
 
-    <div class="road" aria-label="מפת הדרך">
-      <a href="#day1"><div class="n">01</div><div class="k">שאלה</div><div class="d">ההחלטה שצריך לקבל, לא הנתון שרוצים לראות</div><span class="dy">יום 1</span></a>
-      <a href="#day1"><div class="n">02</div><div class="k">מדד</div><div class="d">מה ייחשב הצלחה, ומה ימנע רמאות במדד</div><span class="dy">יום 1</span></a>
-      <a href="#day2"><div class="n">03</div><div class="k">ניתוח</div><div class="d">מנקים, מפלחים, מחפשים ריכוז ומגמה</div><span class="dy">יום 2</span></a>
-      <a href="#day2"><div class="n">04</div><div class="k">תובנה</div><div class="d">מספר + השוואה + השלכה, ושלוש חלופות</div><span class="dy">יום 2</span></a>
-      <a href="#day3"><div class="n">05</div><div class="k">החלטה</div><div class="d">המלצה שמנהל מבין ב-30 שניות</div><span class="dy">יום 3</span></a>
-    </div>
-
-    <div class="day" id="all">
-      <div class="day-h"><span class="day-badge all">לכל הימים</span><span class="t">פותחים כאן</span><span class="line"></span></div>
-      <div class="cards">
-        <a class="tool c-teal" href="security/">
-          <div class="ico">🛡️</div>
-          <h2>מה מטעה אותנו, ואיפה הגבול</h2>
-          <p class="desc">חמש הטיות, מה אסור להעלות לכלי AI, שבעה שלבי ניטרול מזהים, תרגיל "מותר או אסור?" וכלל ההכרעה Copilot מול Gemini.</p>
-          <div class="when">יום 1 · חטיבה 1, ולפני כל העלאת קובץ</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-blue" href="prompts/">
-          <div class="ico">✨</div>
-          <h2>ערכת הפרומפטים</h2>
-          <p class="desc">23 פרומפטים לפי יום ולפי שלב, מוכנים להעתקה. ממלאים פעם אחת תפקיד ורשות, והם נכנסים לכל הפרומפטים.</p>
-          <div class="when">כל שלושת הימים</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-amber" href="case/">
-          <div class="ico">🏙️</div>
-          <h2>מקרה הבוחן: עיריית אלון-ים</h2>
-          <p class="desc">הסיפור, הורדת הקבצים, מילון העמודות ושש משימות הניתוח. מי שאין לו קובץ משלו עובד כאן.</p>
-          <div class="when">יום 1 (בעיה ושאלה) · יום 2 (ניתוח)</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-      </div>
-    </div>
-
     <div class="day" id="day1">
-      <div class="day-h"><span class="day-badge">יום 1</span><span class="t">מהבעיה לשאלה שאפשר לענות עליה</span><span class="sub">בעיה · שאלה עסקית · מדד · מקורות</span><span class="line"></span></div>
+      <div class="day-h"><span class="day-badge">יום 1</span><span class="t">מהבעיה לשאלה שאפשר לענות עליה</span><span class="line"></span></div>
       <div class="cards two">
+        <a class="tool c-teal star" href="role-worksheet/">
+          <span class="step">1</span>
+          <div class="ico" data-viz="table"></div>
+          <h2>מה אני עושה ברשות?</h2>
+          <p class="desc">דף עבודה אישי: כותבים את התפקיד, את המשימות הגדולות והמשמעותיות ואת המשימות היומיומיות והחזרתיות, ומורידים כתמונה.</p>
+          <span class="go">מתחילים כאן ←</span>
+        </a>
         <a class="tool c-teal star" href="question/">
-          <span class="tag">התוצר של יום 1</span>
-          <div class="ico">❓</div>
+          <span class="step">2</span>
+          <div class="ico" data-viz="bars"></div>
           <h2>בונה השאלה העסקית</h2>
-          <p class="desc">עץ בעיה, 5 Whys, המשפט נבנה אוטומטית מחמשת הרכיבים, מבחן 5 השאלות, KPI ומדד-נגד, מפת מקורות, וייצוא מסמך (תבנית 01).</p>
-          <div class="when">חטיבות 2–4</div>
+          <p class="desc">שלושה חלקים, שלב אחרי שלב: השאלה העסקית, איך נדע שהצלחנו, ומפת המקורות. בסוף מייצאים ל-Word.</p>
           <span class="go">פתיחה ←</span>
         </a>
         <a class="tool c-teal" href="problem-tree/">
-          <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico">🌳</div>
+          <div class="ico" data-viz="scatter"></div>
           <h2>עץ הבעיה</h2>
           <p class="desc">עץ בעיה אינטראקטיבי: סימפטומים, בעיית ליבה ושורשים, עם ייצוא כתמונה.</p>
-          <div class="when">חטיבה 2 · פירוק הבעיה</div>
           <span class="go">פתיחה ←</span>
         </a>
         <a class="tool c-teal" href="challenge/">
-          <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico">🎯</div>
+          <div class="ico" data-viz="hbars"></div>
           <h2>הגדרת האתגר</h2>
-          <p class="desc">מגדירים אתגר, ממפים בעלי עניין ומזהים נתונים רלוונטיים, עם הצעות וקישורים למקורות מידע.</p>
-          <div class="when">חטיבה 3 · מקורות נתונים</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-teal" href="role-worksheet/">
-          <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico">📋</div>
-          <h2>מה אני עושה ברשות?</h2>
-          <p class="desc">דף עבודה אישי: התפקיד, המשימות הגדולות והיומיומיות. נקודת פתיחה לבחירת האתגר.</p>
-          <div class="when">חטיבה 1 · "האתגר שלי"</div>
+          <p class="desc">מגדירים אתגר, ממפים בעלי עניין ומזהים נתונים רלוונטיים, עם קישורים למקורות מידע.</p>
           <span class="go">פתיחה ←</span>
         </a>
       </div>
@@ -185,7 +133,7 @@
       <div class="cards">
         <a class="tool c-blue star" href="analysis/">
           <span class="tag">התוצר של יום 2</span>
-          <div class="ico">🧮</div>
+          <div class="ico" data-viz="dash"></div>
           <h2>ארגז הניתוח</h2>
           <p class="desc">יומן ניקוי (7 בדיקות), ארבע הטכניקות עם מחשבון Pareto ונרמול, בונה תובנה, עורך הדין של השטן ומטריצת חלופות עם ציון משוקלל (תבניות 02–04).</p>
           <div class="when">כל היום</div>
@@ -193,7 +141,7 @@
         </a>
         <a class="tool c-blue" href="insight/">
           <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico">💡</div>
+          <div class="ico" data-viz="donut"></div>
           <h2>חילוץ תובנה</h2>
           <p class="desc">תובנה אחת חזקה, דרך 5 בדיקות ביקורתיות: מתאם≠סיבתיות · מי אסף · מתי · מדגם · מה חסר.</p>
           <div class="when">חטיבות 3–4 · ביקורת עמיתים</div>
@@ -201,7 +149,7 @@
         </a>
         <a class="tool c-blue" href="prompt/">
           <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico">🤖</div>
+          <div class="ico" data-viz="line"></div>
           <h2>בונה הפרומפט ל-AI</h2>
           <p class="desc">מרכיבים פרומפט לניתוח נתונים: תפקיד · הקשר · משימה · פורמט, עם תזכורות תיקוף ופרטיות.</p>
           <div class="when">חטיבה 2 · ניתוח עם Copilot / Gemini</div>
@@ -215,7 +163,7 @@
       <div class="cards two">
         <a class="tool c-amber star" href="chart/">
           <span class="tag">התוצר של יום 3</span>
-          <div class="ico">📊</div>
+          <div class="ico" data-viz="bars"></div>
           <h2>בוחר הגרף וחמשת המשפטים</h2>
           <p class="desc">אומרים מה המסר ומקבלים איזה גרף, מה על כל ציר ומה למחוק. אחר כך SCR, חמשת המשפטים ופרומפט מוכן ל-Gemini Canvas.</p>
           <div class="when">כל היום</div>
@@ -223,7 +171,7 @@
         </a>
         <a class="tool c-amber" href="pitch/">
           <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico">🎤</div>
+          <div class="ico" data-viz="hbars"></div>
           <h2>מהנתון לפרומפט</h2>
           <p class="desc">ממלאים את תוכן המצגת ובוחרים עיצוב, ומקבלים פרומפט מפורט לטיוטת מצגת ב-Gemini Canvas.</p>
           <div class="when">חטיבה 3 · בונים את המצגת</div>
@@ -231,14 +179,14 @@
         </a>
         <a class="tool c-amber" href="prototype/">
           <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico">🛠️</div>
+          <div class="ico" data-viz="scatter"></div>
           <h2>מפתחים את הפתרון</h2>
           <p class="desc">דף עבודה אישי או צוותי, גם אם עדיין אין פתרון. הפלט: פרומפט שפותח דיון עם Gemini על כיווני פתרון.</p>
           <div class="when">לפני בחירת החלופה המומלצת</div>
           <span class="go">פתיחה ←</span>
         </a>
         <a class="tool c-amber" href="cards/">
-          <div class="ico">🗂️</div>
+          <div class="ico" data-viz="table"></div>
           <h2>כרטיסי הכיס</h2>
           <p class="desc">שלושה כרטיסי A5, אחד לכל יום. כל ההכשרה על שלושה כרטיסים, מוכנים להדפסה.</p>
           <div class="when">בסוף כל יום</div>
@@ -284,5 +232,6 @@
   render(false);
 })();
 </script>
+<script src="../assets/site.js" data-crumbs='כל ההכשרות|../'></script>
 </body>
 </html>

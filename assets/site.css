@@ -1,0 +1,80 @@
+/* Site-wide: breadcrumb/back strip + small animated data drawings ("viz").
+   Loaded by every page together with site.js. */
+
+/* ---------- back strip ---------- */
+.crumbs{display:flex;align-items:center;gap:10px;padding:9px 18px;background:#0C2233;color:#cfe6df;font-family:'Alef','Segoe UI',Arial,sans-serif;font-size:14px;direction:rtl;flex-wrap:wrap;position:relative;z-index:50}
+.crumbs a{color:#cfe6df;text-decoration:none;font-weight:700}
+.crumbs a:hover{color:#fff;text-decoration:underline}
+.crumbs .back{display:inline-flex;align-items:center;gap:7px;background:#4FD6BE;color:#0C2233;border-radius:999px;padding:7px 16px;font-size:15px;font-weight:700;text-decoration:none;transition:.15s}
+.crumbs .back:hover{background:#fff;color:#0C2233;text-decoration:none;transform:translateX(3px)}
+.crumbs .sep{opacity:.45}
+.crumbs .here{color:#fff;font-weight:700}
+.crumbs .spark{margin-inline-start:auto;flex:0 0 auto;line-height:0}
+.crumbs .spark .vz{height:28px;width:auto}
+body.has-crumbs .hublink{display:none!important}
+@media (max-width:560px){.crumbs{padding:8px 12px;font-size:13px}.crumbs .trail{display:none}.crumbs .back{font-size:14px}}
+@media print{.crumbs,.vz-side{display:none!important}}
+
+/* ---------- animated mini data drawings ---------- */
+.vz{display:block;width:100%;height:auto;overflow:visible}
+.vz-card{background:#fff;border:1px solid #D5DBE3;border-radius:14px;padding:8px 10px;box-shadow:0 3px 12px rgba(21,36,46,.08)}
+.vz-dark .vz-card,.vz-card.dark{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);box-shadow:none}
+.vz-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.vz-row>*{width:132px;animation:vzFloat 7s ease-in-out infinite}
+.vz-row>*:nth-child(2n){animation-duration:8.5s;animation-delay:-2s}
+.vz-row>*:nth-child(3n){animation-duration:6.2s;animation-delay:-4s}
+
+.vz .g{fill:#C5CED7}.vz .h{fill:#127C71}.vz .a{fill:#C77D3E}
+.vz .ln{fill:none;stroke:#127C71;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.vz .ln2{fill:none;stroke:#C5CED7;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.vz .ax{stroke:#9AA6B1;stroke-width:1.5}
+.vz text{font-family:'Alef',Arial,sans-serif;font-weight:700;fill:#15242E}
+.dark .vz .g,.vz-dark .vz .g{fill:rgba(255,255,255,.28)}
+.dark .vz .h,.vz-dark .vz .h{fill:#4FD6BE}
+.dark .vz .ln,.vz-dark .vz .ln{stroke:#4FD6BE}
+.dark .vz .ln2,.vz-dark .vz .ln2{stroke:rgba(255,255,255,.3)}
+.dark .vz .ax,.vz-dark .vz .ax{stroke:rgba(255,255,255,.4)}
+.dark .vz text,.vz-dark .vz text{fill:#fff}
+
+.vz .bar{transform-box:fill-box;transform-origin:50% 100%;animation:vzBar 3.6s ease-in-out infinite}
+.vz .hbar{transform-box:fill-box;transform-origin:100% 50%;animation:vzHBar 4.2s ease-in-out infinite}
+.vz .draw{stroke-dasharray:1;stroke-dashoffset:0;animation:vzDraw 5s ease-in-out infinite}
+.vz .dot{transform-box:fill-box;transform-origin:center;animation:vzPulse 2.2s ease-in-out infinite}
+.vz .bob{animation:vzBob 3.4s ease-in-out infinite}
+.vz .ring{fill:none;stroke-width:11;transform-origin:60px 40px;transform:rotate(-90deg)}
+.vz .ring.h{stroke:#127C71;animation:vzRing 5s ease-in-out infinite}
+.dark .vz .ring.h,.vz-dark .vz .ring.h{stroke:#4FD6BE}
+.vz .ring.g{stroke:#DCE2EA}
+.dark .vz .ring.g,.vz-dark .vz .ring.g{stroke:rgba(255,255,255,.18)}
+.vz .row{animation:vzRow 5s linear infinite}
+.vz .spin{transform-origin:60px 40px;animation:vzSpin 14s linear infinite}
+
+@keyframes vzBar{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.62)}}
+@keyframes vzHBar{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.7)}}
+@keyframes vzDraw{0%{stroke-dashoffset:1}45%,80%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
+@keyframes vzPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.45)}}
+@keyframes vzBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes vzRing{0%,100%{stroke-dashoffset:150}50%{stroke-dashoffset:55}}
+@keyframes vzRow{0%,18%{fill:#127C71;opacity:.9}22%,100%{fill:#C5CED7;opacity:.55}}
+@keyframes vzSpin{to{transform:rotate(360deg)}}
+@keyframes vzFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(.6deg)}}
+
+/* floating ornaments in the page margins of tool pages (wide screens only) */
+.vz-side{position:fixed;top:150px;width:118px;display:flex;flex-direction:column;gap:16px;pointer-events:none;z-index:-1;opacity:.9}
+.vz-side.r{right:max(14px,calc(50vw - 640px))}
+.vz-side.l{left:max(14px,calc(50vw - 640px))}
+.vz-side>*{animation:vzFloat 7s ease-in-out infinite}
+.vz-side>*:nth-child(2){animation-duration:9s;animation-delay:-3s}
+.vz-side>*:nth-child(3){animation-duration:6s;animation-delay:-1.5s}
+@media (max-width:1240px){.vz-side{display:none}}
+
+/* attention pulse for "click me" cards */
+.blink{animation:blinkGlow 1.6s ease-in-out infinite}
+@keyframes blinkGlow{0%,100%{box-shadow:0 0 0 0 rgba(233,169,79,.0),0 18px 48px rgba(21,36,46,.16);transform:translateY(0)}
+  50%{box-shadow:0 0 0 9px rgba(233,169,79,.55),0 18px 48px rgba(21,36,46,.16);transform:translateY(-4px)}}
+.blink-tag{position:absolute;top:16px;left:16px;background:#E9A94F;color:#0C2233;font-weight:700;font-size:12.5px;border-radius:999px;padding:3px 11px;animation:blinkTag 1.6s ease-in-out infinite}
+@keyframes blinkTag{0%,100%{opacity:1}50%{opacity:.35}}
+
+@media (prefers-reduced-motion:reduce){
+  .vz *,.vz-row>*,.vz-side>*,.blink,.blink-tag{animation:none!important}
+}
