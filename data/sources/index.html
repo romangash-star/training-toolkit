@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dd.css?v=6">
+<style>
+  .wrap{max-width:900px}
+  body{padding-bottom:62px}
+  .qbox{border:1.5px solid var(--teal,#1f5f5b);background:var(--teal-tint,#dcedea);border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:16px;line-height:1.6}
+  .qbox .ql{font-size:13px;font-weight:700;color:var(--teal,#1f5f5b);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .qbox .ql a{color:var(--teal,#1f5f5b)}
+  .qbox.missing{border-color:var(--warning,#9a6514);background:#fbf1e0}
+  .grp>h2 .cnt{margin-inline-start:auto;font-size:13px;font-weight:700;color:var(--ink-soft);background:var(--paper);border-radius:999px;padding:2px 12px}
+  .rows{display:flex;flex-direction:column;gap:8px}
+  .row{display:grid;grid-template-columns:2fr 1.3fr 1.3fr 38px;gap:8px;align-items:center}
+  .row.heads{font-size:12.5px;font-weight:700;color:var(--ink-soft);padding:0 2px}
+  .row .del{width:38px;height:38px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink-soft);font-weight:700}
+  .row .del:hover{border-color:var(--danger,#a8362d);color:var(--danger,#a8362d)}
+  .add{margin-top:10px}
+  .sites{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 12px}
+  .sites button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:13.5px;color:var(--teal,#1f5f5b)}
+  .sites button:hover{border-color:var(--teal,#1f5f5b);background:var(--teal-tint,#dcedea)}
+  /* export is always within reach */
+  .savebar{position:fixed;bottom:0;right:0;left:0;z-index:60;background:var(--surface-card,#fffdf8);border-top:2px solid var(--brand);box-shadow:0 -6px 24px rgba(42,33,27,.12);padding:10px 16px}
+  .savebar .in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .savebar .msg{font-size:14px;font-weight:700;flex:1;min-width:200px;display:flex;align-items:center}
+  .savebar .btn{padding:9px 14px}
+  @media (max-width:700px){
+    .row{grid-template-columns:1fr 38px;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--paper)}
+    .row input:nth-of-type(1){grid-column:1}.row .del{grid-row:1;grid-column:2}
+    .row input:nth-of-type(2),.row input:nth-of-type(3){grid-column:1 / -1}
+    .row.heads{display:none}
+    .savebar .msg{flex-basis:100%}.savebar .btn{flex:1}
+    body{padding-bottom:108px}
+  }
+  @media print{.savebar,.add,.sites,.del,.noprint{display:none!important}body{padding-bottom:0}}
+</style>
+<link rel="stylesheet" href="../../assets/site.css?v=6">
+</head>
+<body>
+  <header class="bar">
+    <div class="brand">מיפוי מקורות המידע</div>
+    <span class="daytag">יום 1</span>
+    <a class="hublink" href="../">‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap" id="app"></main>
+
+  <div class="savebar noprint">
+    <div class="in">
+      <div class="msg">שמרו עותק אצלכם <button type="button" class="help" aria-label="הסבר" data-help="האתר שומר את מה שכתבתם <b>רק בדפדפן הזה</b>. במחשב אחר, או אחרי ניקוי הדפדפן, זה לא יהיה שם. לכן כדאי לייצא: <b>Word</b> למסמך, <b>מייל</b> כדי לשלוח לעצמכם, או <b>קובץ</b> שאפשר לטעון בחזרה לאתר.">?</button></div>
+      <button class="btn btn-brand" onclick="S.doc()">Word</button>
+      <button class="btn btn-ghost" onclick="S.mail()">מייל לעצמי</button>
+      <button class="btn btn-ghost" onclick="S.copyAll()">העתקה</button>
+      <button class="btn btn-ghost" onclick="window.print()">הדפסה</button>
+      <button class="btn btn-ghost" onclick="S.saveJson()">קובץ</button>
+      <button class="btn btn-ghost" onclick="S.loadJson()">טעינה</button>
+    </div>
+  </div>
+
+  <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
+  <div class="toast" id="toast"></div>
+
+<script src="../assets/dd.js?v=6"></script>
+<script>
+const S=(()=>{
+  'use strict';
+  const LS='dd_sources_v1', QKEY='dd_question_v2', E=DD.esc;
+  /* three places a piece of data can be: with us, on a public site, or still to be obtained */
+  const GROUPS=[
+    {k:'have', n:1, t:'נתונים שכבר יש לנו ברשות',
+     lead:'קבצים, דוחות ומערכות שכבר קיימים אצלכם או אצל עמיתים.',
+     help:'כל נתון שכבר נאסף ברשות ויכול לעזור לענות על השאלה: דוח ממערכת המוקד, קובץ אקסל של המחלקה, נתוני גבייה. כותבים מה הנתון, איפה הוא יושב, ומי האדם שאפשר לפנות אליו.',
+     cols:['הנתון','איפה הוא נמצא','אצל מי'], ph:['פניות למוקד לפי אזור וקטגוריה','מערכת המוקד 106','מנהלת המוקד']},
+    {k:'pub', n:2, t:'נתונים באתרים ציבוריים',
+     lead:'נתונים פתוחים שכל אחד יכול להוריד. הם נותנים למה להשוות.',
+     help:'נתונים שלא שייכים לרשות אבל זמינים לכולם: הלמ״ס, data.gov.il, משרדי ממשלה. הם חשובים כדי להשוות את הרשות שלכם לאחרות. לחיצה על שם של אתר מוסיפה אותו לרשימה.',
+     cols:['הנתון','באיזה אתר','קישור'], ph:['מספר תושבים לפי אזור סטטיסטי','הלמ״ס','https://']},
+    {k:'need', n:3, t:'נתונים שעוד צריך להשיג',
+     lead:'מה חסר כדי לענות על השאלה, וממי מבקשים.',
+     help:'נתונים שאתם יודעים שצריך, אבל עדיין לא בידיכם: צריך לבקש ממחלקה אחרת, מספק, או לאסוף מחדש. כותבים ממי מבקשים ועד מתי, כדי שזה באמת יקרה לפני המפגש הבא.',
+     cols:['הנתון','ממי מבקשים','עד מתי'], ph:['זמני טיפול של תאגיד המים','מנהל התפעול בתאגיד','עד המפגש הבא']}
+  ];
+  const SITES=[['data.gov.il','https://data.gov.il/he'],['הלמ״ס','https://www.cbs.gov.il/he'],['GovMap','https://www.govmap.gov.il/'],
+    ['תקציב פתוח','https://obudget.org'],['שקיפות בחינוך','https://shkifut.education.gov.il'],['GIS תחבורה','https://geo.mot.gov.il/'],['אתר 265','https://govextra.gov.il/265/265/home/']];
+  const blank=()=>['','',''];
+  function fresh(){ return {have:[blank(),blank(),blank()], pub:[blank(),blank()], need:[blank(),blank()], imported:false}; }
+  let data=DD.load(LS,fresh());
+  function save(){ DD.save(LS,data); }
+
+  function question(){
+    try{
+      const q=(JSON.parse(localStorage.getItem(QKEY)||'{}').q)||{};
+      if(!(q.who||q.what||q.question)) return '';
+      const v=(x,ph)=>(x||'').trim()||'['+ph+']';
+      let t=`${v(q.who,'מי מחליט')} צריך להחליט ${v(q.what,'מה')} עד ${v(q.when,'מתי')}, כדי ${v(q.goal,'תוצאה מדידה')}, ${v(q.limit,'אילוץ')}.`;
+      if((q.question||'').trim()) t+=' השאלה: '+q.question.trim();
+      return t;
+    }catch(e){ return ''; }
+  }
+  /* rows already written in part 3 of the question builder come along, once */
+  function importFromBuilder(){
+    if(data.imported) return;
+    data.imported=true;
+    try{
+      const src=(JSON.parse(localStorage.getItem(QKEY)||'{}').sources)||[];
+      const rows=src.filter(r=>(r.name||'').trim()).map(r=>[r.name.trim(),'',(r.owner||'').trim()]);
+      if(rows.length && data.have.every(r=>r.every(c=>!c))) data.have=rows;
+    }catch(e){}
+    save();
+  }
+  const filled=k=>data[k].filter(r=>r[0].trim());
+  const countLabel=k=>{ const n=filled(k).length; return n===0?'עוד לא מולא':n===1?'נתון אחד':n+' נתונים'; };
+
+  function render(){
+    const q=question();
+    document.getElementById('app').innerHTML=`
+      <div class="head">
+        <div class="eyebrow">יום 1 · שלב 4 · שיעורי בית</div>
+        <h1>מיפוי מקורות המידע</h1>
+        <p>איפה נמצאים הנתונים שיעזרו לענות על השאלה שלכם? עכשיו רק <b>מאתרים</b>. את הניתוח נעשה במפגש הבא.</p>
+      </div>
+      <div class="qbox ${q?'':'missing'}">${q
+        ? `<div class="ql"><span>השאלה העסקית שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
+        : `<div class="ql"><span>עדיין אין שאלה עסקית</span><a href="../question/">לבונה השאלה העסקית ←</a></div>אפשר למלא גם בלי, אבל קל יותר לחפש נתונים כשהשאלה מול העיניים.`}</div>
+      ${GROUPS.map(g=>`
+        <div class="panel grp">
+          <h2><span class="num">${g.n}</span>${g.t}${DD.help(g.help)}<span class="cnt">${countLabel(g.k)}</span></h2>
+          <p class="lead">${g.lead}</p>
+          ${g.k==='pub'?`<div class="sites">${SITES.map((s,i)=>`<button onclick="S.site(${i})">+ ${s[0]}</button>`).join('')}</div>`:''}
+          <div class="rows">
+            <div class="row heads">${g.cols.map(c=>`<span>${c}</span>`).join('')}<span></span></div>
+            ${data[g.k].map((r,i)=>`<div class="row">
+              ${r.map((c,j)=>`<input class="txt" data-c="${g.k}-${i}-${j}" placeholder="${E(i===0?g.ph[j]:g.cols[j])}" value="${E(c)}">`).join('')}
+              <button class="del" onclick="S.del('${g.k}',${i})" title="מחיקת השורה">✕</button></div>`).join('')}
+          </div>
+          <button class="btn btn-ghost btn-sm add" onclick="S.add('${g.k}')">+ עוד נתון</button>
+        </div>`).join('')}
+      <div class="callout info"><b>לקראת המפגש הבא:</b> נסו להביא לפחות קובץ נתונים אחד מהרשימה הראשונה, בלי פרטים מזהים של תושבים. גם רשימה חלקית היא התחלה טובה.</div>`;
+    document.querySelectorAll('[data-c]').forEach(el=>el.addEventListener('input',()=>{
+      const[k,i,j]=el.dataset.c.split('-'); data[k][+i][+j]=el.value; save();
+      const cnt=el.closest('.grp').querySelector('.cnt'); if(cnt) cnt.textContent=countLabel(k);
+    }));
+  }
+  function add(k){ data[k].push(blank()); save(); render(); const all=document.querySelectorAll(`[data-c^="${k}-${data[k].length-1}-"]`); if(all[0]) all[0].focus(); }
+  function del(k,i){ data[k].splice(i,1); if(!data[k].length) data[k].push(blank()); save(); render(); }
+  function site(i){
+    const s=SITES[i], row=['',s[0],s[1]], empty=data.pub.findIndex(r=>r.every(c=>!c));
+    if(empty>-1) data.pub[empty]=row; else data.pub.push(row);
+    save(); render(); DD.toast('נוסף. כתבו איזה נתון תחפשו שם');
+  }
+
+  /* ---------- export ---------- */
+  function asText(){
+    const L=['מיפוי מקורות המידע'+(DD.identity()?' · '+DD.identity():''),''], q=question();
+    if(q) L.push('השאלה העסקית:',q,'');
+    GROUPS.forEach(g=>{
+      L.push(g.n+'. '+g.t);
+      const rows=filled(g.k);
+      if(!rows.length) L.push('   —');
+      rows.forEach(r=>L.push('   • '+r[0]+(r[1]?' | '+g.cols[1]+': '+r[1]:'')+(r[2]?' | '+g.cols[2]+': '+r[2]:'')));
+      L.push('');
+    });
+    return L.join('\n');
+  }
+  function doc(){
+    const q=question();
+    let b='<h1>מיפוי מקורות המידע</h1><p>'+E(DD.identity())+'</p>';
+    if(q) b+='<h2>השאלה העסקית</h2><p style="font-size:15px">'+E(q)+'</p>';
+    GROUPS.forEach(g=>{
+      const rows=filled(g.k);
+      b+='<h2>'+g.n+'. '+g.t+'</h2><table><tr>'+g.cols.map(c=>'<th>'+c+'</th>').join('')+'</tr>'+
+        (rows.length?rows.map(r=>'<tr>'+r.map(c=>'<td>'+E(c)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="3">—</td></tr>')+'</table>';
+    });
+    DD.downloadDoc('מיפוי מקורות המידע','מיפוי מקורות המידע',b); DD.toast('המסמך הורד');
+  }
+  function copyAll(){ DD.copy(asText()); }
+  function mail(){
+    const body=asText();
+    // very long mailto links are cut by some mail programs; the clipboard copy is the safety net
+    if(navigator.clipboard) navigator.clipboard.writeText(body).catch(()=>{});
+    location.href='mailto:?subject='+encodeURIComponent('מיפוי מקורות המידע שלי')+'&body='+encodeURIComponent(body.slice(0,1800));
+    DD.toast('נפתח מייל חדש. הטקסט גם הועתק, אפשר להדביק');
+  }
+  function saveJson(){ DD.download('מיפוי מקורות המידע.json', JSON.stringify(data,null,2)); DD.toast('הקובץ הורד. אפשר לטעון אותו בחזרה בכפתור "טעינה"'); }
+  function loadJson(){ DD.loadFile(d=>{ data=Object.assign(fresh(),d,{imported:true}); save(); render(); }); }
+
+  importFromBuilder(); render();
+  return {add,del,site,doc,copyAll,mail,saveJson,loadJson};
+})();
+</script>
+<script src="../../assets/site.js?v=6" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+</body>
+</html>
