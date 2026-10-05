@@ -6,20 +6,23 @@
 <title>בונה השאלה העסקית — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=3">
+<link rel="stylesheet" href="../assets/dd.css?v=4">
 <style>
   .wrap{max-width:760px}
-  /* stepper */
-  .parts{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin:0 0 18px}
-  .part{background:#FFFDF8;border:1px solid var(--line);border-radius:14px;padding:9px 12px;cursor:pointer;text-align:right;transition:.15s}
-  .part .pt{font-size:12px;font-weight:700;color:var(--ink-soft)}
-  .part .pn{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .part.on{border-color:var(--brand);box-shadow:0 0 0 3px rgba(180,80,47,.14)}
-  .part.done .pt{color:var(--leaf)}
-  .dots{display:flex;gap:5px;margin-top:7px}
-  .dots span{flex:1;height:6px;border-radius:4px;background:#E3D8C6}
-  .dots span.on{background:var(--brand)}
-  .dots span.done{background:var(--leaf)}
+  /* stepper: every step is a button; parts are labelled groups */
+  .parts{display:grid;grid-template-columns:4fr 1.25fr 1.25fr;gap:10px;margin:0 0 18px;align-items:stretch}
+  .part{background:var(--surface-card,#fffdf8);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px}
+  .part.on{border-color:var(--teal,#1f5f5b);box-shadow:0 0 0 2px var(--teal-tint,#dcedea)}
+  .part .pt{font-size:13px;font-weight:700;color:var(--ink-soft);padding-inline-start:4px}
+  .part .pt b{color:var(--ink);font-size:15px}
+  .part .steps{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;flex:1}
+  .stepbtn{display:flex;align-items:center;gap:8px;width:100%;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;font-weight:700;font-size:14px;color:var(--ink-soft);text-align:right;transition:.15s;cursor:pointer}
+  .stepbtn:hover{border-color:var(--teal,#1f5f5b);color:var(--ink)}
+  .stepbtn .sn{width:24px;height:24px;border-radius:50%;background:var(--line);color:var(--ink);display:grid;place-items:center;font-size:13px;flex:0 0 auto}
+  .stepbtn.done{color:var(--ink)}
+  .stepbtn.done .sn{background:var(--success,#2e7d4f);color:#fff}
+  .stepbtn.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .stepbtn.on .sn{background:#fff;color:var(--brand)}
   .stephead{display:flex;align-items:center;gap:12px;margin-bottom:6px}
   .stephead .num{width:38px;height:38px;border-radius:11px;background:var(--brand);color:#FFFDF8;display:grid;place-items:center;font-size:18px;font-weight:700;flex:0 0 auto}
   .stephead h2{font-size:24px;letter-spacing:-.5px}
@@ -44,9 +47,10 @@
   @keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
   .srcsum{font-weight:700;text-align:center;border-radius:9px;padding:6px}
   .srcsum.g{background:#E7F4EC;color:#1e5e45}.srcsum.y{background:#FCF3E1;color:#7a5410}.srcsum.r{background:#FBE9E6;color:#7d2a20}
-  @media (max-width:640px){.parts{grid-template-columns:1fr 1fr 1fr}.part .pn{font-size:13px}.three{grid-template-columns:1fr}.why-row{flex-direction:column;align-items:stretch;gap:3px}.why-row .lbl{flex:none}.stephead h2{font-size:20px}}
+  @media (max-width:760px){.parts{grid-template-columns:1fr 1fr}.part.p0{grid-column:1 / -1}.part.p0 .steps{grid-auto-flow:row;grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.three{grid-template-columns:1fr}.why-row{flex-direction:column;align-items:stretch;gap:3px}.why-row .lbl{flex:none}.stephead h2{font-size:20px}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=3">
+<link rel="stylesheet" href="../../assets/site.css?v=4">
 </head>
 <body>
   <header class="bar">
@@ -60,7 +64,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=3"></script>
+<script src="../assets/dd.js?v=4"></script>
 <script>
 const Q=(()=>{
   'use strict';
@@ -97,6 +101,7 @@ const Q=(()=>{
   const SOLUTION_WORDS=/^\s*(אין|חסר|חסרים|חסרה|צריך|צריכים|לא מספיק|אנחנו צריכים|יש צורך)/;
   /* step list: part 1 has four steps and a finish screen; parts 2 and 3 one step each; then the export screen */
   const STEPS=['problem','whys','template','tests','done1','kpi','sources','export'];
+  const STEP_NAMES=['הבעיה שלי','5 פעמים למה','השאלה העסקית','מבחן 5 השאלות','','איך נדע שהצלחנו','מפת המקורות',''];
   const PARTS=[{n:'חלק 1',t:'השאלה העסקית',from:0,to:4},{n:'חלק 2',t:'איך נדע שהצלחנו',from:5,to:5},{n:'חלק 3',t:'מפת המקורות',from:6,to:6}];
   const newSrc=()=>({name:'',owner:'',avail:0,full:0,fresh:0,trust:0});
 
@@ -211,10 +216,11 @@ const Q=(()=>{
 
   function render(){
     const st=data.step, key=STEPS[st];
+    const btn=(k,label)=>`<button class="stepbtn ${st===k?'on':st>k?'done':''}" onclick="Q.go(${k})" ${st===k?'aria-current="step"':''}><span class="sn">${st>k?'✓':label}</span>${STEP_NAMES[k]}</button>`;
     const parts=PARTS.map((p,i)=>{
-      const on=st>=p.from&&st<=p.to, done=st>p.to;
-      const dots = i===0 ? `<div class="dots">${[0,1,2,3].map(k=>`<span class="${st>k?'done':st===k?'on':''}"></span>`).join('')}</div>` : `<div class="dots"><span class="${done?'done':on?'on':''}"></span></div>`;
-      return `<div class="part ${on?'on':''} ${done?'done':''}" onclick="Q.go(${p.from})"><div class="pt">${done?'✓ ':''}${p.n}</div><div class="pn">${p.t}</div>${dots}</div>`;
+      const on=st>=p.from&&st<=p.to;
+      const steps = i===0 ? [0,1,2,3].map(k=>btn(k,k+1)).join('') : btn(p.from,i+4);
+      return `<div class="part p${i} ${on?'on':''}"><div class="pt">${p.n}${i===0?' · <b>'+p.t+'</b>':''}</div><div class="steps">${steps}</div></div>`;
     }).join('');
     const nextLabel={tests:'סיימתי ←',done1:'ממשיכים לחלק 2: איך נדע שהצלחנו ←',kpi:'ממשיכים לחלק 3: מפת המקורות ←',sources:'סיום וייצוא ←'}[key]||'הבא ←';
     document.getElementById('app').innerHTML=`
@@ -297,6 +303,6 @@ const Q=(()=>{
   return {go,test,period,addSrc,delSrc,example,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
 })();
 </script>
-<script src="../../assets/site.js?v=3" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=4" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
