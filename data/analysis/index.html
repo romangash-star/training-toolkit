@@ -6,13 +6,13 @@
 <title>ארגז הניתוח — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css">
+<link rel="stylesheet" href="../assets/dd.css?v=3">
 <style>
   .tech{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
   .tech h3{font-size:17px}
   .tech .how{font-size:13.5px;color:var(--ink-soft);margin-top:4px}
   .bar-row{display:grid;grid-template-columns:minmax(90px,160px) 1fr 70px;gap:8px;align-items:center;font-size:13.5px;margin:4px 0}
-  .bar-row .b{height:18px;border-radius:5px;background:#C5CED7}
+  .bar-row .b{height:18px;border-radius:5px;background:#D6CBBB}
   .bar-row.in80 .b{background:var(--brand)}
   .bar-row .v{font-weight:700;text-align:left;direction:ltr}
   .ins{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
@@ -26,11 +26,11 @@
   .wsum.okk{background:#E7F4EC;color:#1e5e45}.wsum.bad{background:#FBE9E6;color:#7d2a20}
   .locked input{background:var(--paper)}
 </style>
-<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/site.css?v=3">
 </head>
 <body>
   <header class="bar">
-    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M4 20h16M7 20V12M12 20V6M17 20v-5" stroke="#1F5673" stroke-width="2.4" stroke-linecap="round"/><circle cx="17" cy="9" r="2.6" fill="#C77D3E"/></svg>ארגז הניתוח</div>
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M4 20h16M7 20V12M12 20V6M17 20v-5" stroke="#1F5F5B" stroke-width="2.4" stroke-linecap="round"/><circle cx="17" cy="9" r="2.6" fill="#D99A2B"/></svg>ארגז הניתוח</div>
     <span class="daytag">יום 2 · תבניות 02–04</span>
     <a class="hublink" href="../">‹ כל הכלים</a>
   </header>
@@ -43,16 +43,16 @@
     </div>
 
     <nav class="tabs">
-      <button data-tab="t-clean">🧹 ניקוי</button>
-      <button data-tab="t-tech">🔎 ארבע טכניקות</button>
-      <button data-tab="t-ins">💡 תובנות</button>
-      <button data-tab="t-matrix">⚖️ מטריצת חלופות</button>
-      <button data-tab="t-export">⬇️ ייצוא</button>
+      <button data-tab="t-clean">ניקוי</button>
+      <button data-tab="t-tech">ארבע טכניקות</button>
+      <button data-tab="t-ins">תובנות</button>
+      <button data-tab="t-matrix">מטריצת חלופות</button>
+      <button data-tab="t-export">ייצוא</button>
     </nav>
 
     <section class="tab-pane" id="t-clean">
       <div class="panel">
-        <h2>יומן ניקוי נתונים <span class="pill">תבנית 02</span></h2>
+        <h2>יומן ניקוי נתונים<button type="button" class="help" aria-label="הסבר" data-help="לפני שמנתחים, בודקים שהקובץ תקין. עוברים על שבע בדיקות, ובכל אחת כותבים מה מצאתם ומה עשיתם. זה היומן שלכם: הוא מסביר אחר כך למה אפשר לסמוך על המספרים.">?</button></h2>
         <p class="lead">רוב הזמן בפרויקט דאטה הולך לניקוי, לא לניתוח. זה לא באג, זו העבודה. הבדיקות הראשונות טכניות. <b>השביעית היא זו שמשנה מסקנות.</b></p>
         <div class="field-label">הקובץ</div>
         <input class="txt" id="fileName" placeholder="לדוגמה: פניות מוקד אלון-ים 2025, גולמי">
@@ -69,20 +69,20 @@
 
     <section class="tab-pane" id="t-tech">
       <div class="panel">
-        <h2>ארבע טכניקות. זה כל מה שצריך.</h2>
+        <h2>ארבע טכניקות<button type="button" class="help" aria-label="הסבר" data-help="ארבע דרכים להסתכל על אותו קובץ. לכל אחת כותבים מה בדקתם ומה בלט. אפשר לעשות את כולן באקסל.">?</button></h2>
         <p class="lead">לא צריך סטטיסטיקה. ארבע פעולות באקסל מכסות את רוב מה שרשות צריכה. לכל טכניקה: מה עשיתי, ומה בולט.</p>
         <div id="techList"></div>
       </div>
 
       <div class="panel">
-        <h2>📊 מחשבון Pareto</h2>
+        <h2>מחשבון Pareto<button type="button" class="help" aria-label="הסבר" data-help="Pareto עונה על השאלה ״איפה רוב הבעיה?״. מדביקים רשימה של קטגוריה ומספר, והמחשבון מראה אילו קטגוריות מעטות אחראיות לרוב המקרים.">?</button></h2>
         <p class="lead">איפה מרוכז רוב האפקט? מדביקים שורות בפורמט <b>קטגוריה, מספר</b> (אפשר להעתיק שתי עמודות מאקסל). המחשבון ממיין, מחשב אחוז מצטבר ומסמן את מה שנכנס ל-80%.</p>
         <textarea id="pareto" style="min-height:130px;direction:rtl" placeholder="תברואה ופינוי אשפה, 1585&#10;גינון ועצים, 1094&#10;תשתיות מים וביוב, 931&#10;כבישים ומדרכות, 596&#10;תאורה, 420"></textarea>
         <div id="paretoOut" style="margin-top:12px"></div>
       </div>
 
       <div class="panel">
-        <h2>👥 מחשבון נרמול: ל-1,000 תושבים</h2>
+        <h2>מחשבון נרמול<button type="button" class="help" aria-label="הסבר" data-help="אזור גדול תמיד ייראה ״בעייתי״ יותר, כי גרים בו יותר אנשים. הנרמול מחלק את מספר הפניות במספר התושבים, כדי להשוות בצורה הוגנת.">?</button></h2>
         <p class="lead">בלי נרמול משווים תפוחים לתפוזים: שכונה של 12,000 מול שכונה של 3,000. מדביקים <b>אזור, מספר פניות, מספר תושבים</b>.</p>
         <textarea id="norm" style="min-height:110px" placeholder="אזור א׳, 634, 7200&#10;אזור ב׳, 809, 9500&#10;אזור ג׳, 1609, 11800"></textarea>
         <div id="normOut" style="margin-top:12px"></div>
@@ -107,7 +107,7 @@
 
     <section class="tab-pane" id="t-ins">
       <div class="panel">
-        <h2>תובנה = מספר + השוואה + השלכה <span class="pill">תבנית 03</span></h2>
+        <h2>תובנה = מספר + השוואה + השלכה<button type="button" class="help" aria-label="הסבר" data-help="תובנה טובה בנויה משלושה חלקים: <b>מספר</b> (7 ימים), <b>השוואה</b> (פי 1.75 מהעירוני), ו<b>השלכה</b> (מה זה אומר על הבעיה). ממלאים שלוש תובנות.">?</button></h2>
         <p class="lead">עד 35 מילים, בעברית ניהולית ולא אקדמית. תובנה בלי השוואה היא נתון. תובנה בלי השלכה היא טריוויה.</p>
         <details class="more"><summary>הדוגמה מאלון-ים</summary>
           <div class="hint" style="font-size:14px;line-height:1.8"><b>מספר:</b> חציון 7 ימים באזור ג׳ · <b>השוואה:</b> פי 1.75 מהחציון העירוני · <b>השלכה:</b> צוואר בקבוק בתאגיד, לא מחסור בפקחים<br>"זמן הטיפול החציוני באזור ג׳ הוא 7 ימים, פי 1.75 מהחציון העירוני, ו-63% מחריגות היעד בו הן פניות מים וביוב, מה שמצביע על צוואר בקבוק אצל תאגיד המים ולא על מחסור בפקחים."</div>
@@ -118,18 +118,18 @@
 
     <section class="tab-pane" id="t-matrix">
       <div class="panel">
-        <h2>מטריצת חלופות <span class="pill">תבנית 04</span></h2>
+        <h2>מטריצת חלופות<button type="button" class="help" aria-label="הסבר" data-help="טבלה שעוזרת לבחור בין כמה דרכי פעולה. נותנים לכל חלופה ציון 1–5 בארבעה קריטריונים, והטבלה מחשבת ציון סופי. החלופה עם הציון הגבוה מודגשת.">?</button></h2>
         <p class="lead">חלופה אחת היא לא בחירה, היא הצדקה. שתיים הן דיכוטומיה מזויפת. שלוש מכריחות חשיבה, ואחת מהן תמיד: <b>לא לעשות כלום</b>.</p>
-        <div class="field-label">1. קודם קובעים משקלים <span class="t">לפני הדירוג. אחרת מתאימים אותם לחלופה שכבר אהבתם.</span></div>
+        <div class="field-label">1. קודם קובעים משקלים<button type="button" class="help" aria-label="הסבר" data-help="משקל = כמה הקריטריון חשוב לכם, באחוזים. הסכום חייב להיות 100. קובעים את המשקלים <b>לפני</b> שמדרגים, כדי לא להטות את התוצאה.">?</button></div>
         <div class="weights" id="weights"></div>
-        <div class="field-label" style="margin-top:18px">2. אחר כך מדרגים 1–5 <span class="t">ציון = סכום (ציון × משקל)</span></div>
+        <div class="field-label" style="margin-top:18px">2. אחר כך מדרגים 1–5<button type="button" class="help" aria-label="הסבר" data-help="1 = חלש, 5 = חזק. <b>השפעה</b>: כמה זה ישפר את המדד. <b>סיכון</b>: 5 פירושו סיכון נמוך. <b>ישימות</b>: האם יש תקציב וסמכות. <b>נתונים</b>: כמה הנתונים תומכים בזה.">?</button></div>
         <div class="scroll-x" id="matrix"></div>
         <div id="matrixNote"></div>
         <details class="more"><summary>מה בדיוק שואלים בכל עמודה?</summary>
           <div class="hint" style="font-size:14px;line-height:1.9"><b>השפעה:</b> אם יצליח, כמה גדול השינוי במדד היעד?<br><b>סיכון:</b> מה קורה אם נכשל? הפיך או בלתי הפיך? מי נפגע? (5 = סיכון נמוך)<br><b>ישימות:</b> יש תקציב, כוח אדם וסמכות לבצע בשישה חודשים?<br><b>תמיכת נתונים:</b> עד כמה הנתונים שאספתי תומכים בכך שזה יעבוד?<br>מותר לשנות משקלים לפי הרשות, אבל לכתוב למה. ברשות בגירעון, ישימות תקבל 35%.</div>
         </details>
-        <div class="noprint" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="A.addAlt()">＋ חלופה</button><button class="btn btn-ghost btn-sm" onclick="A.exampleMatrix()">📋 הדוגמה מאלון-ים</button></div>
-        <div class="field-label" style="margin-top:16px">🧪 מבחן ההפרכה: איזה נתון היה גורם לי לשנות את ההמלצה?</div>
+        <div class="noprint" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="A.addAlt()">＋ חלופה</button><button class="btn btn-ghost btn-sm" onclick="A.exampleMatrix()">הדוגמה מאלון-ים</button></div>
+        <div class="field-label" style="margin-top:16px">מבחן ההפרכה: איזה נתון היה גורם לי לשנות את ההמלצה?<button type="button" class="help" aria-label="הסבר" data-help="אם שום נתון לא היה משנה את דעתכם, ההמלצה לא באמת נשענת על נתונים. כתבו נתון אחד שהיה גורם לכם לבחור אחרת.">?</button></div>
         <textarea id="refute" placeholder="אם יתברר ש... הייתי ממליץ על חלופה אחרת"></textarea>
         <div class="hint">אם אין נתון כזה, ההמלצה לא באמת מבוססת נתונים.</div>
       </div>
@@ -137,17 +137,17 @@
 
     <section class="tab-pane" id="t-export">
       <div class="panel">
-        <h2>⬇️ דף התובנות ומטריצת החלופות</h2>
+        <h2>דף התובנות ומטריצת החלופות</h2>
         <p class="lead">ביום 3 מעלים את המסמך הזה, יחד עם מסמך השאלה העסקית, כדי לבנות את שלד המצגת. <b>ליום 3 להביא:</b> שלוש תובנות סופיות, החלופה המומלצת, ושם ותפקיד של מקבל ההחלטה שאליו תציגו.</p>
         <div class="field-label">למי אציג?</div>
         <input class="txt" id="audience" placeholder="שם ותפקיד של מקבל ההחלטה">
         <div class="exportbar" style="margin-top:14px">
-          <button class="btn btn-brand" onclick="A.doc()">📄 מסמך Word</button>
-          <button class="btn btn-ghost" onclick="A.copyAll()">📋 העתקה</button>
-          <button class="btn btn-ghost" onclick="A.saveJson()">💾 שמירה</button>
-          <button class="btn btn-ghost" onclick="A.loadJson()">📂 טעינה</button>
+          <button class="btn btn-brand" onclick="A.doc()">מסמך Word</button>
+          <button class="btn btn-ghost" onclick="A.copyAll()">העתקה</button>
+          <button class="btn btn-ghost" onclick="A.saveJson()">שמירה</button>
+          <button class="btn btn-ghost" onclick="A.loadJson()">טעינה</button>
         </div>
-        <div style="text-align:center;margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="A.reset()">🗑️ ניקוי הכול</button></div>
+        <div style="text-align:center;margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="A.reset()">ניקוי הכול</button></div>
       </div>
     </section>
   </main>
@@ -155,7 +155,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js"></script>
+<script src="../assets/dd.js?v=3"></script>
 <script>
 const A=(()=>{
   'use strict';
@@ -242,7 +242,7 @@ const A=(()=>{
         <div class="field-label">התובנה במשפט <span class="t">אפשר להשאיר ריק, ואז היא מורכבת משלושת החלקים</span></div>
         <textarea data-in="${i}-text" placeholder="${E([x.num,x.cmp,x.impl].filter(Boolean).join(', ')||'המשפט המלא')}">${E(x.text)}</textarea>
         <div class="wc" id="wc${i}"></div>
-        <details class="more"><summary>😈 עורך הדין של השטן · בזוגות, 4 דקות, תקפו</summary>
+        <details class="more"><summary>עורך הדין של השטן · בזוגות, 4 דקות, תקפו</summary>
           <div class="field-label">מה עוד יכול להסביר את זה?</div><input class="txt" data-in="${i}-alt" value="${E(x.alt)}">
           <div class="field-label">מי חסר בנתונים האלה, ולמה?</div><input class="txt" data-in="${i}-missing" value="${E(x.missing)}">
           <div class="field-label">אם הייתי המנכ"ל, למה הייתי אומר לא?</div><input class="txt" data-in="${i}-ceo" value="${E(x.ceo)}">
@@ -327,6 +327,6 @@ const A=(()=>{
   return {addAlt,delAlt,exampleMatrix,doc,copyAll,saveJson,loadJson,reset};
 })();
 </script>
-<script src="../../assets/site.js" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../' data-side="1"></script>
+<script src="../../assets/site.js?v=3" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

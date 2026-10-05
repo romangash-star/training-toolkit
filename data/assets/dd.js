@@ -32,7 +32,7 @@ window.DD = (function(){
   /* Word-openable document from simple HTML */
   function downloadDoc(name, title, bodyHtml){
     var html='<html dir="rtl"><head><meta charset="utf-8"><title>'+esc(title)+'</title>'+
-      '<style>body{font-family:Arial,sans-serif;direction:rtl;line-height:1.6}h1{color:#0E655C}h2{color:#1F5673;border-bottom:1px solid #ccc;padding-bottom:3px;margin-top:22px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #bbb;padding:5px 7px;text-align:right}</style>'+
+      '<style>body{font-family:Arial,sans-serif;direction:rtl;line-height:1.6}h1{color:#8F3D22}h2{color:#1F5F5B;border-bottom:1px solid #ccc;padding-bottom:3px;margin-top:22px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #bbb;padding:5px 7px;text-align:right}</style>'+
       '</head><body>'+bodyHtml+'<p style="color:#888;font-size:11px;margin-top:30px">נבנה באתר המלווה · קבלת החלטות מבוססת נתונים · רומן גרינשטיין</p></body></html>';
     download(safeName(name,'מסמך')+'.doc', '﻿'+html, 'application/msword');
   }
@@ -54,5 +54,6 @@ window.DD = (function(){
     if(!document.getElementById(start)){ try{ start=localStorage.getItem(key)||''; }catch(e){ start=''; } }
     show(document.getElementById(start) ? start : btns[0].dataset.tab);
   }
-  return {esc:esc, load:load, save:save, identity:identity, toast:toast, copy:copy, download:download, downloadDoc:downloadDoc, loadFile:loadFile, safeName:safeName, tabs:tabs};
+  function help(text){ return '<button type="button" class="help" aria-label="הסבר" aria-expanded="false" data-help="'+esc(text)+'">?</button>'; }
+  return {help:help, esc:esc, load:load, save:save, identity:identity, toast:toast, copy:copy, download:download, downloadDoc:downloadDoc, loadFile:loadFile, safeName:safeName, tabs:tabs};
 })();

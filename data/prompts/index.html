@@ -6,14 +6,14 @@
 <title>ערכת הפרומפטים — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css">
+<link rel="stylesheet" href="../assets/dd.css?v=3">
 <style>
   .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-  .filters button{padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:700;font-size:13.5px;color:var(--ink-soft)}
-  .filters button.on{background:var(--core-1);border-color:var(--core-1);color:#fff}
-  .pr{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+  .filters button{padding:7px 13px;border-radius:999px;border:1.5px solid var(--line);background:#FFFDF8;font-weight:700;font-size:13.5px;color:var(--ink-soft)}
+  .filters button.on{background:var(--core-1);border-color:var(--core-1);color:#FFFDF8}
+  .pr{background:#FFFDF8;border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
   .pr .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .pr .id{font-weight:700;color:#fff;background:var(--core-1);border-radius:8px;padding:2px 8px;font-size:13px}
+  .pr .id{font-weight:700;color:#FFFDF8;background:var(--core-1);border-radius:8px;padding:2px 8px;font-size:13px}
   .pr h3{font-size:17px;flex:1;min-width:180px}
   .pr .stage{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
   .pr pre{white-space:pre-wrap;font-family:var(--sans);font-size:14px;line-height:1.7;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0 8px}
@@ -25,11 +25,11 @@
   .gold b{display:block;font-size:14.5px}
   @media (max-width:640px){.gold{grid-template-columns:1fr 1fr}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/site.css?v=3">
 </head>
 <body>
   <header class="bar">
-    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.6 4.2L18 8l-3.2 3 .9 4.4L12 13.6 8.3 15.4l.9-4.4L6 8l4.4-.8L12 3Z" fill="#1F5673"/><circle cx="18.5" cy="17.5" r="3" fill="#C77D3E"/></svg>ערכת הפרומפטים</div>
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.6 4.2L18 8l-3.2 3 .9 4.4L12 13.6 8.3 15.4l.9-4.4L6 8l4.4-.8L12 3Z" fill="#1F5F5B"/><circle cx="18.5" cy="17.5" r="3" fill="#D99A2B"/></svg>ערכת הפרומפטים</div>
     <span class="daytag">כל הימים</span>
     <a class="hublink" href="../">‹ כל הכלים</a>
   </header>
@@ -47,10 +47,10 @@
         <div><div class="field-label" style="margin-top:0">הרשות</div><input class="txt" id="gOrg" placeholder="עיר של 60 אלף תושבים"></div>
         <div><div class="field-label" style="margin-top:0">הנושא / הבעיה</div><input class="txt" id="gTopic" placeholder="התושבים מתלוננים שלא מטפלים בהם"></div>
       </div>
-      <div class="callout warn">♻️ לפני כל פרומפט: <b>נתונים אמיתיים ← Copilot הארגוני. שפה כללית ← מה שנוח.</b> אין שמות, ת״ז, כתובות מדויקות או טלפונים בכלי ציבורי. <a href="../security/">מה אסור ←</a></div>
+      <div class="callout warn">לפני כל פרומפט: <b>נתונים אמיתיים ← Copilot הארגוני. שפה כללית ← מה שנוח.</b> אין שמות, ת״ז, כתובות מדויקות או טלפונים בכלי ציבורי. <a href="../security/">מה אסור ←</a></div>
     </div>
 
-    <details class="more" style="margin-bottom:16px;background:#fff">
+    <details class="more" style="margin-bottom:16px;background:#FFFDF8">
       <summary>שישה כללי זהב לפרומפט מנצח</summary>
       <div class="gold" style="margin-top:10px">
         <div><b>01 היו ספציפיים</b>ככל שתפרטו, תקבלו מדויק יותר</div>
@@ -70,7 +70,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js"></script>
+<script src="../assets/dd.js?v=3"></script>
 <script>
 (()=>{
   'use strict';
@@ -242,7 +242,7 @@
       return `<div class="pr"><div class="top"><span class="id">${p.id}</span><h3>${p.t}</h3><span class="pill ${T[p.tool][1]}">${T[p.tool][0]}</span></div>
         <div class="stage">יום ${p.d} · ${p.stage}</div>
         <pre>${E(txt).replace(/\[[^\]]+\]/g,m=>'<mark>'+m+'</mark>')}</pre>
-        <div class="foot">${p.n?`<div class="hint">💡 ${p.n}</div>`:'<div class="hint"></div>'}<button class="btn btn-brand btn-sm" data-copy="${p.id}">📋 העתקה</button></div></div>`;
+        <div class="foot">${p.n?`<div class="hint">${p.n}</div>`:'<div class="hint"></div>'}<button class="btn btn-brand btn-sm" data-copy="${p.id}">העתקה</button></div></div>`;
     }).join('');
     document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>DD.copy(fill(P.find(p=>p.id===b.dataset.copy).x),'פרומפט '+b.dataset.copy+' הועתק ✓'));
   }
@@ -250,6 +250,6 @@
   render();
 })();
 </script>
-<script src="../../assets/site.js" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../' data-side="1"></script>
+<script src="../../assets/site.js?v=3" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

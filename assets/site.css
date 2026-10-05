@@ -1,80 +1,105 @@
-/* Site-wide: breadcrumb/back strip + small animated data drawings ("viz").
-   Loaded by every page together with site.js. */
+/* RomanAI design system, applied site-wide. Loaded last in <head> on every page,
+   so it also re-skins the older tool pages that carry their own inline styles.
+   Source of truth for the values: RomanAI-design-system/tokens.css (light theme). */
+:root{
+  --surface-100:#faf5ec; --surface-200:#f2eadc; --surface-card:#fffdf8;
+  --ink:#2a211b; --ink-muted:#6b5d52; --line:#e3d8c6;
+  --brand:#b4502f; --on-brand:#fffdf8; --brand-tint:#f4ded3;
+  --teal:#1f5f5b; --on-teal:#fffdf8; --teal-tint:#dcedea;
+  --amber:#d99a2b; --success:#2e7d4f; --warning:#9a6514; --danger:#a8362d;
+  --data-muted:#d6cbbb;
+  --shadow-card:0 1px 2px rgba(42,33,27,.06),0 8px 24px rgba(42,33,27,.06);
+  --font-sans:"Alef","Arial Hebrew",Arial,sans-serif;
+  --space-1:4px;--space-2:8px;--space-3:16px;--space-4:24px;--space-5:40px;--space-6:64px;
+  --radius-sm:6px;--radius-md:12px;--radius-lg:24px;--radius-pill:999px;
 
-/* ---------- back strip ---------- */
-.crumbs{display:flex;align-items:center;gap:10px;padding:9px 18px;background:#0C2233;color:#cfe6df;font-family:'Alef','Segoe UI',Arial,sans-serif;font-size:14px;direction:rtl;flex-wrap:wrap;position:relative;z-index:50}
-.crumbs a{color:#cfe6df;text-decoration:none;font-weight:700}
-.crumbs a:hover{color:#fff;text-decoration:underline}
-.crumbs .back{display:inline-flex;align-items:center;gap:7px;background:#4FD6BE;color:#0C2233;border-radius:999px;padding:7px 16px;font-size:15px;font-weight:700;text-decoration:none;transition:.15s}
-.crumbs .back:hover{background:#fff;color:#0C2233;text-decoration:none;transform:translateX(3px)}
-.crumbs .sep{opacity:.45}
-.crumbs .here{color:#fff;font-weight:700}
-.crumbs .spark{margin-inline-start:auto;flex:0 0 auto;line-height:0}
-.crumbs .spark .vz{height:28px;width:auto}
-body.has-crumbs .hublink{display:none!important}
-@media (max-width:560px){.crumbs{padding:8px 12px;font-size:13px}.crumbs .trail{display:none}.crumbs .back{font-size:14px}}
-@media print{.crumbs,.vz-side{display:none!important}}
-
-/* ---------- animated mini data drawings ---------- */
-.vz{display:block;width:100%;height:auto;overflow:visible}
-.vz-card{background:#fff;border:1px solid #D5DBE3;border-radius:14px;padding:8px 10px;box-shadow:0 3px 12px rgba(21,36,46,.08)}
-.vz-dark .vz-card,.vz-card.dark{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);box-shadow:none}
-.vz-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.vz-row>*{width:132px;animation:vzFloat 7s ease-in-out infinite}
-.vz-row>*:nth-child(2n){animation-duration:8.5s;animation-delay:-2s}
-.vz-row>*:nth-child(3n){animation-duration:6.2s;animation-delay:-4s}
-
-.vz .g{fill:#C5CED7}.vz .h{fill:#127C71}.vz .a{fill:#C77D3E}
-.vz .ln{fill:none;stroke:#127C71;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.vz .ln2{fill:none;stroke:#C5CED7;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-.vz .ax{stroke:#9AA6B1;stroke-width:1.5}
-.vz text{font-family:'Alef',Arial,sans-serif;font-weight:700;fill:#15242E}
-.dark .vz .g,.vz-dark .vz .g{fill:rgba(255,255,255,.28)}
-.dark .vz .h,.vz-dark .vz .h{fill:#4FD6BE}
-.dark .vz .ln,.vz-dark .vz .ln{stroke:#4FD6BE}
-.dark .vz .ln2,.vz-dark .vz .ln2{stroke:rgba(255,255,255,.3)}
-.dark .vz .ax,.vz-dark .vz .ax{stroke:rgba(255,255,255,.4)}
-.dark .vz text,.vz-dark .vz text{fill:#fff}
-
-.vz .bar{transform-box:fill-box;transform-origin:50% 100%;animation:vzBar 3.6s ease-in-out infinite}
-.vz .hbar{transform-box:fill-box;transform-origin:100% 50%;animation:vzHBar 4.2s ease-in-out infinite}
-.vz .draw{stroke-dasharray:1;stroke-dashoffset:0;animation:vzDraw 5s ease-in-out infinite}
-.vz .dot{transform-box:fill-box;transform-origin:center;animation:vzPulse 2.2s ease-in-out infinite}
-.vz .bob{animation:vzBob 3.4s ease-in-out infinite}
-.vz .ring{fill:none;stroke-width:11;transform-origin:60px 40px;transform:rotate(-90deg)}
-.vz .ring.h{stroke:#127C71;animation:vzRing 5s ease-in-out infinite}
-.dark .vz .ring.h,.vz-dark .vz .ring.h{stroke:#4FD6BE}
-.vz .ring.g{stroke:#DCE2EA}
-.dark .vz .ring.g,.vz-dark .vz .ring.g{stroke:rgba(255,255,255,.18)}
-.vz .row{animation:vzRow 5s linear infinite}
-.vz .spin{transform-origin:60px 40px;animation:vzSpin 14s linear infinite}
-
-@keyframes vzBar{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.62)}}
-@keyframes vzHBar{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.7)}}
-@keyframes vzDraw{0%{stroke-dashoffset:1}45%,80%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
-@keyframes vzPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.45)}}
-@keyframes vzBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@keyframes vzRing{0%,100%{stroke-dashoffset:150}50%{stroke-dashoffset:55}}
-@keyframes vzRow{0%,18%{fill:#127C71;opacity:.9}22%,100%{fill:#C5CED7;opacity:.55}}
-@keyframes vzSpin{to{transform:rotate(360deg)}}
-@keyframes vzFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-7px) rotate(.6deg)}}
-
-/* floating ornaments in the page margins of tool pages (wide screens only) */
-.vz-side{position:fixed;top:150px;width:118px;display:flex;flex-direction:column;gap:16px;pointer-events:none;z-index:-1;opacity:.9}
-.vz-side.r{right:max(14px,calc(50vw - 640px))}
-.vz-side.l{left:max(14px,calc(50vw - 640px))}
-.vz-side>*{animation:vzFloat 7s ease-in-out infinite}
-.vz-side>*:nth-child(2){animation-duration:9s;animation-delay:-3s}
-.vz-side>*:nth-child(3){animation-duration:6s;animation-delay:-1.5s}
-@media (max-width:1240px){.vz-side{display:none}}
-
-/* attention pulse for "click me" cards */
-.blink{animation:blinkGlow 1.6s ease-in-out infinite}
-@keyframes blinkGlow{0%,100%{box-shadow:0 0 0 0 rgba(233,169,79,.0),0 18px 48px rgba(21,36,46,.16);transform:translateY(0)}
-  50%{box-shadow:0 0 0 9px rgba(233,169,79,.55),0 18px 48px rgba(21,36,46,.16);transform:translateY(-4px)}}
-.blink-tag{position:absolute;top:16px;left:16px;background:#E9A94F;color:#0C2233;font-weight:700;font-size:12.5px;border-radius:999px;padding:3px 11px;animation:blinkTag 1.6s ease-in-out infinite}
-@keyframes blinkTag{0%,100%{opacity:1}50%{opacity:.35}}
-
-@media (prefers-reduced-motion:reduce){
-  .vz *,.vz-row>*,.vz-side>*,.blink,.blink-tag{animation:none!important}
+  /* names used by the older tool pages, mapped onto the tokens */
+  --canvas:var(--surface-100); --paper:var(--surface-200); --card:var(--surface-card);
+  --ink-soft:var(--ink-muted); --brand-deep:#8f3d22; --core-1:var(--teal);
+  --root:var(--warning); --leaf:var(--success); --warn:var(--danger);
+  --sans:var(--font-sans); --shadow:var(--shadow-card); --shadow-sm:var(--shadow-card);
 }
+html{background:var(--surface-100)}
+body{background:var(--surface-100)!important;background-image:none!important;color:var(--ink);font-family:var(--font-sans)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+/* ---------- top strip: wordmark + way back ---------- */
+.topbar{display:flex;align-items:center;gap:14px;padding:10px 20px;background:var(--teal);color:var(--on-teal);font-family:var(--font-sans);direction:rtl;flex-wrap:wrap}
+.topbar .mark{font-size:22px;font-weight:700;color:var(--on-teal);text-decoration:none;letter-spacing:-.3px;direction:ltr}
+.topbar .mark span{color:#f0b95a}
+.topbar .back{display:inline-flex;align-items:center;gap:7px;background:var(--surface-card);color:var(--teal);border-radius:var(--radius-pill);padding:7px 18px;font-size:15px;font-weight:700;text-decoration:none}
+.topbar .back:hover{background:#fff}
+.topbar .trail{font-size:14px;color:#c9e2de}
+.topbar .trail a{color:#c9e2de;text-decoration:none}
+.topbar .trail a:hover{color:#fff;text-decoration:underline}
+.topbar .trail .sep{opacity:.6;margin:0 4px}
+.topbar .trail .here{color:#fff;font-weight:700}
+body.has-topbar .hublink,body.has-topbar header.bar.plain,body.has-topbar header.bar>a{display:none!important}
+/* the older hubs: fewer words on each card */
+.feat,.flow-note,.day-h .sub,.day-h .line{display:none!important}
+body.has-topbar header.bar{position:static;background:var(--surface-200);backdrop-filter:none;border-bottom:1px solid var(--line)}
+@media (max-width:640px){.topbar{padding:9px 14px;gap:10px}.topbar .trail{display:none}.topbar .mark{font-size:19px}}
+
+/* ---------- hero (hub covers) ---------- */
+.cover{background:var(--teal)!important;color:var(--on-teal)!important;padding-bottom:0!important}
+.cover::before,.cover::after{display:none!important}
+.cover-art,.cover .back,.cover>a{display:none!important}
+.cover-main{padding-bottom:8px}
+.cover-text .eyebrow{color:#c9e2de!important}
+.cover-text .sub{color:#fffdf8!important}
+.cover-text p{color:#c9e2de!important}
+
+/* ---------- the seven floating data symbols ---------- */
+.sym{display:flex;justify-content:space-evenly;align-items:center;height:84px;max-width:720px;margin:0 auto;pointer-events:none}
+.sym svg{width:46px;height:46px;animation:symFloat 7s ease-in-out infinite;flex:0 0 auto}
+.sym svg:nth-child(2){animation-duration:8.4s;animation-delay:-1.3s}
+.sym svg:nth-child(3){animation-duration:6.6s;animation-delay:-2.7s}
+.sym svg:nth-child(4){animation-duration:9.2s;animation-delay:-.6s}
+.sym svg:nth-child(5){animation-duration:7.7s;animation-delay:-3.9s}
+.sym svg:nth-child(6){animation-duration:8.8s;animation-delay:-2.1s}
+.sym svg:nth-child(7){animation-duration:6.9s;animation-delay:-4.6s}
+.sym.light svg{opacity:.6}.sym.dark svg{opacity:.75}
+@keyframes symFloat{0%,100%{transform:translateY(5px) rotate(-3deg)}50%{transform:translateY(-7px) rotate(3deg)}}
+@media (max-width:560px){.sym svg{width:34px;height:34px}.sym{height:64px}}
+
+/* single static symbol used as a card icon */
+.ico[data-ico]{width:52px!important;height:52px!important;border-radius:var(--radius-md)!important;background:var(--teal-tint)!important;display:grid;place-items:center;padding:9px!important}
+.ico[data-ico] svg{width:100%;height:100%}
+
+/* ---------- footer ---------- */
+footer.credit{display:none!important}
+.brandfoot{background:var(--surface-200);border-top:1px solid var(--line);padding:14px 24px;font-family:var(--font-sans);direction:rtl;margin-top:auto}
+.brandfoot .in{max-width:1120px;margin:0 auto;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.brandfoot .logos{display:flex;align-items:center;gap:18px}
+.brandfoot .logos img{height:38px;width:auto;display:block}
+.brandfoot .sym{flex:1;min-width:220px;height:60px}
+.brandfoot .sym svg{width:34px;height:34px}
+.brandfoot .by{font-size:14px;color:var(--ink-muted)}
+.brandfoot .by a{color:var(--teal);font-weight:700;text-decoration:none}
+@media (max-width:760px){.brandfoot .in{justify-content:center;text-align:center}.brandfoot .sym{flex-basis:100%;order:3}}
+
+/* ---------- small "?" help ---------- */
+.help{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--teal);background:var(--surface-card);color:var(--teal);font:700 13px/1 var(--font-sans);cursor:pointer;padding:0;margin-inline-start:6px;vertical-align:middle;flex:0 0 auto}
+.help:hover,.help[aria-expanded="true"]{background:var(--teal);color:var(--on-teal)}
+.help-pop{position:absolute;z-index:200;max-width:300px;background:var(--ink);color:#fffdf8;border-radius:var(--radius-md);padding:12px 14px;font:400 14.5px/1.55 var(--font-sans);direction:rtl;text-align:right;box-shadow:0 10px 30px rgba(42,33,27,.3)}
+.help-pop b{color:#f0b95a}
+
+/* ---------- gentle re-skin of shared pieces in the older tools ---------- */
+.panel,.tool,.track,.idcard,.card{border-radius:var(--radius-md)!important;box-shadow:var(--shadow-card)!important}
+.btn,.go,.idcard .save{border-radius:var(--radius-md)!important}
+.btn-brand,.idcard .save{background:var(--brand)!important;box-shadow:none!important;color:var(--on-brand)!important}
+.btn-brand:hover,.idcard .save:hover{background:#8f3d22!important}
+.btn-dark{background:var(--teal)!important}
+.daytag,.day-badge{background:var(--teal)!important;color:var(--on-teal)!important}
+.head .eyebrow{background:var(--teal-tint)!important;color:var(--teal)!important}
+/* dictation button: icon drawn in CSS (no emoji) */
+.mic::before{content:"";display:block;width:16px;height:16px;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0014 0M12 18v3'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='9' y='3' width='6' height='11' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0014 0M12 18v3'/%3E%3C/svg%3E") center/contain no-repeat}
+
+/* attention ring for the card to click: slow and soft, never a flash */
+.blink{outline:4px solid rgba(217,154,43,0);outline-offset:3px;animation:softRing 2.8s ease-in-out infinite}
+@keyframes softRing{0%,100%{outline-color:rgba(217,154,43,0)}50%{outline-color:rgba(217,154,43,.85)}}
+
+@media (prefers-reduced-motion:reduce){.sym svg,.blink{animation:none!important}}
+@media print{.topbar,.brandfoot,.help,.help-pop{display:none!important}}

@@ -7,11 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root{--canvas:#EEF1F6;--paper:#F7F9FB;--card:#FFF;--ink:#15242E;--ink-soft:#54636F;--line:#D5DBE3;--brand:#127C71;--brand-deep:#0E655C;--root:#C77D3E;--leaf:#2E8B6B;--core-1:#1F5673;--sans:'Alef','Segoe UI',Arial,sans-serif;--shadow:0 14px 40px rgba(21,36,46,.14);--shadow-sm:0 3px 12px rgba(21,36,46,.08)}
+  :root{--canvas:#FAF5EC;--paper:#F2EADC;--card:#FFFDF8;--ink:#2A211B;--ink-soft:#6B5D52;--line:#E3D8C6;--brand:#B4502F;--brand-deep:#8F3D22;--root:#D99A2B;--leaf:#2E7D4F;--core-1:#1F5F5B;--sans:'Alef','Segoe UI',Arial,sans-serif;--shadow:0 14px 40px rgba(42,33,27,.14);--shadow-sm:0 3px 12px rgba(42,33,27,.08)}
   *{box-sizing:border-box} html,body{margin:0;min-height:100%}
   body{font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;background:var(--canvas);display:flex;flex-direction:column;min-height:100vh}
   h1,h2,h3{font-weight:700;line-height:1.12;margin:0} a{text-decoration:none;color:inherit}
-  .cover{position:relative;overflow:hidden;color:#fff;padding:26px 24px 40px;background:radial-gradient(1000px 500px at 82% -20%,rgba(31,86,115,.55),transparent 60%),linear-gradient(160deg,#123047 0%,#0C2233 100%)}
+  .cover{position:relative;overflow:hidden;color:#FFFDF8;padding:26px 24px 40px;background:radial-gradient(1000px 500px at 82% -20%,rgba(31,95,91,.55),transparent 60%),linear-gradient(160deg,#123047 0%,#1F5F5B 100%)}
   .backlink{position:relative;z-index:2;display:inline-flex;align-items:center;gap:6px;color:#bcd4e6;font-weight:700;font-size:14px;text-decoration:none}
   .cover-main{position:relative;z-index:2;max-width:900px;margin:16px auto 0;text-align:center}
   .cover .eyebrow{font-size:13px;font-weight:700;letter-spacing:2px;color:#8fc2d6}
@@ -20,37 +20,37 @@
   .hub{flex:1;max-width:1000px;width:100%;margin:0 auto;padding:36px 24px 40px}
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px}
   .tool{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow-sm);transition:.2s}
-  .tool:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#c2ccd6}
+  .tool:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#CBBDA6}
   .ico{width:58px;height:58px;border-radius:15px;display:grid;place-items:center;margin-bottom:14px}
-  .c-blue .ico{background:#EAF0F5}.c-teal .ico{background:#E7F1EE}
+  .c-blue .ico{background:#DCEDEA}.c-teal .ico{background:#DCEDEA}
   .tool h2{font-size:23px;letter-spacing:-.4px}
   .tool .desc{font-size:14.5px;color:var(--ink-soft);margin-top:9px;flex:1}
   .feat{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
   .feat span{font-size:12px;font-weight:700;color:var(--ink-soft);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
-  .go{margin-top:18px;align-self:flex-start;padding:11px 22px;border-radius:11px;font-weight:700;font-size:14.5px;color:#fff;display:inline-flex;align-items:center;gap:8px;transition:.15s}
-  .c-blue .go{background:var(--core-1)}.c-blue .go:hover{background:#16405c}
+  .go{margin-top:18px;align-self:flex-start;padding:11px 22px;border-radius:11px;font-weight:700;font-size:14.5px;color:#FFFDF8;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  .c-blue .go{background:var(--core-1)}.c-blue .go:hover{background:#174A47}
   .c-teal .go{background:var(--brand)}.c-teal .go:hover{background:var(--brand-deep)}
-  footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:16px 22px;text-align:center;font-size:13px;color:var(--ink-soft);background:rgba(247,249,251,.9);border-top:1px solid var(--line)}
-  footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:var(--shadow-sm)}
+  footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:16px 22px;text-align:center;font-size:13px;color:var(--ink-soft);background:rgba(250,245,236,.9);border-top:1px solid var(--line)}
+  footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #FFFDF8;box-shadow:var(--shadow-sm)}
   footer.credit a{color:var(--brand-deep);font-weight:700}
   @media (max-width:720px){.cards{grid-template-columns:1fr}}
 
   /* identity gate */
-  .idcard{max-width:620px;margin:0 auto 26px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow);text-align:right}
+  .idcard{max-width:620px;margin:0 auto 26px;background:#FFFDF8;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow);text-align:right}
   .idcard h3{font-size:20px;letter-spacing:-.4px}
   .idcard p{font-size:14px;color:var(--ink-soft);margin:7px 0 0}
   .idcard .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-  .idcard input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff}
-  .idcard input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(18,124,113,.14)}
+  .idcard input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#FFFDF8}
+  .idcard input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(180,80,47,.14)}
   .idcard input.full{grid-column:1 / -1}
-  .idcard .save{margin-top:12px;width:100%;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-deep));box-shadow:0 4px 14px rgba(18,124,113,.28)}
+  .idcard .save{margin-top:12px;width:100%;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;color:#FFFDF8;background:linear-gradient(135deg,var(--brand),var(--brand-deep));box-shadow:0 4px 14px rgba(180,80,47,.28)}
   .idcard .save:hover{filter:brightness(1.05)}
-  .idbar{max-width:620px;margin:0 auto 22px;display:flex;align-items:center;gap:10px;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 18px;box-shadow:var(--shadow-sm);font-size:14px}
+  .idbar{max-width:620px;margin:0 auto 22px;display:flex;align-items:center;gap:10px;justify-content:center;background:#FFFDF8;border:1px solid var(--line);border-radius:999px;padding:9px 18px;box-shadow:var(--shadow-sm);font-size:14px}
   .idbar .who{font-weight:700}
   .idbar button{background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--brand-deep);text-decoration:underline}
   @media (max-width:560px){.idcard .fields{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/site.css?v=3">
 </head>
 <body>
   <section class="cover">
@@ -67,14 +67,14 @@
 
     <div class="cards">
       <a class='tool c-teal' href='../role-worksheet/?from=ai'>
-        <div class="ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2.5" stroke="#127C71" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#C77D3E" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="2.5" stroke="#B4502F" stroke-width="2"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#D99A2B" stroke-width="2" stroke-linecap="round"/></svg></div>
         <h2>מה אני עושה ברשות?</h2>
         <p class="desc">דף עבודה אישי: ממפים את התפקיד, את המשימות הגדולות ואת היומיומיות — כדי לזהות היכן AI יחסוך זמן. עם טיימר מובנה.</p>
-        <div class="feat"><span>תפקיד</span><span>משימות</span><span>⏱️ טיימר</span></div>
+        <div class="feat"><span>תפקיד</span><span>משימות</span><span>⏱ טיימר</span></div>
         <span class="go">פתיחה ←</span>
       </a>
       <a class='tool c-blue' href='../ai-prompt/'>
-        <div class="ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.6 4.2L18 8l-3.2 3 .9 4.4L12 13.6 8.3 15.4l.9-4.4L6 8l4.4-.8L12 3Z" fill="#1F5673"/><circle cx="18.5" cy="17.5" r="3" fill="#C77D3E"/></svg></div>
+        <div class="ico"><svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3l1.6 4.2L18 8l-3.2 3 .9 4.4L12 13.6 8.3 15.4l.9-4.4L6 8l4.4-.8L12 3Z" fill="#1F5F5B"/><circle cx="18.5" cy="17.5" r="3" fill="#D99A2B"/></svg></div>
         <h2>בונה הפרומפט ל‑AI</h2>
         <p class="desc">מרכיבים פרומפט טוב לפי האנטומיה: תפקיד · הקשר · משימה · פורמט — עם דוגמאות מוכנות ותזכורות תיקוף ופרטיות.</p>
         <div class="feat"><span>4 חלקי פרומפט</span><span>דוגמאות</span><span>העתקה ל‑AI</span></div>
@@ -94,7 +94,7 @@
     var d=get(), zone=document.getElementById('idZone');
     if(!zone) return;
     if(d.name && !edit){
-      zone.innerHTML='<div class="idbar"><span>👤</span><span class="who">'+esc([d.name,d.dept,d.role].filter(Boolean).join(' · '))+'</span><button id="idEdit">שינוי</button></div>';
+      zone.innerHTML='<div class="idbar"><span></span><span class="who">'+esc([d.name,d.dept,d.role].filter(Boolean).join(' · '))+'</span><button id="idEdit">שינוי</button></div>';
       document.getElementById('idEdit').onclick=function(){ render(true); };
       return;
     }
@@ -120,6 +120,6 @@
   render(false);
 })();
 </script>
-<script src="../assets/site.js" data-crumbs='כל ההכשרות|../'></script>
+<script src="../assets/site.js?v=3" data-crumbs='כל ההכשרות|../'></script>
 </body>
 </html>

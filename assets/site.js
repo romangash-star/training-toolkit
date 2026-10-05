@@ -1,100 +1,118 @@
-/* Site-wide helpers, loaded by every page:
-   1. Back strip / breadcrumbs. Configure on the script tag:
+/* RomanAI site shell, loaded by every page:
+   1. Top strip: RomanAI wordmark + a clear way back. Configure on the script tag:
         data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'   (label|href pairs, outermost first)
-        data-here='שם העמוד'
-      The last pair is where the big "חזרה" button goes. Use href "auto" to resolve
-      from ?from=maazim|ai (the shared role-worksheet page).
-   2. Small animated data drawings: any element with data-viz="bars|hbars|line|donut|table|dash|scatter"
-      gets an animated SVG. data-side="1" on the script tag adds floating ornaments in the page margins. */
+      The last pair is where the "חזרה" button goes. href "auto" resolves from ?from=maazim|ai.
+   2. The seven floating data symbols (brand signature): in every hero (.cover / [data-sym]) and in the footer.
+   3. Footer with the partner logos.
+   4. Small "?" help: <button class="help" data-help="הסבר קצר">?</button> (or SiteHelp.html('...') in templates). */
 (function(){
   'use strict';
-  var me=document.currentScript;
+  var me=document.currentScript, base=new URL('.', me.src).href;   // .../assets/
 
-  /* ---------- drawings ---------- */
-  var d=function(i,step){ return 'style="animation-delay:'+(-(i*step)).toFixed(2)+'s"'; };
-  var VIZ={
-    bars:function(){
-      var h=[34,48,62,40,26];
-      return h.map(function(v,i){ return '<rect class="bar '+(i===2?'h':'g')+'" '+d(i,.7)+' x="'+(12+i*20)+'" y="'+(70-v)+'" width="14" height="'+v+'" rx="2.5"/>'; }).join('')+
-        '<line class="ax" x1="6" y1="71" x2="114" y2="71"/>';
-    },
-    hbars:function(){
-      var w=[92,70,54,38,24];
-      return w.map(function(v,i){ return '<rect class="hbar '+(i===0?'h':'g')+'" '+d(i,.8)+' x="'+(110-v)+'" y="'+(8+i*14)+'" width="'+v+'" height="9" rx="2.5"/>'; }).join('')+
-        '<line class="ax" x1="111" y1="4" x2="111" y2="78"/>';
-    },
-    line:function(){
-      var p='M8 60 L26 50 L44 56 L62 30 L80 38 L98 16 L112 22';
-      return '<path class="ln2" d="M8 66 L26 62 L44 64 L62 54 L80 58 L98 48 L112 50"/>'+
-        '<path class="ln draw" pathLength="1" d="'+p+'"/>'+
-        '<circle class="a" r="4.5"><animateMotion dur="5s" repeatCount="indefinite" path="'+p+'"/></circle>'+
-        '<line class="ax" x1="6" y1="72" x2="114" y2="72"/>';
-    },
-    donut:function(){
-      return '<circle class="ring g" cx="60" cy="40" r="26"/>'+
-        '<circle class="ring h" cx="60" cy="40" r="26" stroke-dasharray="164" stroke-dashoffset="150" stroke-linecap="round"/>'+
-        '<text x="60" y="46" text-anchor="middle" font-size="17" data-tick="63" data-suffix="%">63%</text>';
-    },
-    table:function(){
-      var s='<rect class="h" x="8" y="8" width="104" height="10" rx="2"/>';
-      for(var r=0;r<5;r++) for(var c=0;c<3;c++)
-        s+='<rect class="row g" style="animation-delay:'+(r)+'s" x="'+(8+c*36)+'" y="'+(22+r*11)+'" width="'+(c===0?32:32)+'" height="7" rx="1.5"/>';
-      return s;
-    },
-    dash:function(){
-      return '<rect class="g" opacity=".35" x="4" y="4" width="52" height="34" rx="5"/>'+
-        '<text x="30" y="27" text-anchor="middle" font-size="16" data-tick="136">136</text>'+
-        '<rect class="g" opacity=".35" x="62" y="4" width="54" height="34" rx="5"/>'+
-        [14,22,10,18].map(function(v,i){ return '<rect class="bar '+(i===1?'h':'g')+'" '+d(i,.6)+' x="'+(69+i*11)+'" y="'+(33-v)+'" width="7" height="'+v+'" rx="1.5"/>'; }).join('')+
-        '<rect class="g" opacity=".35" x="4" y="44" width="112" height="32" rx="5"/>'+
-        '<path class="ln draw" pathLength="1" d="M10 68 L28 60 L46 64 L64 52 L82 57 L100 48 L110 51"/>';
-    },
-    scatter:function(){
-      var pts=[[16,60],[28,54],[38,58],[46,44],[58,46],[66,34],[78,38],[88,24],[100,26],[108,14]];
-      return pts.map(function(p,i){ return '<circle class="bob '+(i===7?'a':'h')+'" '+d(i,.35)+' cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i===7?5.5:4)+'" opacity=".85"/>'; }).join('')+
-        '<line class="ax" x1="6" y1="72" x2="114" y2="72"/><line class="ax" x1="6" y1="6" x2="6" y2="72"/>';
-    }
-  };
-  function svg(type){ return '<svg class="vz" viewBox="0 0 120 80" aria-hidden="true">'+(VIZ[type]||VIZ.bars)()+'</svg>'; }
-  function paint(root){
-    (root||document).querySelectorAll('[data-viz]').forEach(function(el){
-      if(el.dataset.vizDone) return; el.dataset.vizDone='1'; el.innerHTML=svg(el.dataset.viz);
-    });
+  /* ---------- data symbols ---------- */
+  function symbols(dark){
+    var a=dark?'#FFFDF8':'#1F5F5B', b=dark?'#C9E2DE':'#B4502F', c=dark?'#F0B95A':'#D99A2B';
+    var S={
+      bars:'<path d="M8 40V26M18 40V14M28 40V22M38 40V8" stroke="'+a+'" stroke-width="5" stroke-linecap="round"/><path d="M4 42h40" stroke="'+b+'" stroke-width="2.5" stroke-linecap="round"/>',
+      table:'<rect x="6" y="8" width="36" height="32" rx="5" stroke="'+b+'" stroke-width="3" fill="none"/><path d="M6 18h36M6 29h36M19 8v32" stroke="'+b+'" stroke-width="2.5"/><rect x="6" y="8" width="36" height="10" rx="5" fill="'+a+'" opacity=".55"/>',
+      line:'<path d="M6 36l10-10 8 6 16-18" stroke="'+a+'" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="40" cy="14" r="4" fill="'+c+'"/><path d="M4 42h40" stroke="'+b+'" stroke-width="2.5" stroke-linecap="round"/>',
+      donut:'<circle cx="24" cy="24" r="15" stroke="'+b+'" stroke-width="7" fill="none" opacity=".45"/><path d="M24 9a15 15 0 0 1 14.3 19.6" stroke="'+c+'" stroke-width="7" fill="none"/>',
+      scatter:'<path d="M6 6v36h36" stroke="'+b+'" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="14" cy="32" r="3.5" fill="'+a+'"/><circle cx="22" cy="26" r="3.5" fill="'+a+'"/><circle cx="30" cy="20" r="3.5" fill="'+c+'"/><circle cx="37" cy="12" r="3.5" fill="'+a+'"/>',
+      pin:'<path d="M24 43s13-12.5 13-23a13 13 0 0 0-26 0c0 10.5 13 23 13 23z" stroke="'+a+'" stroke-width="3.5" fill="none"/><circle cx="24" cy="20" r="5" fill="'+c+'"/>',
+      db:'<ellipse cx="24" cy="12" rx="14" ry="5" stroke="'+b+'" stroke-width="3" fill="none"/><path d="M10 12v24c0 2.8 6.3 5 14 5s14-2.2 14-5V12M10 24c0 2.8 6.3 5 14 5s14-2.2 14-5" stroke="'+b+'" stroke-width="3" fill="none"/>'
+    };
+    return S;
   }
-  /* numbers that keep drifting a little */
-  setInterval(function(){
-    document.querySelectorAll('[data-tick]').forEach(function(t){
-      var base=+t.dataset.tick, v=Math.round(base+(Math.random()-.5)*base*.08);
-      t.textContent=v+(t.dataset.suffix||'');
-    });
-  },1400);
+  var ORDER=['bars','table','line','donut','scatter','pin','db'];
+  function one(name,dark){ return '<svg viewBox="0 0 48 48" fill="none" aria-hidden="true">'+(symbols(dark)[name]||symbols(dark).bars)+'</svg>'; }
+  function strip(dark){ return '<div class="sym '+(dark?'dark':'light')+'" aria-hidden="true">'+ORDER.map(function(n){ return one(n,dark); }).join('')+'</div>'; }
+  function paintIcons(root){
+    (root||document).querySelectorAll('[data-ico]').forEach(function(el){ if(!el.firstChild) el.innerHTML=one(el.dataset.ico,false); });
+    (root||document).querySelectorAll('[data-sym]').forEach(function(el){ if(!el.firstChild) el.innerHTML=strip(el.dataset.sym==='dark'); });
+  }
 
-  /* ---------- back strip ---------- */
-  function crumbs(){
-    var conf=me&&me.dataset.crumbs; if(!conf) return;
-    var pairs=conf.split(';').map(function(p){ var a=p.split('|'); return {t:a[0],h:a[1]}; });
+  /* ---------- top strip ---------- */
+  function topbar(){
+    var conf=me.dataset.crumbs, home=me.dataset.home||'./';
+    var pairs=conf?conf.split(';').map(function(p){ var a=p.split('|'); return {t:a[0],h:a[1]}; }):[];
     pairs.forEach(function(p){
       if(p.h!=='auto') return;
       var from=new URLSearchParams(location.search).get('from');
       if(from==='maazim'){ p.t='מאיצים דיגיטליים'; p.h='../maazim/'; } else { p.t='הכשרת בינה מלאכותית'; p.h='../ai/'; }
     });
-    var up=pairs[pairs.length-1], here=me.dataset.here||document.title.split(/[—·]/)[0].trim();
-    var nav=document.createElement('nav'); nav.className='crumbs'; nav.setAttribute('aria-label','ניווט');
-    nav.innerHTML='<a class="back" href="'+up.h+'">→ חזרה ל'+up.t+'</a>'+
-      '<span class="trail">'+pairs.map(function(p){ return '<a href="'+p.h+'">'+p.t+'</a> <span class="sep">‹</span> '; }).join('')+'<span class="here">'+here+'</span></span>'+
-      '<span class="spark vz-dark" data-viz="line"></span>';
+    if(pairs.length) home=pairs[0].h;
+    var nav=document.createElement('nav'); nav.className='topbar'; nav.setAttribute('aria-label','ניווט');
+    var html='<a class="mark" href="'+home+'" title="לדף הבית">Roman<span>AI</span></a>';
+    if(pairs.length){
+      var up=pairs[pairs.length-1], here=me.dataset.here||document.title.split(/[—·]/)[0].trim();
+      html+='<a class="back" href="'+up.h+'">→ חזרה ל'+up.t+'</a>'+
+        '<span class="trail">'+pairs.map(function(p){ return '<a href="'+p.h+'">'+p.t+'</a><span class="sep">‹</span>'; }).join('')+'<span class="here">'+here+'</span></span>';
+    }
+    nav.innerHTML=html;
     document.body.insertBefore(nav,document.body.firstChild);
-    document.body.classList.add('has-crumbs');
-  }
-  function sides(){
-    if(!me||!me.dataset.side) return;
-    [['r',['bars','donut','table']],['l',['line','dash','scatter']]].forEach(function(s){
-      var el=document.createElement('div'); el.className='vz-side '+s[0];
-      el.innerHTML=s[1].map(function(t){ return '<div class="vz-card" data-viz="'+t+'"></div>'; }).join('');
-      document.body.appendChild(el);
+    document.body.classList.add('has-topbar');
+    /* a tool header that only repeats the page title is noise; keep it when it holds controls */
+    document.querySelectorAll('header.bar').forEach(function(h){
+      if(!h.querySelector('.bar-actions,.steps,button')) h.classList.add('plain');
     });
   }
-  function init(){ crumbs(); sides(); paint(); }
+
+  /* ---------- hero + footer ---------- */
+  function hero(){
+    document.querySelectorAll('.cover').forEach(function(c){ c.insertAdjacentHTML('beforeend',strip(true)); });
+  }
+  function footer(){
+    var f=document.createElement('footer'); f.className='brandfoot';
+    f.innerHTML='<div class="in">'+
+      '<div class="logos"><img src="'+base+'logos/national-digital.png" alt="מערך הדיגיטל הלאומי"><img src="'+base+'logos/hadigitalit.png" alt="הדיגיטלית"></div>'+
+      strip(false)+
+      '<div class="by">נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></div></div>';
+    var old=document.querySelector('footer.credit');
+    if(old) old.parentNode.insertBefore(f,old); else document.body.appendChild(f);
+  }
+
+  /* ---------- "?" help ---------- */
+  var pop=null, openBtn=null;
+  function closeHelp(){ if(pop){ pop.remove(); pop=null; } if(openBtn){ openBtn.setAttribute('aria-expanded','false'); openBtn=null; } }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('.help');
+    if(!b){ closeHelp(); return; }
+    e.preventDefault(); e.stopPropagation();
+    if(openBtn===b){ closeHelp(); return; }
+    closeHelp();
+    pop=document.createElement('div'); pop.className='help-pop'; pop.setAttribute('role','tooltip'); pop.innerHTML=b.dataset.help;
+    document.body.appendChild(pop);
+    var r=b.getBoundingClientRect(), w=pop.offsetWidth;
+    var left=Math.min(Math.max(8, r.left+r.width/2-w/2), document.documentElement.clientWidth-w-8);
+    pop.style.left=(left+window.scrollX)+'px'; pop.style.top=(r.bottom+8+window.scrollY)+'px';
+    openBtn=b; b.setAttribute('aria-expanded','true');
+  });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeHelp(); });
+  function helpHtml(text){ return '<button type="button" class="help" aria-label="הסבר" aria-expanded="false" data-help="'+String(text).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">?</button>'; }
+
+  /* help marks for the older tools, whose markup is rendered by their own scripts */
+  var AUTO=[
+    ['[data-page="role-worksheet"] .titles h1','דף עבודה אישי. ממלאים שלושה חלקים, ובסוף לוחצים <b>תמונה</b> כדי להוריד. בצד יש טיימר לתרגיל: בוחרים 3, 5 או 7 דקות ולוחצים <b>התחל</b>.'],
+    ['[data-page="role-worksheet"] .s1 .sh h3','שם התפקיד כמו שהייתם מציגים אותו למישהו מחוץ לרשות. משפט אחד מספיק.'],
+    ['[data-page="role-worksheet"] .s2 .sh h3','דברים שלוקחים ימים או שבועות ושיש להם תוצר: דוח, תוכנית, מכרז, אירוע.'],
+    ['[data-page="role-worksheet"] .s3 .sh h3','דברים קטנים שחוזרים כל יום או כל שבוע: מיילים, פניות, עדכון טבלאות.'],
+    ['[data-page="role-worksheet"] .aihint','הכפתור <b>AI</b> ליד כל משימה מסמן אותה כמשימה שבה AI יכול לעזור. אפשר לסמן ולבטל.'],
+    ['.cloud h4','לוח משותף של הקבוצה. מורידים את התמונה, פותחים את הלוח ומעלים אותה כפוסט.'],
+    ['[data-page="insight"] .checks-head h3','חמש שאלות ששואלים על כל תובנה לפני שסומכים עליה. מסמנים כל בדיקה שעשיתם, וכותבים מה מצאתם.']
+  ];
+  var autoTimer;
+  function autoHelp(){
+    AUTO.forEach(function(a){
+      document.querySelectorAll(a[0]).forEach(function(el){ if(!el.querySelector('.help')) el.insertAdjacentHTML('beforeend',helpHtml(a[1])); });
+    });
+  }
+  function init(){
+    var seg=location.pathname.replace(/index\.html$/,'').split('/').filter(Boolean);
+    document.body.dataset.page=seg[seg.length-1]||'home';
+    topbar(); hero(); footer(); paintIcons(); autoHelp();
+    new MutationObserver(function(){ clearTimeout(autoTimer); autoTimer=setTimeout(autoHelp,120); }).observe(document.body,{childList:true,subtree:true});
+  }
   if(document.body) init(); else document.addEventListener('DOMContentLoaded',init);
-  window.SiteViz={paint:paint};
+  window.SiteHelp={html:helpHtml};
+  window.SiteSym={paint:paintIcons, strip:strip};
 })();

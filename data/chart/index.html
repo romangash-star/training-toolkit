@@ -6,28 +6,28 @@
 <title>בוחר הגרף וחמשת המשפטים — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css">
+<link rel="stylesheet" href="../assets/dd.css?v=3">
 <style>
   .msgs{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-  .msgs button{border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:12px;text-align:right;font-weight:700;font-size:14.5px;transition:.15s}
+  .msgs button{border:1.5px solid var(--line);background:#FFFDF8;border-radius:13px;padding:12px;text-align:right;font-weight:700;font-size:14.5px;transition:.15s}
   .msgs button small{display:block;font-weight:400;color:var(--ink-soft);font-size:12.5px;margin-top:2px}
-  .msgs button.on{border-color:var(--root);background:#FBF1E6}
+  .msgs button.on{border-color:var(--root);background:#F4DED3}
   .rec{display:grid;grid-template-columns:200px 1fr;gap:18px;align-items:start;margin-top:14px}
-  .rec svg{width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:12px}
+  .rec svg{width:100%;height:auto;background:#FFFDF8;border:1px solid var(--line);border-radius:12px}
   .rec dl{margin:0}.rec dt{font-weight:700;font-size:13px;color:var(--root);margin-top:9px}.rec dt:first-child{margin-top:0}.rec dd{margin:2px 0 0;font-size:14.5px}
   .rec .big{font-size:22px;font-weight:700;color:var(--ink)}
   .scr{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start;margin-bottom:10px}
-  .scr .l{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px;color:#fff}
+  .scr .l{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:18px;color:#FFFDF8}
   .slides{counter-reset:s}
-  .slides div{display:grid;grid-template-columns:52px 1fr 70px;gap:10px;padding:8px 0;border-bottom:1px solid #E6EAF0;font-size:14px}
+  .slides div{display:grid;grid-template-columns:52px 1fr 70px;gap:10px;padding:8px 0;border-bottom:1px solid #EDE4D5;font-size:14px}
   .slides b{color:var(--brand-deep)}
   @media (max-width:640px){.msgs{grid-template-columns:1fr 1fr}.rec{grid-template-columns:1fr}.rec svg{max-width:240px}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/site.css?v=3">
 </head>
 <body>
   <header class="bar">
-    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="15" rx="2.5" stroke="#C77D3E" stroke-width="2"/><path d="M7 15v-3M11 15V9M15 15v-5" stroke="#127C71" stroke-width="2.2" stroke-linecap="round"/></svg>בוחר הגרף וחמשת המשפטים</div>
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="15" rx="2.5" stroke="#D99A2B" stroke-width="2"/><path d="M7 15v-3M11 15V9M15 15v-5" stroke="#B4502F" stroke-width="2.2" stroke-linecap="round"/></svg>בוחר הגרף וחמשת המשפטים</div>
     <span class="daytag">יום 3 · החלטה</span>
     <a class="hublink" href="../">‹ כל הכלים</a>
   </header>
@@ -40,21 +40,21 @@
     </div>
 
     <nav class="tabs">
-      <button data-tab="t-chart">📊 בוחר הגרף</button>
-      <button data-tab="t-story">📖 SCR וחמשת המשפטים</button>
-      <button data-tab="t-deck">🖥️ המצגת ופרומפט ל-Canvas</button>
+      <button data-tab="t-chart">בוחר הגרף</button>
+      <button data-tab="t-story">SCR וחמשת המשפטים</button>
+      <button data-tab="t-deck">המצגת ופרומפט ל-Canvas</button>
     </nav>
 
     <section class="tab-pane" id="t-chart">
       <div class="panel">
-        <h2>הגרף נבחר לפי המסר. לא לפי הנתון.</h2>
+        <h2>איזה גרף מתאים?<button type="button" class="help" aria-label="הסבר" data-help="קודם מחליטים מה רוצים שהמנהל יבין, ורק אז בוחרים גרף. לחצו על המסר שלכם ותקבלו איזה גרף מתאים ומה לשים על כל ציר.">?</button></h2>
         <p class="lead">מה אתם רוצים שהמנהל יבין מהשקופית?</p>
         <div class="msgs" id="msgs"></div>
         <div id="rec"></div>
       </div>
       <div class="panel">
-        <h2>הכותרת אומרת מה לראות. הגרף רק מוכיח.</h2>
-        <p class="lead">❌ "פניות לפי אזור, 2025" ← ✅ "אזור ג׳ מייצר 136 פניות ל-1,000 תושבים מול 94 עירוני"</p>
+        <h2>כותרת שהיא מסר<button type="button" class="help" aria-label="הסבר" data-help="כותרת טובה היא המסקנה, לא התיאור. במקום ״פניות לפי אזור״ כותבים ״אזור ג׳ מייצר הכי הרבה פניות לנפש״. כתבו שלוש אפשרויות ובחרו אחת.">?</button></h2>
+        <p class="lead">"פניות לפי אזור, 2025" ← "אזור ג׳ מייצר 136 פניות ל-1,000 תושבים מול 94 עירוני"</p>
         <div class="field-label">כותרת שהיא מסר <span class="t">שלוש חלופות, בוחרים אחת</span></div>
         <div id="titles"></div>
         <div class="field-label" style="margin-top:14px">בדיקה לפני שהגרף נכנס למצגת</div>
@@ -64,12 +64,12 @@
 
     <section class="tab-pane" id="t-story">
       <div class="panel">
-        <h2>שלושה משפטים לפני שנוגעים בשקופית</h2>
+        <h2>שלושה משפטים: מצב, סיבוך, פתרון<button type="button" class="help" aria-label="הסבר" data-help="<b>מצב</b>: מה כולם כבר מסכימים עליו. <b>סיבוך</b>: מה השתנה או לא עובד. <b>פתרון</b>: מה אתם מבקשים שיוחלט. אם קשה לכתוב אותם, עדיין אין סיפור.">?</button></h2>
         <p class="lead">לא מצליחים לכתוב את שלושת המשפטים? אין לכם עדיין סיפור, ואין טעם לפתוח את PowerPoint.</p>
         <div id="scr"></div>
       </div>
       <div class="panel">
-        <h2>חמישה משפטים שכל הצגה ניהולית חייבת</h2>
+        <h2>חמשת המשפטים<button type="button" class="help" aria-label="הסבר" data-help="חמישה משפטים שהם כל ההצגה שלכם. מתחילים בהמלצה, כי למנהל יש חמש דקות. מהם נבנה אוטומטית הפרומפט למצגת בלשונית הבאה.">?</button></h2>
         <p class="lead">מתחילים מהסוף: ההמלצה ראשונה. בשלטון המקומי מקבל ההחלטה נותן לכם חמש דקות ותשומת לב חלקית. כותבים את החמישה בטקסט, לפני כל כלי עיצוב.</p>
         <div class="field-label">למי אני מציג? <span class="t">זה משנה את כל אופן ההצגה</span></div>
         <input class="txt" id="aud" placeholder='מנכ"ל העירייה'>
@@ -85,26 +85,26 @@
         <div class="callout info">שקופית 7 היא מגן: כשישאלו "ומה לגבי...", פותחים אותה. ואין שקופית "תודה". מחקו כל שקופית שבלעדיה ההמלצה עדיין עומדת. בדרך כלל נשארות ארבע.</div>
       </div>
       <div class="panel">
-        <h2>✨ הפרומפט ל-Gemini Canvas</h2>
+        <h2>הפרומפט ל-Gemini Canvas<button type="button" class="help" aria-label="הסבר" data-help="טקסט מוכן שמדביקים ב-Gemini (בוחרים שם Canvas) כדי לקבל טיוטת מצגת. הוא נבנה מחמשת המשפטים שמילאתם. את המספרים בודקים ומדביקים בעצמכם.">?</button></h2>
         <p class="lead">נבנה מחמשת המשפטים. איכות הפלט = איכות השלד. אחרי שהטיוטה חוזרת: את המספרים מדביקים ידנית, כי הכלי עלול להמציא.</p>
         <div class="prompt-out" id="prompt"></div>
         <div class="exportbar" style="grid-template-columns:1fr 1fr 1fr">
-          <button class="btn btn-brand" onclick="C.copyPrompt()">📋 העתקת הפרומפט</button>
+          <button class="btn btn-brand" onclick="C.copyPrompt()">העתקת הפרומפט</button>
           <a class="btn btn-dark" href="https://gemini.google.com" target="_blank" rel="noopener">↗ פתיחת Gemini</a>
-          <button class="btn btn-ghost" onclick="C.copyAll()">📋 העתקת הכול</button>
+          <button class="btn btn-ghost" onclick="C.copyAll()">העתקת הכול</button>
         </div>
-        <div class="callout warn">⚠️ Gemini הוא כלי ציבורי. אין נתון מזהה של תושב בשום שקופית: לא בגרף, לא בטבלה, לא בנספח.</div>
+        <div class="callout warn">Gemini הוא כלי ציבורי. אין נתון מזהה של תושב בשום שקופית: לא בגרף, לא בטבלה, לא בנספח.</div>
       </div>
       <div class="panel">
-        <h2>✅ לפני שמציגים למנכ"ל</h2>
+        <h2>לפני שמציגים למנכ"ל</h2>
         <div id="final"></div>
       </div>
       <div class="panel noprint">
         <div class="exportbar">
-          <button class="btn btn-ghost" onclick="C.saveJson()">💾 שמירה</button>
-          <button class="btn btn-ghost" onclick="C.loadJson()">📂 טעינה</button>
-          <button class="btn btn-ghost" onclick="window.print()">🖨️ הדפסה</button>
-          <button class="btn btn-ghost" onclick="C.reset()">🗑️ ניקוי</button>
+          <button class="btn btn-ghost" onclick="C.saveJson()">שמירה</button>
+          <button class="btn btn-ghost" onclick="C.loadJson()">טעינה</button>
+          <button class="btn btn-ghost" onclick="window.print()">הדפסה</button>
+          <button class="btn btn-ghost" onclick="C.reset()">ניקוי</button>
         </div>
       </div>
     </section>
@@ -113,26 +113,26 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js"></script>
+<script src="../assets/dd.js?v=3"></script>
 <script>
 const C=(()=>{
   'use strict';
   const LS='dd_chart_v1', E=DD.esc;
-  const G='#B8C2CC', H='#127C71';
+  const G='#D6CBBB', H='#B4502F';
   const bars=(vals,hi)=>vals.map((v,i)=>`<rect x="${150-v*1.2}" y="${16+i*22}" width="${v*1.2}" height="15" rx="2" fill="${i===hi?H:G}"/>`).join('');
   const MSG=[
     {k:'cmp', t:'השוואה בין קטגוריות', s:'אזור מול אזור, סוג מול סוג', chart:'עמודות אופקיות', x:'הקטגוריות על הציר האנכי (בעברית השמות ארוכים), ממוינות מהגדול לקטן', y:'הערך על הציר האופקי. מתחיל מאפס.', warn:'הציר חייב להתחיל מאפס. קטגוריה אחת בצבע, השאר אפור.',
-      svg:`<svg viewBox="0 0 170 130">${bars([88,85,136,79,84].map(v=>v*.8),2)}<line x1="150" y1="10" x2="150" y2="125" stroke="#54636F"/></svg>`},
+      svg:`<svg viewBox="0 0 170 130">${bars([88,85,136,79,84].map(v=>v*.8),2)}<line x1="150" y1="10" x2="150" y2="125" stroke="#6B5D52"/></svg>`},
     {k:'time', t:'שינוי לאורך זמן', s:'מגמה, עונתיות, לפני/אחרי', chart:'גרף קו', x:'זמן (חודשים), משמאל לימין', y:'הערך. מותר לא להתחיל מאפס, אם מסמנים את זה', warn:'להשוות לאותו חודש בשנה שעברה. קו אחד מודגש, השאר אפור.',
-      svg:`<svg viewBox="0 0 170 130"><polyline points="15,100 40,95 65,60 90,40 115,55 140,85 160,90" fill="none" stroke="${G}" stroke-width="3"/><polyline points="15,105 40,70 65,35 90,20 115,45 140,80 160,98" fill="none" stroke="${H}" stroke-width="3"/><line x1="10" y1="115" x2="165" y2="115" stroke="#54636F"/></svg>`},
+      svg:`<svg viewBox="0 0 170 130"><polyline points="15,100 40,95 65,60 90,40 115,55 140,85 160,90" fill="none" stroke="${G}" stroke-width="3"/><polyline points="15,105 40,70 65,35 90,20 115,45 140,80 160,98" fill="none" stroke="${H}" stroke-width="3"/><line x1="10" y1="115" x2="165" y2="115" stroke="#6B5D52"/></svg>`},
     {k:'part', t:'הרכב של שלם', s:'מה החלק של כל רכיב', chart:'עמודה מוערמת, או טבלה', x:'שלם אחד (או כמה שלמים להשוואה)', y:'אחוזים, מ-0 עד 100%', warn:'אין עוגה מעל שלוש פרוסות. העין לא משווה זוויות.',
-      svg:`<svg viewBox="0 0 170 130"><rect x="30" y="20" width="40" height="36" fill="${H}"/><rect x="30" y="56" width="40" height="30" fill="${G}"/><rect x="30" y="86" width="40" height="24" fill="#D5DBE3"/><rect x="100" y="20" width="40" height="20" fill="${H}"/><rect x="100" y="40" width="40" height="44" fill="${G}"/><rect x="100" y="84" width="40" height="26" fill="#D5DBE3"/></svg>`},
+      svg:`<svg viewBox="0 0 170 130"><rect x="30" y="20" width="40" height="36" fill="${H}"/><rect x="30" y="56" width="40" height="30" fill="${G}"/><rect x="30" y="86" width="40" height="24" fill="#E3D8C6"/><rect x="100" y="20" width="40" height="20" fill="${H}"/><rect x="100" y="40" width="40" height="44" fill="${G}"/><rect x="100" y="84" width="40" height="26" fill="#E3D8C6"/></svg>`},
     {k:'rel', t:'קשר בין שני משתנים', s:'האם כשזה עולה, גם זה עולה?', chart:'גרף פיזור (Scatter)', x:'המשתנה שחושבים שהוא ה"גורם"', y:'המשתנה המושפע', warn:'לא להסיק סיבתיות מקשר. קורלציה ≠ סיבתיות.',
-      svg:`<svg viewBox="0 0 170 130">${[[25,100],[40,90],[55,85],[60,70],[80,72],[95,55],[105,60],[120,40],[140,35],[150,22]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${H}" opacity=".75"/>`).join('')}<line x1="15" y1="115" x2="165" y2="115" stroke="#54636F"/><line x1="15" y1="10" x2="15" y2="115" stroke="#54636F"/></svg>`},
+      svg:`<svg viewBox="0 0 170 130">${[[25,100],[40,90],[55,85],[60,70],[80,72],[95,55],[105,60],[120,40],[140,35],[150,22]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${H}" opacity=".75"/>`).join('')}<line x1="15" y1="115" x2="165" y2="115" stroke="#6B5D52"/><line x1="15" y1="10" x2="15" y2="115" stroke="#6B5D52"/></svg>`},
     {k:'one', t:'מספר בודד חשוב', s:'נתון אחד שעושה את כל העבודה', chart:'מספר גדול. בלי גרף.', x:'—', y:'—', warn:'הגרף הכי טוב הוא לפעמים לא גרף. המצגת משתפרת פלאים כשמוחקים את הגרף ומשאירים מספר אחד ענק.',
-      svg:`<svg viewBox="0 0 170 130"><text x="85" y="78" text-anchor="middle" font-family="Alef,sans-serif" font-weight="700" font-size="52" fill="${H}">63%</text><text x="85" y="104" text-anchor="middle" font-family="Alef,sans-serif" font-size="12" fill="#54636F">מהחריגות: מים וביוב</text></svg>`},
+      svg:`<svg viewBox="0 0 170 130"><text x="85" y="78" text-anchor="middle" font-family="Alef,sans-serif" font-weight="700" font-size="52" fill="${H}">63%</text><text x="85" y="104" text-anchor="middle" font-family="Alef,sans-serif" font-size="12" fill="#6B5D52">מהחריגות: מים וביוב</text></svg>`},
     {k:'dist', t:'התפלגות', s:'איך מתפזרים הערכים? איפה הזנב?', chart:'היסטוגרמה', x:'טווחי ערכים (0–2 ימים, 3–5, ...)', y:'כמה מקרים בכל טווח. מתחיל מאפס.', warn:'שם רואים למה חציון ולא ממוצע: הזנב הארוך של פניות תקועות.',
-      svg:`<svg viewBox="0 0 170 130">${[70,90,60,35,20,12,7,5].map((v,i)=>`<rect x="${14+i*19}" y="${115-v}" width="17" height="${v}" fill="${i<2?H:G}"/>`).join('')}<line x1="10" y1="115" x2="165" y2="115" stroke="#54636F"/></svg>`}
+      svg:`<svg viewBox="0 0 170 130">${[70,90,60,35,20,12,7,5].map((v,i)=>`<rect x="${14+i*19}" y="${115-v}" width="17" height="${v}" fill="${i<2?H:G}"/>`).join('')}<line x1="10" y1="115" x2="165" y2="115" stroke="#6B5D52"/></svg>`}
   ];
   const DELETE='קווי רשת מיותרים · מסגרות · אפקטים תלת-ממדיים וצללים · מקרא (כשאפשר לתייג ישירות) · ספרות אחרי הנקודה שאף אחד לא צריך';
   const GCHECK=[
@@ -144,9 +144,9 @@ const C=(()=>{
     'מבחן היושרה: מי שמסתכל חמש שניות מגיע למסקנה נכונה.'
   ];
   const SCR=[
-    {k:'s',l:'S',c:'#1F5673',t:'מצב',q:'מה כולם כבר מסכימים עליו',ph:'היעד שלנו לפניית מים וביוב הוא 7 ימים'},
-    {k:'c',l:'C',c:'#C77D3E',t:'סיבוך',q:'מה השתנה, או מה לא עובד',ph:'באזור ג׳ אנחנו ב-18 ימים, וזה החמיר מ-14'},
-    {k:'r',l:'R',c:'#127C71',t:'פתרון',q:'מה אני מבקש שיוחלט',ph:'מבקש אישור לחתימה על SLA מול התאגיד'}
+    {k:'s',l:'S',c:'#1F5F5B',t:'מצב',q:'מה כולם כבר מסכימים עליו',ph:'היעד שלנו לפניית מים וביוב הוא 7 ימים'},
+    {k:'c',l:'C',c:'#D99A2B',t:'סיבוך',q:'מה השתנה, או מה לא עובד',ph:'באזור ג׳ אנחנו ב-18 ימים, וזה החמיר מ-14'},
+    {k:'r',l:'R',c:'#B4502F',t:'פתרון',q:'מה אני מבקש שיוחלט',ph:'מבקש אישור לחתימה על SLA מול התאגיד'}
   ];
   const FIVE=[
     {k:'rec',  l:'ההמלצה שלי היא…',    t:'משפט אחד',                           ph:'לחתום על SLA מחייב מול תאגיד המים, עם בקרה חודשית'},
@@ -234,6 +234,6 @@ ${title?`כותרת הגרף המרכזי: ${title}\n`:''}${data.scr.s||data.scr
   return {msg,pick,g,fin,copyPrompt,copyAll,saveJson,loadJson,reset};
 })();
 </script>
-<script src="../../assets/site.js" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../' data-side="1"></script>
+<script src="../../assets/site.js?v=3" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

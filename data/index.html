@@ -6,197 +6,112 @@
 <title>קבלת החלטות מבוססת נתונים · ארגז הכלים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root{--canvas:#EEF1F6;--paper:#F7F9FB;--card:#FFF;--ink:#15242E;--ink-soft:#54636F;--line:#D5DBE3;--brand:#127C71;--brand-deep:#0E655C;--root:#C77D3E;--leaf:#2E8B6B;--core-1:#1F5673;--sans:'Alef','Segoe UI',Arial,sans-serif;--shadow:0 14px 40px rgba(21,36,46,.14);--shadow-sm:0 3px 12px rgba(21,36,46,.08)}
-  *{box-sizing:border-box} html,body{margin:0;min-height:100%}
-  body{font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;background:var(--canvas);display:flex;flex-direction:column;min-height:100vh}
-  h1,h2,h3{font-weight:700;line-height:1.12;margin:0} a{text-decoration:none;color:inherit}
-
-  .cover{position:relative;overflow:hidden;color:#fff;padding:44px 24px 46px;
-    background:radial-gradient(1000px 500px at 82% -20%,rgba(31,86,115,.6),transparent 60%),linear-gradient(155deg,#123040 0%,#0C2233 100%)}
-  .cover-main{position:relative;z-index:2;max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:38px;flex-wrap:wrap;justify-content:center}
-  .cover-text{flex:1;min-width:290px;text-align:right}
-  .cover-text .eyebrow{font-size:13px;font-weight:700;letter-spacing:2px;color:#7FD8C6}
-  .cover-text h1{font-size:clamp(36px,5.6vw,58px);letter-spacing:-1.6px;margin:8px 0 0}
-  .cover-text .sub{font-size:17px;font-weight:700;color:#cfe6df;margin-top:8px}
-  .cover-text p{font-size:15.5px;color:rgba(255,255,255,.8);max-width:540px;margin:12px 0 0}
-  .cover-art{flex:0 0 auto;width:min(300px,80vw)}
-  .cover-art svg{width:100%;height:auto;display:block}
-  .back{position:relative;z-index:3;display:inline-flex;align-items:center;gap:6px;color:#cfe6df;font-weight:700;font-size:14px}
-
-  .hub{flex:1;max-width:1080px;width:100%;margin:0 auto;padding:34px 24px 40px}
-  .road{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 30px}
-  .road a{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 12px 11px;box-shadow:var(--shadow-sm);transition:.15s}
-  .road a:hover{border-color:var(--brand)}
-  .road .n{font-size:12px;font-weight:700;color:var(--brand)}
-  .road .k{font-size:17px;font-weight:700;margin-top:2px}
-  .road .d{font-size:12.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4}
-  .road .dy{display:inline-block;margin-top:7px;font-size:11.5px;font-weight:700;color:#fff;background:var(--core-1);border-radius:999px;padding:1px 9px}
-
-  .day{margin-bottom:32px}
-  .day-h{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-  .day-badge{font-size:13px;font-weight:700;color:#fff;background:var(--core-1);padding:5px 13px;border-radius:999px;flex:0 0 auto}
-  .day-badge.all{background:var(--brand)}
-  .day-h .t{font-size:19px;font-weight:700}
-  .day-h .sub{font-size:13.5px;color:var(--ink-soft)}
-  .day-h .line{flex:1;height:1px;background:var(--line);min-width:30px}
-  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  .cards.two{grid-template-columns:1fr 1fr}
-  .tool{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow-sm);transition:.2s}
-  .tool:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#c2ccd6}
-  .tool.star{border:2px solid var(--brand)}
-  .tool .tag{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;color:var(--brand-deep);background:#E7F1EE;border-radius:999px;padding:2px 9px}
-  .tool .tag.copy{color:var(--ink-soft);background:var(--paper);border:1px solid var(--line)}
-  .ico{width:84px;height:60px;border-radius:13px;display:grid;place-items:center;margin-bottom:12px;padding:5px 9px}
-  .tool .step{position:absolute;top:14px;left:14px;width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;font-size:18px;display:grid;place-items:center}
-  .c-teal .ico{background:#E7F1EE}.c-blue .ico{background:#EAF0F5}.c-amber .ico{background:#FBF1E6}
-  .tool h2{font-size:19px;letter-spacing:-.3px}
-  .tool .desc{font-size:14px;color:var(--ink-soft);margin-top:7px;flex:1}
-  .tool .when{font-size:12.5px;color:var(--brand-deep);font-weight:700;margin-top:10px}
-  .go{margin-top:12px;align-self:flex-start;padding:9px 16px;border-radius:10px;font-weight:700;font-size:14px;color:#fff;display:inline-flex;align-items:center;gap:8px;transition:.15s}
-  .c-teal .go{background:var(--brand)}.c-teal .go:hover{background:var(--brand-deep)}
-  .c-blue .go{background:var(--core-1)}.c-blue .go:hover{background:#16405c}
-  .c-amber .go{background:var(--root)}.c-amber .go:hover{background:#a9662e}
-  .saved{max-width:720px;margin:0 auto 26px;text-align:center;font-size:14px;color:var(--ink-soft)}
-
-  footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:16px 22px;text-align:center;font-size:13px;color:var(--ink-soft);background:rgba(247,249,251,.9);border-top:1px solid var(--line)}
-  footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:var(--shadow-sm)}
-  footer.credit a{color:var(--brand-deep);font-weight:700}
-
-  .idcard{max-width:620px;margin:0 auto 26px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow);text-align:right}
-  .idcard h3{font-size:20px;letter-spacing:-.4px}
-  .idcard p{font-size:14px;color:var(--ink-soft);margin:7px 0 0}
-  .idcard .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-  .idcard input{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:11px 13px;font-size:14.5px;font-family:inherit;color:var(--ink);background:#fff}
-  .idcard input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(18,124,113,.14)}
-  .idcard input.full{grid-column:1 / -1}
-  .idcard .save{margin-top:12px;width:100%;padding:12px;border-radius:12px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-deep))}
-  .idbar{max-width:620px;margin:0 auto 22px;display:flex;align-items:center;gap:10px;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 18px;box-shadow:var(--shadow-sm);font-size:14px}
-  .idbar .who{font-weight:700}
-  .idbar button{background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--brand-deep);text-decoration:underline}
-
-  @media (max-width:900px){.cards{grid-template-columns:1fr 1fr}.road{grid-template-columns:repeat(3,1fr)}}
-  @media (max-width:620px){.cards,.cards.two{grid-template-columns:1fr}.road{grid-template-columns:1fr 1fr}.cover-text{text-align:center}.idcard .fields{grid-template-columns:1fr}.hub{padding:26px 16px 34px}}
-</style>
-<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/hub.css?v=3">
+<link rel="stylesheet" href="../assets/site.css?v=3">
 </head>
 <body>
-  <section class="cover">
-    <div class="cover-main">
-      <div class="cover-text">
-        <div class="eyebrow">מערך הדיגיטל הלאומי · הדיגיטלית · המיזם הלאומי 265</div>
-        <h1>קבלת החלטות מבוססת נתונים</h1>
-        <div class="sub">שלושה ימים · שאלה ← תובנה ← החלטה</div>
-        <p>האתר המלווה של ההכשרה. מתקדמים לפי הסדר, יום אחרי יום. מה שתמלאו נשמר במחשב שלכם בלבד.</p>
-      </div>
-      <div class="cover-art vz-dark"><div class="vz-row"><div class="vz-card" data-viz="dash"></div><div class="vz-card" data-viz="bars"></div><div class="vz-card" data-viz="line"></div><div class="vz-card" data-viz="donut"></div></div></div>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">שלושה ימים · שאלה ← תובנה ← החלטה</p>
+      <h1>קבלת החלטות מבוססת <em>נתונים</em></h1>
+      <p class="lead">מתקדמים לפי הסדר, כלי אחרי כלי. מה שתמלאו נשמר במחשב שלכם.</p>
     </div>
-  </section>
+    <div data-sym="dark"></div>
+  </header>
 
-  <div class="hub">
-    <div id="idZone"></div>
+  <main>
+    <div class="wrap">
+      <div id="idZone"></div>
 
-    <div class="day" id="day1">
-      <div class="day-h"><span class="day-badge">יום 1</span><span class="t">מהבעיה לשאלה שאפשר לענות עליה</span><span class="line"></span></div>
-      <div class="cards two">
-        <a class="tool c-teal star" href="role-worksheet/">
-          <span class="step">1</span>
-          <div class="ico" data-viz="table"></div>
-          <h2>מה אני עושה ברשות?</h2>
-          <p class="desc">דף עבודה אישי: כותבים את התפקיד, את המשימות הגדולות והמשמעותיות ואת המשימות היומיומיות והחזרתיות, ומורידים כתמונה.</p>
-          <span class="go">מתחילים כאן ←</span>
-        </a>
-        <a class="tool c-teal star" href="question/">
-          <span class="step">2</span>
-          <div class="ico" data-viz="bars"></div>
-          <h2>בונה השאלה העסקית</h2>
-          <p class="desc">שלושה חלקים, שלב אחרי שלב: השאלה העסקית, איך נדע שהצלחנו, ומפת המקורות. בסוף מייצאים ל-Word.</p>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-teal" href="problem-tree/">
-          <div class="ico" data-viz="scatter"></div>
-          <h2>עץ הבעיה</h2>
-          <p class="desc">עץ בעיה אינטראקטיבי: סימפטומים, בעיית ליבה ושורשים, עם ייצוא כתמונה.</p>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-teal" href="challenge/">
-          <div class="ico" data-viz="hbars"></div>
-          <h2>הגדרת האתגר</h2>
-          <p class="desc">מגדירים אתגר, ממפים בעלי עניין ומזהים נתונים רלוונטיים, עם קישורים למקורות מידע.</p>
-          <span class="go">פתיחה ←</span>
-        </a>
-      </div>
+      <section class="day" id="day1">
+        <div class="day-h"><span class="d">יום 1</span><h2>מהבעיה לשאלה</h2></div>
+        <div class="cards c2">
+          <a class="cardlink" href="role-worksheet/">
+            <span class="n">1</span>
+            <div class="ico" data-ico="table"></div>
+            <h2>מה אני עושה ברשות?</h2>
+            <p>התפקיד שלי, המשימות הגדולות והמשימות היומיומיות. מורידים כתמונה.</p>
+            <span class="go">מתחילים כאן ←</span>
+          </a>
+          <a class="cardlink" href="question/">
+            <span class="n">2</span>
+            <div class="ico" data-ico="bars"></div>
+            <h2>בונה השאלה העסקית</h2>
+            <p>שלב אחרי שלב: השאלה, איך נדע שהצלחנו, ומאיפה הנתונים.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+          <a class="cardlink quiet" href="problem-tree/">
+            <div class="ico" data-ico="scatter"></div>
+            <h2>עץ הבעיה</h2>
+            <p>מפרקים בעיה לסימפטומים, ליבה ושורשים.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+          <a class="cardlink quiet" href="challenge/">
+            <div class="ico" data-ico="pin"></div>
+            <h2>הגדרת האתגר</h2>
+            <p>האתגר, בעלי העניין והנתונים שצריך.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="day" id="day2">
+        <div class="day-h"><span class="d">יום 2</span><h2>מנתונים לתובנה</h2></div>
+        <div class="cards c3">
+          <a class="cardlink" href="analysis/">
+            <span class="n">1</span>
+            <div class="ico" data-ico="db"></div>
+            <h2>ארגז הניתוח</h2>
+            <p>מנקים, מנתחים, מנסחים תובנה ובוחרים חלופה.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+          <a class="cardlink quiet" href="insight/">
+            <div class="ico" data-ico="donut"></div>
+            <h2>חילוץ תובנה</h2>
+            <p>תובנה אחת, חמש בדיקות לפני שסומכים עליה.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+          <a class="cardlink quiet" href="prompt/">
+            <div class="ico" data-ico="line"></div>
+            <h2>בונה הפרומפט</h2>
+            <p>פרומפט טוב לניתוח נתונים עם AI.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="day" id="day3">
+        <div class="day-h"><span class="d">יום 3</span><h2>מתובנה להחלטה</h2></div>
+        <div class="cards c2">
+          <a class="cardlink" href="chart/">
+            <span class="n">1</span>
+            <div class="ico" data-ico="bars"></div>
+            <h2>בוחר הגרף וחמשת המשפטים</h2>
+            <p>איזה גרף מתאים למסר, ומה אומרים למנהל.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+          <a class="cardlink quiet" href="pitch/">
+            <div class="ico" data-ico="table"></div>
+            <h2>מהנתון לפרומפט</h2>
+            <p>פרומפט שבונה טיוטת מצגת ב-Gemini.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+          <a class="cardlink quiet" href="prototype/">
+            <div class="ico" data-ico="scatter"></div>
+            <h2>מפתחים את הפתרון</h2>
+            <p>דף עבודה, גם כשעדיין אין פתרון.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+          <a class="cardlink quiet" href="cards/">
+            <div class="ico" data-ico="donut"></div>
+            <h2>כרטיסי הכיס</h2>
+            <p>כל יום על כרטיס אחד, להדפסה.</p>
+            <span class="go">פתיחה ←</span>
+          </a>
+        </div>
+      </section>
     </div>
-
-    <div class="day" id="day2">
-      <div class="day-h"><span class="day-badge">יום 2</span><span class="t">מנתונים לתובנות ולהחלטה</span><span class="sub">ניקוי · ארבע טכניקות · תובנות · חלופות</span><span class="line"></span></div>
-      <div class="cards">
-        <a class="tool c-blue star" href="analysis/">
-          <span class="tag">התוצר של יום 2</span>
-          <div class="ico" data-viz="dash"></div>
-          <h2>ארגז הניתוח</h2>
-          <p class="desc">יומן ניקוי (7 בדיקות), ארבע הטכניקות עם מחשבון Pareto ונרמול, בונה תובנה, עורך הדין של השטן ומטריצת חלופות עם ציון משוקלל (תבניות 02–04).</p>
-          <div class="when">כל היום</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-blue" href="insight/">
-          <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico" data-viz="donut"></div>
-          <h2>חילוץ תובנה</h2>
-          <p class="desc">תובנה אחת חזקה, דרך 5 בדיקות ביקורתיות: מתאם≠סיבתיות · מי אסף · מתי · מדגם · מה חסר.</p>
-          <div class="when">חטיבות 3–4 · ביקורת עמיתים</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-blue" href="prompt/">
-          <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico" data-viz="line"></div>
-          <h2>בונה הפרומפט ל-AI</h2>
-          <p class="desc">מרכיבים פרומפט לניתוח נתונים: תפקיד · הקשר · משימה · פורמט, עם תזכורות תיקוף ופרטיות.</p>
-          <div class="when">חטיבה 2 · ניתוח עם Copilot / Gemini</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-      </div>
-    </div>
-
-    <div class="day" id="day3">
-      <div class="day-h"><span class="day-badge">יום 3</span><span class="t">מתובנה לתוצר שמכוון החלטה</span><span class="sub">ויזואליזציה · סיפור · מצגת ניהולית</span><span class="line"></span></div>
-      <div class="cards two">
-        <a class="tool c-amber star" href="chart/">
-          <span class="tag">התוצר של יום 3</span>
-          <div class="ico" data-viz="bars"></div>
-          <h2>בוחר הגרף וחמשת המשפטים</h2>
-          <p class="desc">אומרים מה המסר ומקבלים איזה גרף, מה על כל ציר ומה למחוק. אחר כך SCR, חמשת המשפטים ופרומפט מוכן ל-Gemini Canvas.</p>
-          <div class="when">כל היום</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-amber" href="pitch/">
-          <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico" data-viz="hbars"></div>
-          <h2>מהנתון לפרומפט</h2>
-          <p class="desc">ממלאים את תוכן המצגת ובוחרים עיצוב, ומקבלים פרומפט מפורט לטיוטת מצגת ב-Gemini Canvas.</p>
-          <div class="when">חטיבה 3 · בונים את המצגת</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-amber" href="prototype/">
-          <span class="tag copy">מתוך מאיצים</span>
-          <div class="ico" data-viz="scatter"></div>
-          <h2>מפתחים את הפתרון</h2>
-          <p class="desc">דף עבודה אישי או צוותי, גם אם עדיין אין פתרון. הפלט: פרומפט שפותח דיון עם Gemini על כיווני פתרון.</p>
-          <div class="when">לפני בחירת החלופה המומלצת</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-        <a class="tool c-amber" href="cards/">
-          <div class="ico" data-viz="table"></div>
-          <h2>כרטיסי הכיס</h2>
-          <p class="desc">שלושה כרטיסי A5, אחד לכל יום. כל ההכשרה על שלושה כרטיסים, מוכנים להדפסה.</p>
-          <div class="when">בסוף כל יום</div>
-          <span class="go">פתיחה ←</span>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · כל הערה תתקבל בברכה במייל: <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+  </main>
 
 <script>
 (function(){
@@ -206,19 +121,18 @@
   function render(edit){
     var d=get(), zone=document.getElementById('idZone');
     if(d.name && !edit){
-      zone.innerHTML='<div class="idbar"><span>👤</span><span class="who">'+esc([d.name,d.dept,d.role].filter(Boolean).join(' · '))+'</span><button id="idEdit">שינוי</button></div>';
+      zone.innerHTML='<div class="idbar"><span class="who">'+esc([d.name,d.dept,d.role].filter(Boolean).join(' · '))+'</span><button id="idEdit">שינוי</button></div>';
       document.getElementById('idEdit').onclick=function(){ render(true); };
       return;
     }
     zone.innerHTML='<div class="idcard">'+
-      '<h3>לפני שמתחילים: כמה פרטים</h3>'+
-      '<p>הפרטים יופיעו על המסמכים והתמונות שתייצאו, כדי שיהיה ברור מי הגיש. הם נשמרים במחשב שלכם בלבד.</p>'+
+      '<h3>מי אתם? <button type="button" class="help" aria-label="הסבר" data-help="השם יופיע על המסמכים והתמונות שתייצאו, כדי שיהיה ברור מי הגיש. <b>הפרטים נשמרים רק במחשב שלכם</b> ולא נשלחים לשום מקום.">?</button></h3>'+
       '<div class="fields">'+
         '<input class="full" id="idName" placeholder="שם מלא" value="'+esc(d.name||'')+'">'+
         '<input id="idDept" placeholder="אגף / מחלקה" value="'+esc(d.dept||'')+'">'+
         '<input id="idRole" placeholder="תפקיד" value="'+esc(d.role||'')+'">'+
       '</div>'+
-      '<button class="save" id="idSave">שמירה והמשך ←</button>'+
+      '<button class="save" id="idSave">שמירה ←</button>'+
     '</div>';
     document.getElementById('idSave').onclick=function(){
       var v={name:(document.getElementById('idName').value||'').trim(),
@@ -232,6 +146,6 @@
   render(false);
 })();
 </script>
-<script src="../assets/site.js" data-crumbs='כל ההכשרות|../'></script>
+<script src="../assets/site.js?v=3" data-crumbs='כל ההכשרות|../'></script>
 </body>
 </html>

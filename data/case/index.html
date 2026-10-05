@@ -6,11 +6,11 @@
 <title>מקרה הבוחן: עיריית אלון-ים — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css">
+<link rel="stylesheet" href="../assets/dd.css?v=3">
 <style>
   .story{font-size:15.5px;line-height:1.85}
   .files{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .file{border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;background:#fff}
+  .file{border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;background:#FFFDF8}
   .file .ic{font-size:26px}
   .file b{font-size:15px}
   .file span{font-size:13px;color:var(--ink-soft);flex:1}
@@ -18,18 +18,18 @@
   .task{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
   .task.on{border-color:var(--leaf);background:#f4faf6}
   .task .top{display:flex;gap:11px;align-items:flex-start;cursor:pointer}
-  .task .n{width:30px;height:30px;border-radius:9px;background:var(--core-1);color:#fff;font-weight:700;display:grid;place-items:center;flex:0 0 auto}
+  .task .n{width:30px;height:30px;border-radius:9px;background:var(--core-1);color:#FFFDF8;font-weight:700;display:grid;place-items:center;flex:0 0 auto}
   .task.on .n{background:var(--leaf)}
   .task h3{font-size:16px}
   .task .q{font-size:13.5px;color:var(--ink-soft);margin-top:2px}
   .task textarea{margin-top:10px;min-height:48px}
   @media (max-width:640px){.files{grid-template-columns:1fr}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/site.css?v=3">
 </head>
 <body>
   <header class="bar">
-    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V10l5-3v14M10 21V4l9 4v13" stroke="#C77D3E" stroke-width="2" stroke-linejoin="round"/><path d="M13 11h3M13 14h3M13 17h3" stroke="#127C71" stroke-width="1.8" stroke-linecap="round"/></svg>מקרה הבוחן: עיריית אלון-ים</div>
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V10l5-3v14M10 21V4l9 4v13" stroke="#D99A2B" stroke-width="2" stroke-linejoin="round"/><path d="M13 11h3M13 14h3M13 17h3" stroke="#B4502F" stroke-width="1.8" stroke-linecap="round"/></svg>מקרה הבוחן: עיריית אלון-ים</div>
     <span class="daytag">יום 1 · יום 2</span>
     <a class="hublink" href="../">‹ כל הכלים</a>
   </header>
@@ -42,9 +42,9 @@
     </div>
 
     <nav class="tabs">
-      <button data-tab="t-story">🏙️ הסיפור</button>
-      <button data-tab="t-files">⬇️ הקבצים ומילון העמודות</button>
-      <button data-tab="t-tasks">🧩 שש המשימות</button>
+      <button data-tab="t-story">הסיפור</button>
+      <button data-tab="t-files">הקבצים ומילון העמודות</button>
+      <button data-tab="t-tasks">שש המשימות</button>
     </nav>
 
     <section class="tab-pane" id="t-story">
@@ -85,7 +85,7 @@
         <p class="lead">45 דקות. התוצר: שישה חיתוכים, ומה בולט בכל אחד. <b>משימות 5 ו-6 ישנו לכם את התמונה שקיבלתם ממשימה 1. אל תדלגו עליהן.</b></p>
         <div id="tasks"></div>
         <div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-          <button class="btn btn-ghost btn-sm" onclick="Case.copy()">📋 העתקת הממצאים</button>
+          <button class="btn btn-ghost btn-sm" onclick="Case.copy()">העתקת הממצאים</button>
           <a class="btn btn-ghost btn-sm" href="../analysis/#t-tech">מחשבון Pareto ונרמול ←</a>
           <a class="btn btn-ghost btn-sm" href="../prompts/">פרומפטים ליום 2 ←</a>
         </div>
@@ -101,16 +101,16 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js"></script>
+<script src="../assets/dd.js?v=3"></script>
 <script>
 const Case=(()=>{
   'use strict';
   const LS='dd_case_v1', E=DD.esc;
   /* The files live in data/case/files/. Set `href` once a file is uploaded; until then the card shows "בקרוב". */
   const FILES=[
-    {ic:'🧾', t:'קובץ פניות גולמי', d:'לתרגול ניקוי: כפילויות, כתיב לא עקבי, תאריכים כטקסט וימי טיפול שליליים.', href:''},
-    {ic:'✨', t:'קובץ פניות נקי', d:'למי שרוצה לדלג ישר לניתוח, או לא סיים לנקות בזמן.', href:''},
-    {ic:'👥', t:'נתוני רקע לפי אזור', d:'מספר תושבים בכל אזור. בלעדיו אין נרמול ואין Zoom Out.', href:''}
+    {ic:'', t:'קובץ פניות גולמי', d:'לתרגול ניקוי: כפילויות, כתיב לא עקבי, תאריכים כטקסט וימי טיפול שליליים.', href:''},
+    {ic:'', t:'קובץ פניות נקי', d:'למי שרוצה לדלג ישר לניתוח, או לא סיים לנקות בזמן.', href:''},
+    {ic:'', t:'נתוני רקע לפי אזור', d:'מספר תושבים בכל אזור. בלעדיו אין נרמול ואין Zoom Out.', href:''}
   ];
   /* Draft dictionary: to be verified against the actual files. */
   const DICT=[
@@ -136,7 +136,7 @@ const Case=(()=>{
   let data=DD.load(LS,{done:TASKS.map(()=>false), notes:TASKS.map(()=>'')});
 
   document.getElementById('files').innerHTML=FILES.map(f=>`<div class="file"><div class="ic">${f.ic}</div><b>${f.t}</b><span>${f.d}</span>
-    ${f.href?`<a class="btn btn-brand btn-sm" href="${f.href}" download>⬇️ הורדה</a>`:'<a class="btn btn-ghost btn-sm" aria-disabled="true">בקרוב</a>'}</div>`).join('');
+    ${f.href?`<a class="btn btn-brand btn-sm" href="${f.href}" download>הורדה</a>`:'<a class="btn btn-ghost btn-sm" aria-disabled="true">בקרוב</a>'}</div>`).join('');
   document.getElementById('dict').innerHTML='<thead><tr><th>עמודה</th><th>מה יש בה</th><th>סוג משתנה</th><th>שימו לב</th></tr></thead><tbody>'+DICT.map(r=>'<tr>'+r.map((c,i)=>i===0?`<td><b>${c}</b></td>`:`<td>${c}</td>`).join('')+'</tr>').join('')+'</tbody>';
 
   function render(){
@@ -152,6 +152,6 @@ const Case=(()=>{
   return {toggle,copy};
 })();
 </script>
-<script src="../../assets/site.js" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../' data-side="1"></script>
+<script src="../../assets/site.js?v=3" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

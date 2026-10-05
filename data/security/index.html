@@ -6,9 +6,9 @@
 <title>מה מטעה אותנו, ואיפה הגבול — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css">
+<link rel="stylesheet" href="../assets/dd.css?v=3">
 <style>
-  .bias{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;background:#fff}
+  .bias{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;background:#FFFDF8}
   .bias .k{font-size:12px;font-weight:700;color:var(--root)}
   .bias .ex{font-size:16px;font-weight:700;margin-top:3px}
   .bias .anti{font-size:14px;color:var(--brand-deep);margin-top:7px}
@@ -20,7 +20,7 @@
   .case{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
   .case .q{font-size:15px;font-weight:700}
   .case .opts{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
-  .case .opts button{border:1.5px solid var(--line);border-radius:10px;padding:7px 12px;font-weight:700;font-size:13.5px;background:#fff}
+  .case .opts button{border:1.5px solid var(--line);border-radius:10px;padding:7px 12px;font-weight:700;font-size:13.5px;background:#FFFDF8}
   .case .opts button.pick-g{border-color:var(--ok);background:#E7F4EC}
   .case .opts button.pick-y{border-color:var(--mid);background:#FCF3E1}
   .case .opts button.pick-r{border-color:var(--warn);background:#FBE9E6}
@@ -29,18 +29,18 @@
   .case .ans.wrong{background:#FDF1EF;color:#7d2a20}
   .score{font-size:15px;font-weight:700;text-align:center;margin-top:6px}
   .rule{display:grid;grid-template-columns:1fr auto;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  .rule div{padding:11px 14px;border-bottom:1px solid #E6EAF0;font-size:14.5px}
-  .rule div:nth-child(even){font-weight:700;color:var(--brand-deep);background:#F4FAF8;text-align:center;min-width:160px}
+  .rule div{padding:11px 14px;border-bottom:1px solid #EDE4D5;font-size:14.5px}
+  .rule div:nth-child(even){font-weight:700;color:var(--brand-deep);background:#FBF1EA;text-align:center;min-width:160px}
   .rule div:nth-last-child(-n+2){border-bottom:none}
   .step{display:flex;gap:12px;align-items:flex-start}
-  .step .n{width:30px;height:30px;border-radius:50%;background:var(--core-1);color:#fff;font-weight:700;display:grid;place-items:center;flex:0 0 auto}
+  .step .n{width:30px;height:30px;border-radius:50%;background:var(--core-1);color:#FFFDF8;font-weight:700;display:grid;place-items:center;flex:0 0 auto}
   @media (max-width:640px){.cat{grid-template-columns:1fr}.rule{grid-template-columns:1fr}.rule div:nth-child(even){text-align:right}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css">
+<link rel="stylesheet" href="../../assets/site.css?v=3">
 </head>
 <body>
   <header class="bar">
-    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3Z" stroke="#127C71" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#C77D3E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>מה מטעה אותנו, ואיפה הגבול</div>
+    <div class="brand"><svg class="mark" viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3Z" stroke="#B4502F" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#D99A2B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>מה מטעה אותנו, ואיפה הגבול</div>
     <span class="daytag">יום 1 · חטיבה 1</span>
     <a class="hublink" href="../">‹ כל הכלים</a>
   </header>
@@ -53,11 +53,11 @@
     </div>
 
     <nav class="tabs">
-      <button data-tab="t-bias">🧠 חמש ההטיות</button>
-      <button data-tab="t-forbid">❌ מה אסור</button>
-      <button data-tab="t-anon">🧹 ניטרול מזהים</button>
-      <button data-tab="t-quiz">🟢🟡🔴 מותר או אסור?</button>
-      <button data-tab="t-tool">⚖️ איזה כלי?</button>
+      <button data-tab="t-bias">חמש ההטיות</button>
+      <button data-tab="t-forbid">מה אסור</button>
+      <button data-tab="t-anon">ניטרול מזהים</button>
+      <button data-tab="t-quiz">מותר או אסור?</button>
+      <button data-tab="t-tool">איזה כלי?</button>
     </nav>
 
     <section class="tab-pane" id="t-bias">
@@ -67,7 +67,7 @@
         <div id="biases"></div>
       </div>
       <div class="panel">
-        <h2>🤖 כשהמכונה "ממציאה" בביטחון</h2>
+        <h2>AI כשהמכונה "ממציאה" בביטחון</h2>
         <p class="lead">לפעמים AI נותן תשובה שנשמעת מוסמכת לגמרי, אבל פשוט שגויה. קוראים לזה <b>הזיה</b>.</p>
         <div class="grid2">
           <div class="callout ok" style="margin:0"><b>איך מתגוננים</b><br>מאמתים כל עובדה במקור מהימן · מבקשים מהכלי לציין מקורות · לא מפרסמים בלי בדיקה אנושית · "תסביר איך הגעת למספר"</div>
@@ -81,7 +81,7 @@
       <div class="panel">
         <h2>מה שנכנס לכלי ציבורי עלול לא להישאר פרטי</h2>
         <p class="lead">בהכשרות AI רגילות מנסחים טקסט. כאן מעלים קבצים, וזו רמת סיכון אחרת לגמרי. כעובדי רשות אנחנו מחזיקים מידע רגיש על תושבים.</p>
-        <div class="field-label">❌ שש הקטגוריות האסורות</div>
+        <div class="field-label">שש הקטגוריות האסורות</div>
         <div class="cat">
           <div><b>פרטי תושבים</b><span>שם, ת״ז, כתובת מדויקת, טלפון, מייל</span></div>
           <div><b>רשימות זכאות</b><span>רווחה, תמיכות, הנחות בארנונה, מלגות</span></div>
@@ -92,7 +92,7 @@
         </div>
       </div>
       <div class="panel">
-        <h2>✅ מותר: שני תנאים, ושניהם נדרשים</h2>
+        <h2>מותר: שני תנאים, ושניהם נדרשים</h2>
         <div class="grid2" style="margin-top:12px">
           <div class="callout ok" style="margin:0"><b>1 · בכלי מאובטח ומאושר</b><br>Microsoft Copilot בחשבון הארגוני. המידע נשאר בסביבה המאובטחת של הרשות. נדרש אישור מנמ״ר הרשות.</div>
           <div class="callout ok" style="margin:0"><b>2 · רק נתונים בלי מזהים</b><br>מוחקים שמות, ת״ז, טלפונים וכתובות מדויקות, ומנתחים רק מגמות. זה כמעט תמיד מספיק לשאלה העסקית.</div>
@@ -100,7 +100,7 @@
         <div class="callout info"><b>כלל אצבע:</b> אם משפט בפרומפט היה מביך אתכם אילו היה מתפרסם, אל תכתבו אותו. תמיד אפשר לנסח בכללי ולהשלים את הפרטים ידנית בסוף.</div>
       </div>
       <div class="panel">
-        <h2>⚖️ מה AI <u>לא</u> יעשה בשבילכם</h2>
+        <h2>מה AI <u>לא</u> יעשה בשבילכם</h2>
         <div class="grid2" style="margin-top:12px">
           <div class="check"><div class="ttl">לא יחליט במקומכם</div><div class="q">אישור בקשה, סירוב, תעדוף תקציבי. החלטה היא תמיד אנושית.</div></div>
           <div class="check"><div class="ttl">לא ייקח אחריות</div><div class="q">מה שיוצא בשמכם באחריותכם. תמיד לקרוא לפני ששולחים.</div></div>
@@ -113,7 +113,7 @@
 
     <section class="tab-pane" id="t-anon">
       <div class="panel">
-        <h2>🧹 לפני שמעלים: מנטרלים. שבעה שלבים.</h2>
+        <h2>לפני שמעלים: מנטרלים. שבעה שלבים.</h2>
         <p class="lead">עוברים על הרשימה לפני כל העלאה של קובץ לכלי AI, כולל Copilot הארגוני כשאפשר. שלב 4, זיהוי מחדש, הוא זה שכולם מפספסים.</p>
         <div id="anonList"></div>
         <div class="score" id="anonScore"></div>
@@ -123,8 +123,8 @@
 
     <section class="tab-pane" id="t-quiz">
       <div class="panel">
-        <h2>🟢🟡🔴 מותר או אסור?</h2>
-        <p class="lead">שמונה מקרים מהעבודה ברשות. לכל מקרה בחרו: <span class="pill g">🟢 מותר</span> <span class="pill y">🟡 רק אחרי ניטרול</span> <span class="pill r">🔴 אסור</span>. שימו לב במיוחד למקרים 2, 3 ו-7.</p>
+        <h2>מותר או אסור?</h2>
+        <p class="lead">שמונה מקרים מהעבודה ברשות. לכל מקרה בחרו: <span class="pill g">מותר</span> <span class="pill y">רק אחרי ניטרול</span> <span class="pill r">אסור</span>. שימו לב במיוחד למקרים 2, 3 ו-7.</p>
         <div id="quiz"></div>
         <div class="score" id="quizScore"></div>
         <div class="noprint" style="text-align:center;margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="Sec.resetQuiz()">להתחיל מחדש</button></div>
@@ -133,7 +133,7 @@
 
     <section class="tab-pane" id="t-tool">
       <div class="panel">
-        <h2>⚖️ כלל ההכרעה: איזה כלי?</h2>
+        <h2>כלל ההכרעה: איזה כלי?</h2>
         <p class="lead">בשורה אחת: <b>נתונים אמיתיים ← Copilot. שפה כללית ← מה שנוח.</b></p>
         <div class="rule">
           <div>הקובץ מכיל נתוני רשות אמיתיים?</div><div>Copilot בחשבון הארגוני. תמיד.</div>
@@ -158,7 +158,7 @@
           <p class="lead">חינמי, מכל דפדפן, בלי התקנה.</p>
           <div class="step"><span class="n">1</span><div>נכנסים ל-<a href="https://gemini.google.com" target="_blank" rel="noopener">gemini.google.com</a> ומתחברים עם חשבון Google</div></div><br>
           <div class="step"><span class="n">2</span><div>כותבים את הבקשה בשפה חופשית</div></div><br>
-          <div class="step"><span class="n">3</span><div>מצרפים קובץ או תמונה בלחיצה על ➕</div></div><br>
+          <div class="step"><span class="n">3</span><div>מצרפים קובץ או תמונה בלחיצה על +</div></div><br>
           <div class="step"><span class="n">4</span><div>מדייקים בדיאלוג: "תקצר", "הוסף טבלה", "כתוב רשמי יותר"</div></div><br>
           <div class="step"><span class="n">5</span><div>לכתיבה ארוכה: Canvas · למחקר מעמיק: Deep Research</div></div>
           <div class="callout warn">זה כלי ציבורי. רק שפה כללית, בלי פרטי תושבים.</div>
@@ -170,7 +170,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js"></script>
+<script src="../assets/dd.js?v=3"></script>
 <script>
 const Sec=(()=>{
   'use strict';
@@ -201,11 +201,11 @@ const Sec=(()=>{
     {q:'מעלים ל-Gemini טבלת שכר של מחלקה בת 6 עובדים "בלי שמות": תפקיד, ותק ושכר.', a:'r', why:'במחלקה של שישה אנשים, תפקיד + ותק מזהים כל אחד. זה זיהוי מחדש בדיוק כמו שם. אסור בכלי ציבורי.'},
     {q:'כותבים בפרומפט את שם המשתמש והסיסמה של מערכת הגבייה, כדי שהכלי "יתחבר וימשוך נתונים".', a:'r', why:'סיסמאות ופרטי גישה אסורים תמיד, בכל כלי. וגם: הכלי לא באמת יכול להתחבר.'}
   ];
-  const LABEL={g:'🟢 מותר',y:'🟡 רק אחרי ניטרול',r:'🔴 אסור'};
+  const LABEL={g:'מותר',y:'רק אחרי ניטרול',r:'אסור'};
   let data=DD.load(LS,{anon:ANON.map(()=>false), quiz:CASES.map(()=>'')});
 
   function renderBiases(){
-    document.getElementById('biases').innerHTML=BIASES.map(b=>`<div class="bias"><div class="k">${b.k}</div><div class="ex">${b.ex}</div><div class="anti">🧪 <b>האנטידוט:</b> ${b.anti}</div></div>`).join('');
+    document.getElementById('biases').innerHTML=BIASES.map(b=>`<div class="bias"><div class="k">${b.k}</div><div class="ex">${b.ex}</div><div class="anti"><b>האנטידוט:</b> ${b.anti}</div></div>`).join('');
   }
   function renderAnon(){
     document.getElementById('anonList').innerHTML=ANON.map((s,i)=>`
@@ -235,6 +235,6 @@ const Sec=(()=>{
   return {toggleAnon,resetAnon,answer,resetQuiz};
 })();
 </script>
-<script src="../../assets/site.js" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../' data-side="1"></script>
+<script src="../../assets/site.js?v=3" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
