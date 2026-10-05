@@ -5,7 +5,7 @@ with an old cached script.
 """
 import glob, os, re
 
-V = '16'
+V = '17'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOME, DD, MZ, AI = 'כל ההכשרות', 'קבלת החלטות מבוססת נתונים', 'מאיצים דיגיטליים', 'הכשרת בינה מלאכותית'
 

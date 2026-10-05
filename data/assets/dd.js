@@ -68,7 +68,12 @@ window.DD = (function(){
       return questionSentence(q, function(v,ph){ return (v||'').trim()||'['+ph+']'; });
     }catch(e){ return ''; }
   }
-  function builderSources(){ try{ return (JSON.parse(localStorage.getItem(QKEY)||'{}').sources)||[]; }catch(e){ return []; } }
+  /* the directions written in part 3 of the question builder, one item per line: {internal:[], open:[], field:[]} */
+  function builderIdeas(){
+    var out={internal:[],open:[],field:[]};
+    try{ var d=(JSON.parse(localStorage.getItem(QKEY)||'{}').ideas)||{}; Object.keys(out).forEach(function(k){ out[k]=String(d[k]||'').split(/\n/).map(function(x){ return x.trim(); }).filter(Boolean); }); }catch(e){}
+    return out;
+  }
   function help(text){ return '<button type="button" class="help" aria-label="הסבר" aria-expanded="false" data-help="'+esc(text)+'">?</button>'; }
-  return {questionSentence:questionSentence, businessQuestion:businessQuestion, builderSources:builderSources, help:help, esc:esc, load:load, save:save, identity:identity, toast:toast, copy:copy, download:download, downloadDoc:downloadDoc, loadFile:loadFile, safeName:safeName, tabs:tabs};
+  return {questionSentence:questionSentence, businessQuestion:businessQuestion, builderIdeas:builderIdeas, help:help, esc:esc, load:load, save:save, identity:identity, toast:toast, copy:copy, download:download, downloadDoc:downloadDoc, loadFile:loadFile, safeName:safeName, tabs:tabs};
 })();

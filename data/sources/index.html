@@ -6,7 +6,7 @@
 <title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=16">
+<link rel="stylesheet" href="../assets/dd.css?v=17">
 <style>
   .wrap{max-width:900px}
   body{padding-bottom:62px}
@@ -64,7 +64,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=16">
+<link rel="stylesheet" href="../../assets/site.css?v=17">
 </head>
 <body>
   <header class="bar">
@@ -90,11 +90,11 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=16"></script>
+<script src="../assets/dd.js?v=17"></script>
 <script>
 const S=(()=>{
   'use strict';
-  const LS='dd_sources_v2', E=DD.esc;
+  const LS='dd_sources_v3', E=DD.esc;
   /* three places a piece of data can be: with us, on a public site, or still to be obtained */
   const GROUPS=[
     {k:'have', n:1, t:'נתונים שכבר יש לנו ברשות',
@@ -130,15 +130,14 @@ const S=(()=>{
   function save(){ DD.save(LS,data); }
 
   const question=()=>DD.businessQuestion();
-  /* rows already written in part 3 of the question builder come along, once */
+  /* the directions jotted in part 3 of the question builder come along as starting rows, once */
   function importFromBuilder(){
     if(data.imported) return;
     data.imported=true;
-    const src=DD.builderSources().filter(r=>(r.name||'').trim());
-    const row=r=>[r.name.trim(),(r.where||'').trim(),(r.owner||'').trim()];
-    const missing=src.filter(r=>/לאסוף/.test(r.avail||'')), have=src.filter(r=>!/לאסוף/.test(r.avail||''));
-    if(have.length && data.have.every(r=>r.every(c=>!c))) data.have=have.map(row);
-    if(missing.length && data.need.every(r=>r.every(c=>!c))) data.need=missing.map(r=>[r.name.trim(),(r.owner||'').trim(),'']);
+    const ideas=DD.builderIdeas(), empty=k=>data[k].every(r=>r.every(c=>!c));
+    if(ideas.internal.length && empty('have')) data.have=ideas.internal.map(x=>[x,'','']);
+    if(ideas.open.length && empty('pub')) data.pub=ideas.open.map(x=>['',x,'']);
+    if(ideas.field.length && empty('need')) data.need=ideas.field.map(x=>[x,'','']);
     save();
   }
   const filled=k=>data[k].filter(r=>r[0].trim());
@@ -254,6 +253,6 @@ const S=(()=>{
   return {go,search,add,del,site,doc,copyAll,mail,saveJson,loadJson};
 })();
 </script>
-<script src="../../assets/site.js?v=16" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=17" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
