@@ -6,7 +6,7 @@
 <title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=6">
+<link rel="stylesheet" href="../assets/dd.css?v=7">
 <style>
   .wrap{max-width:900px}
   body{padding-bottom:62px}
@@ -24,6 +24,24 @@
   .sites{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 12px}
   .sites button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:13.5px;color:var(--teal,#1f5f5b)}
   .sites button:hover{border-color:var(--teal,#1f5f5b);background:var(--teal-tint,#dcedea)}
+  .steps2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .stepbtn{display:flex;align-items:center;gap:12px;border:2px solid var(--line);background:#fff;border-radius:14px;padding:12px 16px;font-weight:700;font-size:17px;color:var(--ink-soft);text-align:right;cursor:pointer;transition:.15s}
+  .stepbtn:hover{border-color:var(--teal,#1f5f5b);color:var(--ink)}
+  .stepbtn .sn{width:40px;height:40px;border-radius:50%;background:var(--line);color:var(--ink);display:grid;place-items:center;font-size:21px;flex:0 0 auto}
+  .stepbtn small{display:block;font-weight:400;font-size:13.5px}
+  .stepbtn.on{background:var(--brand);border-color:var(--brand);color:#fffdf8}
+  .stepbtn.on .sn{background:#fffdf8;color:var(--brand)}
+  .search{display:flex;gap:8px;align-items:center;margin-top:6px}
+  .search input{flex:1}
+  .sitegrp{font-size:13px;font-weight:700;color:var(--teal,#1f5f5b);letter-spacing:.5px;margin:18px 0 8px}
+  .site{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;background:#fff}
+  .site.added{border-color:var(--success,#2e7d4f);background:#f1f8f3}
+  .site h3{font-size:17px}
+  .site p{margin:2px 0 0;font-size:14px;color:var(--ink-soft)}
+  .site .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .nextrow{display:flex;gap:10px;margin-top:14px}
+  .nextrow .btn{flex:1;padding:13px;font-size:16px}
+  @media (max-width:700px){.steps2{grid-template-columns:1fr}.site{grid-template-columns:1fr}.site .acts{justify-content:flex-start}.search{flex-wrap:wrap}}
   /* export is always within reach */
   .savebar{position:fixed;bottom:0;right:0;left:0;z-index:60;background:var(--surface-card,#fffdf8);border-top:2px solid var(--brand);box-shadow:0 -6px 24px rgba(42,33,27,.12);padding:10px 16px}
   .savebar .in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -39,7 +57,7 @@
   }
   @media print{.savebar,.add,.sites,.del,.noprint{display:none!important}body{padding-bottom:0}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=6">
+<link rel="stylesheet" href="../../assets/site.css?v=7">
 </head>
 <body>
   <header class="bar">
@@ -65,7 +83,7 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=6"></script>
+<script src="../assets/dd.js?v=7"></script>
 <script>
 const S=(()=>{
   'use strict';
@@ -85,10 +103,20 @@ const S=(()=>{
      help:'נתונים שאתם יודעים שצריך, אבל עדיין לא בידיכם: צריך לבקש ממחלקה אחרת, מספק, או לאסוף מחדש. כותבים ממי מבקשים ועד מתי, כדי שזה באמת יקרה לפני המפגש הבא.',
      cols:['הנתון','ממי מבקשים','עד מתי'], ph:['זמני טיפול של תאגיד המים','מנהל התפעול בתאגיד','עד המפגש הבא']}
   ];
-  const SITES=[['data.gov.il','https://data.gov.il/he'],['הלמ״ס','https://www.cbs.gov.il/he'],['GovMap','https://www.govmap.gov.il/'],
-    ['תקציב פתוח','https://obudget.org'],['שקיפות בחינוך','https://shkifut.education.gov.il'],['GIS תחבורה','https://geo.mot.gov.il/'],['אתר 265','https://govextra.gov.il/265/265/home/']];
+  /* step 1: the sites participants browse. `scope` is what the "search inside" button restricts Google to. */
+  const SITES=[
+    {g:'המועצה', n:'מידע ושקיפות, גוש עציון', d:'עמוד המידע והשקיפות של המועצה.', u:'https://www.baitisraeli.co.il/%D7%A9%D7%A7%D7%99%D7%A4%D7%95%D7%AA/', scope:'site:baitisraeli.co.il'},
+    {g:'ארצי', n:'הרשויות המקומיות בישראל (הלמ״ס)', d:'פרופיל לכל רשות: אוכלוסייה, חינוך, רווחה וכספים. טוב להשוואה בין רשויות.', u:'https://data.cbs.gov.il/muni/home', scope:'site:cbs.gov.il רשויות מקומיות'},
+    {g:'ארצי', n:'מפקד האוכלוסין (הלמ״ס)', d:'מי גר איפה, לפי יישוב ואזור.', u:'https://census.cbs.gov.il/he', scope:'site:cbs.gov.il מפקד האוכלוסין'},
+    {g:'ארצי', n:'הלשכה המרכזית לסטטיסטיקה', d:'האתר הראשי של הלמ״ס: הסטטיסטיקה הרשמית של ישראל.', u:'https://www.cbs.gov.il', scope:'site:cbs.gov.il'},
+    {g:'ארצי', n:'שקיפות בחינוך (משרד החינוך)', d:'נתונים על בתי ספר ועל מערכת החינוך ברשות.', u:'https://shkifut.education.gov.il/home', scope:'site:education.gov.il שקיפות'},
+    {g:'ארצי', n:'פורטל הנתונים הפתוחים, data.gov.il', d:'מאגרי מידע של משרדי הממשלה, להורדה חופשית.', u:'https://data.gov.il', scope:'site:data.gov.il'},
+    {g:'ארצי', n:'נתוני רשויות: דמוגרפיה', d:'נתונים דמוגרפיים לפי רשות מקומית.', u:'https://municipal-data.org/demographics', scope:'site:municipal-data.org'},
+    {g:'ארצי', n:'רשות המסים', d:'מידע ופרסומים של רשות המסים.', u:'https://www.gov.il/he/departments/israel_tax_authority', scope:'site:gov.il רשות המסים'},
+    {g:'ארצי', n:'משרד התחבורה והבטיחות בדרכים', d:'מידע ופרסומים של משרד התחבורה.', u:'https://www.gov.il/he/departments/ministry_of_transport_and_road_safety', scope:'site:gov.il משרד התחבורה'}
+  ];
   const blank=()=>['','',''];
-  function fresh(){ return {have:[blank(),blank(),blank()], pub:[blank(),blank()], need:[blank(),blank()], imported:false}; }
+  function fresh(){ return {step:1, term:'', have:[blank(),blank(),blank()], pub:[blank(),blank()], need:[blank(),blank()], imported:false}; }
   let data=DD.load(LS,fresh());
   function save(){ DD.save(LS,data); }
 
@@ -127,11 +155,31 @@ const S=(()=>{
       <div class="qbox ${q?'':'missing'}">${q
         ? `<div class="ql"><span>השאלה העסקית שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
         : `<div class="ql"><span>עדיין אין שאלה עסקית</span><a href="../question/">לבונה השאלה העסקית ←</a></div>אפשר למלא גם בלי, אבל קל יותר לחפש נתונים כשהשאלה מול העיניים.`}</div>
+      <div class="steps2 noprint">
+        <button class="stepbtn ${data.step===1?'on':''}" onclick="S.go(1)"><span class="sn">1</span><span>משוטטים באתרים<small>מה קיים בחוץ</small></span></button>
+        <button class="stepbtn ${data.step===2?'on':''}" onclick="S.go(2)"><span class="sn">2</span><span>ממפים את המקורות<small>מה יש, מה ציבורי, מה חסר</small></span></button>
+      </div>
+      ${data.step===1 ? `
+      <div class="panel">
+        <h2><span class="num">1</span>משוטטים באתרים${DD.help('לפני שממלאים רשימה, מסתכלים מה בכלל קיים. פותחים כל אתר, מסתכלים חמש דקות, ושואלים: יש כאן משהו שעוזר לענות על השאלה שלי? אתר שמצאתם בו משהו, מוסיפים לרשימה בלחיצה.')}</h2>
+        <p class="lead">פותחים, מסתכלים, ובודקים אם יש שם נתון שעוזר לשאלה שלכם. מה שמצאתם מוסיפים לרשימה.</p>
+        <div class="field-label">מה מחפשים?${DD.help('כתבו מילה או שתיים מהשאלה שלכם, למשל ״פניות מוקד״ או ״ארנונה״. הכפתור <b>חיפוש באתר</b> ליד כל אתר יפתח חיפוש בגוגל של המילים האלה בתוך אותו אתר בלבד.')}</div>
+        <div class="search"><input class="txt" id="term" placeholder="למשל: פינוי אשפה, ארנונה, תלמידים" value="${E(data.term)}"></div>
+        ${['המועצה','ארצי'].map(grp=>`<div class="sitegrp">${grp}</div>`+SITES.map((x,i)=>x.g!==grp?'':`
+          <div class="site ${inList(i)?'added':''}">
+            <div><h3>${x.n}</h3><p>${x.d}</p></div>
+            <div class="acts">
+              <a class="btn btn-dark btn-sm" href="${x.u}" target="_blank" rel="noopener">פתיחת האתר ↗</a>
+              <button class="btn btn-ghost btn-sm" onclick="S.search(${i})">חיפוש באתר</button>
+              <button class="btn btn-ghost btn-sm" onclick="S.site(${i})">${inList(i)?'✓ ברשימה':'+ לרשימה שלי'}</button>
+            </div>
+          </div>`).join('')).join('')}
+        <div class="nextrow"><button class="btn btn-brand" onclick="S.go(2)">ממשיכים לשלב 2: ממפים את המקורות ←</button></div>
+      </div>` : `
       ${GROUPS.map(g=>`
         <div class="panel grp">
           <h2><span class="num">${g.n}</span>${g.t}${DD.help(g.help)}<span class="cnt">${countLabel(g.k)}</span></h2>
           <p class="lead">${g.lead}</p>
-          ${g.k==='pub'?`<div class="sites">${SITES.map((s,i)=>`<button onclick="S.site(${i})">+ ${s[0]}</button>`).join('')}</div>`:''}
           <div class="rows">
             <div class="row heads">${g.cols.map(c=>`<span>${c}</span>`).join('')}<span></span></div>
             ${data[g.k].map((r,i)=>`<div class="row">
@@ -140,7 +188,9 @@ const S=(()=>{
           </div>
           <button class="btn btn-ghost btn-sm add" onclick="S.add('${g.k}')">+ עוד נתון</button>
         </div>`).join('')}
-      <div class="callout info"><b>לקראת המפגש הבא:</b> נסו להביא לפחות קובץ נתונים אחד מהרשימה הראשונה, בלי פרטים מזהים של תושבים. גם רשימה חלקית היא התחלה טובה.</div>`;
+      <div class="nextrow noprint"><button class="btn btn-ghost" onclick="S.go(1)">→ חזרה לשיטוט באתרים</button></div>
+      <div class="callout info"><b>לקראת המפגש הבא:</b> נסו להביא לפחות קובץ נתונים אחד מהרשימה הראשונה, בלי פרטים מזהים של תושבים. גם רשימה חלקית היא התחלה טובה.</div>`}`;
+    const term=document.getElementById('term'); if(term) term.addEventListener('input',()=>{ data.term=term.value; save(); });
     document.querySelectorAll('[data-c]').forEach(el=>el.addEventListener('input',()=>{
       const[k,i,j]=el.dataset.c.split('-'); data[k][+i][+j]=el.value; save();
       const cnt=el.closest('.grp').querySelector('.cnt'); if(cnt) cnt.textContent=countLabel(k);
@@ -148,10 +198,18 @@ const S=(()=>{
   }
   function add(k){ data[k].push(blank()); save(); render(); const all=document.querySelectorAll(`[data-c^="${k}-${data[k].length-1}-"]`); if(all[0]) all[0].focus(); }
   function del(k,i){ data[k].splice(i,1); if(!data[k].length) data[k].push(blank()); save(); render(); }
+  const inList=i=>data.pub.some(r=>r[2]===SITES[i].u);
+  function go(n){ data.step=n; save(); render(); window.scrollTo({top:0,behavior:'smooth'}); }
+  function search(i){
+    const t=(data.term||'').trim();
+    if(!t){ DD.toast('כתבו קודם מה מחפשים'); const el=document.getElementById('term'); if(el) el.focus(); return; }
+    window.open('https://www.google.com/search?q='+encodeURIComponent(SITES[i].scope+' '+t),'_blank','noopener');
+  }
   function site(i){
-    const s=SITES[i], row=['',s[0],s[1]], empty=data.pub.findIndex(r=>r.every(c=>!c));
+    if(inList(i)){ DD.toast('האתר כבר ברשימה שלכם'); return; }
+    const x=SITES[i], row=[(data.term||'').trim(),x.n,x.u], empty=data.pub.findIndex(r=>r.every(c=>!c));
     if(empty>-1) data.pub[empty]=row; else data.pub.push(row);
-    save(); render(); DD.toast('נוסף. כתבו איזה נתון תחפשו שם');
+    save(); render(); DD.toast('נוסף לרשימה. בשלב 2 תכתבו איזה נתון מצאתם שם');
   }
 
   /* ---------- export ---------- */
@@ -190,9 +248,9 @@ const S=(()=>{
   function loadJson(){ DD.loadFile(d=>{ data=Object.assign(fresh(),d,{imported:true}); save(); render(); }); }
 
   importFromBuilder(); render();
-  return {add,del,site,doc,copyAll,mail,saveJson,loadJson};
+  return {go,search,add,del,site,doc,copyAll,mail,saveJson,loadJson};
 })();
 </script>
-<script src="../../assets/site.js?v=6" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=7" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

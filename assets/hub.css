@@ -25,7 +25,10 @@ main{flex:1;padding:var(--space-5) 0 var(--space-6)}
 .cardlink:hover .go{background:#8f3d22}
 .cardlink.quiet .go{background:transparent;color:var(--brand);border:2px solid var(--brand);padding:8px 20px}
 .cardlink.quiet:hover .go{background:var(--brand);color:var(--on-brand)}
-.cardlink .n{position:absolute;top:var(--space-4);left:var(--space-4);width:34px;height:34px;border-radius:50%;background:var(--teal);color:var(--on-teal);font-weight:700;font-size:17px;display:grid;place-items:center}
+/* step number: large, first thing the eye meets (top right in RTL); the icon moves to the far side */
+.cardlink .n{position:absolute;top:var(--space-4);right:var(--space-4);width:56px;height:56px;border-radius:50%;background:var(--brand);color:var(--on-brand);font-weight:700;font-size:30px;line-height:1;display:grid;place-items:center}
+.cardlink .n+.ico{align-self:flex-end}
+.cardlink .n~h2{margin-top:6px}
 .cardlink .tag{position:absolute;top:var(--space-4);left:var(--space-4);background:var(--amber);color:var(--ink);font-weight:700;font-size:14px;border-radius:var(--radius-pill);padding:3px 14px}
 
 .day{margin-top:var(--space-5)}
