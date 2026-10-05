@@ -44,7 +44,13 @@ body.has-topbar header.bar{position:static;background:var(--surface-200);backdro
 .cover{background:var(--teal)!important;color:var(--on-teal)!important;padding-bottom:0!important}
 .cover::before,.cover::after{display:none!important}
 .cover-art,.cover .back,.cover>a{display:none!important}
-.cover-main{padding-bottom:8px}
+.cover{padding-top:18px!important}
+.cover-main{padding-bottom:0}
+.cover-text h1{font-size:clamp(26px,3.4vw,36px)!important;letter-spacing:-.5px!important;margin:2px 0 0!important}
+.cover-text .sub{display:none}
+.cover-text p{font-size:16px!important;margin-top:4px!important}
+.cover .sym{height:52px;max-width:520px}
+.cover .sym svg{width:28px;height:28px}
 .cover-text .eyebrow{color:#c9e2de!important}
 .cover-text .sub{color:#fffdf8!important}
 .cover-text p{color:#c9e2de!important}
