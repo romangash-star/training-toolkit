@@ -104,10 +104,59 @@
       document.querySelectorAll(a[0]).forEach(function(el){ if(!el.querySelector('.help')) el.insertAdjacentHTML('beforeend',helpHtml(a[1])); });
     });
   }
+  /* ---------- gentle "what's next" guide ----------
+     On a tool: after NUDGE seconds on the same step, the step's main button starts to glow
+     (the wizard's "next", otherwise the export button). Once the participant has exported,
+     the "back" button glows instead. On a hub: the first tool not yet exported glows, and
+     finished ones get a small check. Nothing moves or pops up; it is only a soft ring.
+     ?nudge=5 in the address shortens the wait to 5 seconds (for demos and tests). */
+  var PROGRESS='site_progress';
+  var EXPORT_SEL=['exportPNG','.doc(','docQuestion','mail(','copyAll(','saveJson(','saveFile(','copyText(','copyPrompt','toGemini','toCopilot','window.print']
+        .map(function(k){ return 'button[onclick*="'+k+'"]'; }).concat('button[onclick="App.copy()"]').join(',');
+  function norm(p){ p=p.replace(/index\.html$/,''); return p.charAt(p.length-1)==='/'?p:p+'/'; }
+  function progress(){ try{ return JSON.parse(localStorage.getItem(PROGRESS)||'{}'); }catch(e){ return {}; } }
+  function visible(el){ return !!el && el.offsetParent!==null; }
+  function hubGuide(){
+    var cards=[].slice.call(document.querySelectorAll('a.cardlink, a.tool')), done=progress(), next=null;
+    cards.forEach(function(a){
+      if(done[norm(a.pathname)]){ a.classList.add('done-step'); if(!a.querySelector('.donetag')) a.insertAdjacentHTML('beforeend','<span class="donetag">✓ בוצע</span>'); }
+      else if(!next) next=a;
+    });
+    if(next && Object.keys(done).length){ next.classList.add('nudge'); next.insertAdjacentHTML('beforeend','<span class="nexttag">השלב הבא</span>'); }
+    else if(next){ next.classList.add('nudge'); }
+  }
+  function toolGuide(){
+    var wait=(+new URLSearchParams(location.search).get('nudge')||300)*1000;
+    var here=norm(location.pathname), elapsed=0, last=Date.now(), stage=null, exported=!!progress()[here];
+    function stageKey(){ var s=document.querySelector('.stepbtn.on, .tabs button.on'); return s?s.textContent:''; }
+    function mainButton(){
+      var next=document.querySelector('.navrow .next'); if(visible(next)) return next;          // wizard: keep going
+      var ex=[].slice.call(document.querySelectorAll(EXPORT_SEL)).filter(visible);
+      if(ex.length) return ex.filter(function(b){ return b.classList.contains('btn-brand'); })[0]||ex[0];
+      var tab=document.querySelector('.tabs button.on + button'); return visible(tab)?tab:null;   // tabbed tool: next tab
+    }
+    function clear(){ [].forEach.call(document.querySelectorAll('.nudge'),function(e){ e.classList.remove('nudge'); }); }
+    function glow(el){ if(el && !el.classList.contains('nudge')){ clear(); el.classList.add('nudge'); } }
+    document.addEventListener('click',function(e){
+      if(!(e.target.closest && e.target.closest(EXPORT_SEL))) return;
+      exported=true; var p=progress(); p[here]=Date.now(); try{ localStorage.setItem(PROGRESS,JSON.stringify(p)); }catch(err){}
+    },true);
+    setInterval(function(){
+      var now=Date.now(); if(!document.hidden) elapsed+=now-last; last=now;
+      var k=stageKey(); if(k!==stage){ stage=k; elapsed=0; clear(); }
+      var back=document.querySelector('.topbar .back'), main=mainButton(), midWizard=main && main.classList.contains('next');
+      if(exported && !midWizard){ if(elapsed>=Math.min(wait,20000)) glow(back); }   // done here: point the way back
+      else if(elapsed>=wait) glow(main);
+    },1000);
+  }
+  function guide(){
+    if(!me.dataset.crumbs) return;                                            // the home page is a menu, not a sequence
+    if(document.querySelector('a.cardlink, a.tool')) hubGuide(); else toolGuide();
+  }
   function init(){
     var seg=location.pathname.replace(/index\.html$/,'').split('/').filter(Boolean);
     document.body.dataset.page=seg[seg.length-1]||'home';
-    topbar(); hero(); footer(); paintIcons(); autoHelp();
+    topbar(); hero(); footer(); paintIcons(); autoHelp(); guide();
     new MutationObserver(function(){ clearTimeout(autoTimer); autoTimer=setTimeout(autoHelp,120); }).observe(document.body,{childList:true,subtree:true});
   }
   if(document.body) init(); else document.addEventListener('DOMContentLoaded',init);

@@ -113,5 +113,11 @@ footer.credit{display:none!important}
 .blink{outline:4px solid rgba(217,154,43,0);outline-offset:3px;animation:softRing 2.8s ease-in-out infinite}
 @keyframes softRing{0%,100%{outline-color:rgba(217,154,43,0)}50%{outline-color:rgba(217,154,43,.85)}}
 
-@media (prefers-reduced-motion:reduce){.sym svg,.blink{animation:none!important}}
+/* "what's next" guide: the same soft ring, on whichever button is the next step */
+.nudge{outline:4px solid rgba(217,154,43,0);outline-offset:3px;animation:softRing 2.2s ease-in-out infinite}
+.topbar .back.nudge{outline-offset:2px}
+.nexttag,.donetag{position:absolute;bottom:24px;left:24px;font:700 13.5px var(--font-sans);border-radius:var(--radius-pill);padding:3px 14px}
+.nexttag{background:var(--amber);color:var(--ink)}
+.donetag{background:#e7f4ec;color:var(--success)}
+@media (prefers-reduced-motion:reduce){.sym svg,.blink,.nudge{animation:none!important}.nudge{outline-color:rgba(217,154,43,.85)}}
 @media print{.topbar,.brandfoot,.help,.help-pop{display:none!important}}
