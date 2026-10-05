@@ -6,9 +6,10 @@
 <title>בונה השאלה העסקית — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=10">
+<link rel="stylesheet" href="../assets/dd.css?v=12">
 <style>
-  .wrap{max-width:760px}
+  .wrap{max-width:1040px}
+  .narrow{max-width:760px;margin-inline:auto}
   /* stepper: every step is a button; parts are labelled groups */
   .parts{display:grid;grid-template-columns:4fr 1.25fr 1.25fr;gap:10px;margin:0 0 18px;align-items:stretch}
   .part{background:var(--surface-card,#fffdf8);border:1px solid var(--line);border-radius:14px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:8px}
@@ -39,7 +40,10 @@
   .three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 4px}
   .three div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--paper);font-size:13.5px}
   .three b{display:block;font-size:15px;color:var(--brand-deep)}
-  .party{text-align:center;padding:26px 8px}
+  .party{text-align:center;padding:14px 8px}
+  .party .big{width:56px!important;height:56px!important;font-size:30px!important}
+  .party h2{font-size:26px!important}
+  .party p{margin:6px 0 14px!important}
   .party .out{line-height:1.7}
   .party .big{width:72px;height:72px;margin:0 auto;border-radius:50%;background:var(--teal);color:#fffdf8;display:grid;place-items:center;font-size:40px;font-weight:700;line-height:1;animation:pop .6s cubic-bezier(.3,1.6,.5,1) both}
   .party h2{font-size:30px;justify-content:center;margin-top:10px}
@@ -49,7 +53,7 @@
   .srcsum{font-weight:700;text-align:center;border-radius:9px;padding:6px}
   .srcsum.g{background:#E7F4EC;color:#1e5e45}.srcsum.y{background:#FCF3E1;color:#7a5410}.srcsum.r{background:#FBE9E6;color:#7d2a20}
   @media (max-width:760px){.parts{grid-template-columns:1fr 1fr}.part.p0{grid-column:1 / -1}.part.p0 .steps{grid-auto-flow:row;grid-template-columns:1fr 1fr}}
-  .srcT .delcell .btn{font-size:0;padding:6px 10px}.srcT .delcell .btn::first-letter{font-size:14px}
+  .srcT .delcell .lbl{display:none}
   @media (max-width:700px){
     .srcT thead{display:none}
     .srcT,.srcT tbody{display:block}
@@ -57,11 +61,11 @@
     .srcT td{border:none;padding:0;display:block}
     .srcT td::before{content:attr(data-label);display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:3px}
     .srcT td:nth-child(1),.srcT td:nth-child(2),.srcT td:nth-child(7),.srcT td.delcell{grid-column:1 / -1}
-    .srcT .delcell .btn{font-size:13px}.srcT .delcell{text-align:left}
+    .srcT .delcell .lbl{display:inline}.srcT .delcell{text-align:left}
   }
   @media (max-width:640px){.three{grid-template-columns:1fr}.why-row{flex-direction:column;align-items:stretch;gap:3px}.why-row .lbl{flex:none}.stephead h2{font-size:20px}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=10">
+<link rel="stylesheet" href="../../assets/site.css?v=12">
 </head>
 <body>
   <header class="bar">
@@ -75,7 +79,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=10"></script>
+<script src="../assets/dd.js?v=12"></script>
 <script>
 const Q=(()=>{
   'use strict';
@@ -199,13 +203,13 @@ const Q=(()=>{
       ${head(6,'מפת המקורות'+DD.help('רשימת הנתונים שצריך כדי לענות על השאלה. לכל נתון כותבים מה הוא ואצל מי הוא נמצא, ומדרגים אותו מ-1 (חלש) עד 3 (טוב) בארבעה דברים. הציון הוא הסכום, עד 12.'),'חלק 3')}
       <p class="lead">אילו נתונים צריך, אצל מי הם, ובאיזו איכות. כותבים בשפה חופשית ומדרגים 1–3. <b>8 ומעלה: מתחילים ממנו.</b></p>
       <div class="scroll-x"><table class="tbl srcT">
-        <thead><tr><th style="min-width:170px">הנתון, בשפה חופשית</th><th style="min-width:100px">אצל מי</th>${DIMS.map(d=>`<th style="min-width:112px">${d.l}${DD.help(d.h)}</th>`).join('')}<th style="min-width:92px">ציון${DD.help('סכום ארבעת הדירוגים. <b>8 ומעלה</b>: מתחילים מהנתון הזה. <b>6–7</b>: בזהירות. <b>מתחת ל-6</b>: לא בונים עליו החלטה השנה.')}</th><th></th></tr></thead>
+        <thead><tr><th style="min-width:220px">הנתון, בשפה חופשית</th><th style="min-width:130px">אצל מי</th>${DIMS.map(d=>`<th style="min-width:112px">${d.l}${DD.help(d.h)}</th>`).join('')}<th style="min-width:92px">ציון${DD.help('סכום ארבעת הדירוגים. <b>8 ומעלה</b>: מתחילים מהנתון הזה. <b>6–7</b>: בזהירות. <b>מתחת ל-6</b>: לא בונים עליו החלטה השנה.')}</th><th></th></tr></thead>
         <tbody>${data.sources.map((r,i)=>{const n=srcScore(r),v=srcVerdict(n);return `<tr>
           <td data-label="הנתון"><input data-src="${i}-name" placeholder="${E(SRC_PH[i]||'נתון נוסף')}" value="${E(r.name)}"></td>
           <td data-label="אצל מי"><input data-src="${i}-owner" placeholder="אצל מי?" value="${E(r.owner)}"></td>
           ${DIMS.map(d=>`<td data-label="${d.l}"><select data-src="${i}-${d.k}"><option value="0">—</option>${d.o.map((o,j)=>`<option value="${j+1}" ${r[d.k]===j+1?'selected':''}>${j+1} · ${o}</option>`).join('')}</select></td>`).join('')}
           <td data-label="ציון"><div class="srcsum ${v[0]}">${n||'—'}<div style="font-size:11.5px;font-weight:400">${v[1]}</div></div></td>
-          <td class="delcell"><button class="btn btn-ghost btn-sm" onclick="Q.delSrc(${i})" title="מחיקה">✕ מחיקה</button></td></tr>`;}).join('')}</tbody>
+          <td class="delcell"><button class="btn btn-ghost btn-sm" onclick="Q.delSrc(${i})" title="מחיקת השורה">✕<span class="lbl"> מחיקה</span></button></td></tr>`;}).join('')}</tbody>
       </table></div>
       <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="Q.addSrc()">＋ נתון נוסף</button>`,
     export:()=>`
@@ -213,15 +217,15 @@ const Q=(()=>{
         <div class="big">✓</div>
         <h2>הכול מוכן</h2>
         <p>זה המסמך שלכם. שמרו אותו, הוא ישמש אתכם גם בימים הבאים.</p>
-        <div class="out" style="margin-bottom:10px"><b>השאלה העסקית</b><br>${plain(sentence(false))}</div>
-        <div class="out" style="margin-bottom:10px"><b>איך נדע שהצלחנו</b><br>${plain(kpiSentence(false))}</div>
-        <div class="out"><b>מקורות</b><br>${data.sources.filter(r=>r.name.trim()).map(r=>E(r.name)+(r.owner?' ('+E(r.owner)+')':'')+(srcScore(r)?' · '+srcScore(r)+'/12':'')).join('<br>')||'<span style="color:#A3978A">עדיין לא מולאו</span>'}</div>
-        <div class="exportbar" style="margin-top:16px">
+        <div class="exportbar" style="margin:0 0 16px">
           <button class="btn btn-brand" onclick="Q.doc()">Word</button>
           <button class="btn btn-ghost" onclick="Q.copyAll()">העתקה</button>
           <button class="btn btn-ghost" onclick="Q.saveJson()">שמירה</button>
           <button class="btn btn-ghost" onclick="Q.loadJson()">טעינה</button>
         </div>
+        <div class="out" style="margin-bottom:10px"><b>השאלה העסקית</b><br>${plain(sentence(false))}</div>
+        <div class="out" style="margin-bottom:10px"><b>איך נדע שהצלחנו</b><br>${plain(kpiSentence(false))}</div>
+        <div class="out"><b>מקורות</b><br>${data.sources.filter(r=>r.name.trim()).map(r=>E(r.name)+(r.owner?' ('+E(r.owner)+')':'')+(srcScore(r)?' · '+srcScore(r)+'/12':'')).join('<br>')||'<span style="color:#A3978A">עדיין לא מולאו</span>'}</div>
         <div style="margin-top:14px"><button class="btn btn-ghost btn-sm" onclick="Q.reset()">להתחיל מחדש</button></div>
       </div>`
   };
@@ -238,8 +242,8 @@ const Q=(()=>{
     const nextLabel={tests:'סיימתי ←',done1:'ממשיכים לחלק 2: איך נדע שהצלחנו ←',kpi:'ממשיכים לחלק 3: מפת המקורות ←',sources:'סיום וייצוא ←'}[key]||'הבא ←';
     document.getElementById('app').innerHTML=`
       <div class="parts">${parts}</div>
-      <div class="panel">${SCREENS[key]()}</div>
-      <div class="navrow">
+      <div class="panel ${key==='sources'?'':'narrow'}">${SCREENS[key]()}</div>
+      <div class="navrow ${key==='sources'?'':'narrow'}">
         ${st>0?'<button class="btn btn-ghost" onclick="Q.go('+(st-1)+')">→ הקודם</button>':''}
         ${st<STEPS.length-1?`<button class="btn btn-brand next" onclick="Q.go(${st+1})">${nextLabel}</button>`:''}
       </div>`;
@@ -316,6 +320,6 @@ const Q=(()=>{
   return {go,test,period,addSrc,delSrc,example,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
 })();
 </script>
-<script src="../../assets/site.js?v=10" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=12" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
