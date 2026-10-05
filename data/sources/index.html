@@ -6,7 +6,7 @@
 <title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=12">
+<link rel="stylesheet" href="../assets/dd.css?v=13">
 <style>
   .wrap{max-width:900px}
   body{padding-bottom:62px}
@@ -18,6 +18,8 @@
   .grp>h2 .cnt{margin-inline-start:auto;white-space:nowrap;font-size:13px;font-weight:700;color:var(--ink-soft);background:var(--paper);border-radius:999px;padding:2px 12px}
   .rows{display:flex;flex-direction:column;gap:8px}
   .row{display:grid;grid-template-columns:2fr 1.3fr 1.3fr 38px;gap:8px;align-items:center}
+  .row.r4{grid-template-columns:2fr 1.2fr 1.1fr 1.25fr 38px}
+  .row.heads{align-items:end}
   .row.heads{font-size:12.5px;font-weight:700;color:var(--ink-soft);padding:0 2px}
   .row .del{width:38px;height:38px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink-soft);font-weight:700}
   .row .del:hover{border-color:var(--danger,#a8362d);color:var(--danger,#a8362d)}
@@ -51,14 +53,15 @@
   @media (max-width:700px){
     .row{grid-template-columns:1fr 38px;border:1px solid var(--line);border-radius:12px;padding:8px;background:var(--paper)}
     .row input:nth-of-type(1){grid-column:1}.row .del{grid-row:1;grid-column:2}
-    .row input:nth-of-type(2),.row input:nth-of-type(3){grid-column:1 / -1}
+    .row.r4{grid-template-columns:1fr 38px}
+    .row input:nth-of-type(2),.row input:nth-of-type(3),.row select{grid-column:1 / -1}
     .row.heads{display:none}
     .savebar{padding:8px 10px}.savebar .in{gap:6px}.savebar .msg{flex-basis:100%;font-size:13px}.savebar .btn{flex:1;padding:8px 4px;font-size:13px}.savebar .wide-only{display:none}
     body{padding-bottom:84px}
   }
   @media print{.savebar,.add,.sites,.del,.noprint{display:none!important}body{padding-bottom:0}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=12">
+<link rel="stylesheet" href="../../assets/site.css?v=13">
 </head>
 <body>
   <header class="bar">
@@ -84,7 +87,7 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=12"></script>
+<script src="../assets/dd.js?v=13"></script>
 <script>
 const S=(()=>{
   'use strict';
@@ -94,7 +97,7 @@ const S=(()=>{
     {k:'have', n:1, t:'נתונים שכבר יש לנו ברשות',
      lead:'קבצים, דוחות ומערכות שכבר קיימים אצלכם או אצל עמיתים.',
      help:'כל נתון שכבר נאסף ברשות ויכול לעזור לענות על השאלה: דוח ממערכת המוקד, קובץ אקסל של המחלקה, נתוני גבייה. כותבים מה הנתון, איפה הוא יושב, ומי האדם שאפשר לפנות אליו.',
-     cols:['הנתון','איפה הוא נמצא','אצל מי'], ph:['פניות למוקד לפי אזור וקטגוריה','מערכת המוקד 106','מנהלת המוקד']},
+     cols:['הנתון','איפה הוא נמצא','אצל מי'], ph:['פניות למוקד לפי אזור וקטגוריה','מערכת המוקד 106','מנהלת המוקד'], anon:true},
     {k:'pub', n:2, t:'נתונים באתרים ציבוריים',
      lead:'נתונים פתוחים שכל אחד יכול להוריד. הם נותנים למה להשוות.',
      help:'נתונים שלא שייכים לרשות אבל זמינים לכולם: הלמ״ס, data.gov.il, משרדי ממשלה. הם חשובים כדי להשוות את הרשות שלכם לאחרות. לחיצה על שם של אתר מוסיפה אותו לרשימה.',
@@ -117,6 +120,8 @@ const S=(()=>{
     {g:'ארצי', n:'משרד התחבורה והבטיחות בדרכים', d:'מידע ופרסומים של משרד התחבורה.', u:'https://www.gov.il/he/departments/ministry_of_transport_and_road_safety', scope:'site:gov.il משרד התחבורה'}
   ];
   const blank=()=>['','',''];
+  const ANON_OPTS=['אין בו פרטים מזהים','צריך התממה','כבר מותמם'];
+  const ANON_HELP='<b>התממה</b> = מסירים כל פרט שמאפשר לזהות אדם. <b>מזהים ישירים מוחקים</b>: שם, ת״ז, טלפון, מייל, כתובת מלאה. <b>מזהים עקיפים מכלילים</b>: גיל ← טווח גילים, כתובת ← יישוב, תאריך ← חודש. קבוצה של פחות מ-5 אנשים מאחדים עם קבוצה אחרת.';
   function fresh(){ return {step:1, term:'', have:[blank(),blank(),blank()], pub:[blank(),blank()], need:[blank(),blank()], imported:false}; }
   let data=DD.load(LS,fresh());
   function save(){ DD.save(LS,data); }
@@ -182,16 +187,18 @@ const S=(()=>{
           <h2><span class="num">${g.n}</span>${g.t}${DD.help(g.help)}<span class="cnt">${countLabel(g.k)}</span></h2>
           <p class="lead">${g.lead}</p>
           <div class="rows">
-            <div class="row heads">${g.cols.map(c=>`<span>${c}</span>`).join('')}<span></span></div>
-            ${data[g.k].map((r,i)=>`<div class="row">
-              ${r.map((c,j)=>`<input class="txt" data-c="${g.k}-${i}-${j}" placeholder="${E(phone ? g.cols[j]+(i===0?' · למשל: '+g.ph[j]:'') : (i===0?'למשל: '+g.ph[j]:''))}" aria-label="${E(g.cols[j])}" value="${E(c)}">`).join('')}
+            <div class="row heads ${g.anon?'r4':''}">${g.cols.map(c=>`<span>${c}</span>`).join('')}${g.anon?`<span>אפשר להשתמש?${DD.help(ANON_HELP)}</span>`:''}<span></span></div>
+            ${data[g.k].map((r,i)=>`<div class="row ${g.anon?'r4':''}">
+              ${r.slice(0,3).map((c,j)=>`<input class="txt" data-c="${g.k}-${i}-${j}" placeholder="${E(phone ? g.cols[j]+(i===0?' · למשל: '+g.ph[j]:'') : (i===0?'למשל: '+g.ph[j]:''))}" aria-label="${E(g.cols[j])}" value="${E(c)}">`).join('')}
+              ${g.anon?`<select class="txt" data-a="${i}" aria-label="אפשר להשתמש בנתון?"><option value="">התממה?</option>${ANON_OPTS.map(o=>`<option ${r[3]===o?'selected':''}>${o}</option>`).join('')}</select>`:''}
               <button class="del" onclick="S.del('${g.k}',${i})" title="מחיקת השורה">✕</button></div>`).join('')}
           </div>
           <button class="btn btn-ghost btn-sm add" onclick="S.add('${g.k}')">+ עוד נתון</button>
         </div>`).join('')}
       <div class="nextrow noprint"><button class="btn btn-ghost" onclick="S.go(1)">→ חזרה לשיטוט באתרים</button></div>
-      <div class="callout info"><b>לקראת המפגש הבא:</b> נסו להביא לפחות קובץ נתונים אחד מהרשימה הראשונה, בלי פרטים מזהים של תושבים. גם רשימה חלקית היא התחלה טובה.</div>`}`;
+      <div class="callout info"><b>המשימה למפגש הבא:</b> מאתרים מקורות מידע לשאלה שלכם, <b>מתממים</b> את הקבצים הפנימיים עוד לפני שהם יוצאים מהמחשב, ומביאים אותם למפגש. ננתח אותם יחד בעזרת AI.${DD.help(ANON_HELP)}</div>`}`;
     const term=document.getElementById('term'); if(term) term.addEventListener('input',()=>{ data.term=term.value; save(); });
+    document.querySelectorAll('[data-a]').forEach(el=>el.addEventListener('change',()=>{ data.have[+el.dataset.a][3]=el.value; save(); }));
     document.querySelectorAll('[data-c]').forEach(el=>el.addEventListener('input',()=>{
       const[k,i,j]=el.dataset.c.split('-'); data[k][+i][+j]=el.value; save();
       const cnt=el.closest('.grp').querySelector('.cnt'); if(cnt) cnt.textContent=countLabel(k);
@@ -221,7 +228,7 @@ const S=(()=>{
       L.push(g.n+'. '+g.t);
       const rows=filled(g.k);
       if(!rows.length) L.push('   —');
-      rows.forEach(r=>L.push('   • '+r[0]+(r[1]?' | '+g.cols[1]+': '+r[1]:'')+(r[2]?' | '+g.cols[2]+': '+r[2]:'')));
+      rows.forEach(r=>L.push('   • '+r[0]+(r[1]?' | '+g.cols[1]+': '+r[1]:'')+(r[2]?' | '+g.cols[2]+': '+r[2]:'')+(g.anon&&r[3]?' | התממה: '+r[3]:'')));
       L.push('');
     });
     return L.join('\n');
@@ -232,8 +239,9 @@ const S=(()=>{
     if(q) b+='<h2>השאלה העסקית</h2><p style="font-size:15px">'+E(q)+'</p>';
     GROUPS.forEach(g=>{
       const rows=filled(g.k);
-      b+='<h2>'+g.n+'. '+g.t+'</h2><table><tr>'+g.cols.map(c=>'<th>'+c+'</th>').join('')+'</tr>'+
-        (rows.length?rows.map(r=>'<tr>'+r.map(c=>'<td>'+E(c)+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="3">—</td></tr>')+'</table>';
+      const cols=g.anon?g.cols.concat('התממה'):g.cols;
+      b+='<h2>'+g.n+'. '+g.t+'</h2><table><tr>'+cols.map(c=>'<th>'+c+'</th>').join('')+'</tr>'+
+        (rows.length?rows.map(r=>'<tr>'+cols.map((c,j)=>'<td>'+E(r[j]||'')+'</td>').join('')+'</tr>').join(''):'<tr><td colspan="'+cols.length+'">—</td></tr>')+'</table>';
     });
     DD.downloadDoc('מיפוי מקורות המידע','מיפוי מקורות המידע',b); DD.toast('המסמך הורד');
   }
@@ -252,6 +260,6 @@ const S=(()=>{
   return {go,search,add,del,site,doc,copyAll,mail,saveJson,loadJson};
 })();
 </script>
-<script src="../../assets/site.js?v=12" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=13" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

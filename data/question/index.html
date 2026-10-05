@@ -6,7 +6,7 @@
 <title>בונה השאלה העסקית — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=12">
+<link rel="stylesheet" href="../assets/dd.css?v=13">
 <style>
   .wrap{max-width:1040px}
   .narrow{max-width:760px;margin-inline:auto}
@@ -65,7 +65,7 @@
   }
   @media (max-width:640px){.three{grid-template-columns:1fr}.why-row{flex-direction:column;align-items:stretch;gap:3px}.why-row .lbl{flex:none}.stephead h2{font-size:20px}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=12">
+<link rel="stylesheet" href="../../assets/site.css?v=13">
 </head>
 <body>
   <header class="bar">
@@ -79,7 +79,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=12"></script>
+<script src="../assets/dd.js?v=13"></script>
 <script>
 const Q=(()=>{
   'use strict';
@@ -113,6 +113,7 @@ const Q=(()=>{
     {k:'trust', l:'אמינות',  h:'איך הנתון נרשם. 3 = המערכת רושמת אוטומטית, בלי הקלדה ידנית.', o:['הזנה ידנית חופשית','מובנית חלקית','אוטומטי מהמערכת']}
   ];
   const SRC_PH=['פניות למוקד: קטגוריה, אזור, זמני טיפול','נתוני גבייה וארנונה','מספר תושבים לפי אזור','תקנים, איוש ונוכחות','סקר שביעות רצון'];
+  const ANON_TXT='<b>התממה</b> = מסירים כל פרט שמאפשר לזהות אדם. <b>מזהים ישירים מוחקים</b>: שם, ת״ז, טלפון, מייל, כתובת מלאה. <b>מזהים עקיפים מכלילים</b>: גיל ← טווח גילים, כתובת ← יישוב, תאריך ← חודש. קבוצה של פחות מ-5 אנשים מאחדים עם קבוצה אחרת.';
   const SOLUTION_WORDS=/^\s*(אין|חסר|חסרים|חסרה|צריך|צריכים|לא מספיק|אנחנו צריכים|יש צורך)/;
   /* step list: part 1 has four steps and a finish screen; parts 2 and 3 one step each; then the export screen */
   const STEPS=['problem','whys','template','tests','done1','kpi','sources','export'];
@@ -211,7 +212,8 @@ const Q=(()=>{
           <td data-label="ציון"><div class="srcsum ${v[0]}">${n||'—'}<div style="font-size:11.5px;font-weight:400">${v[1]}</div></div></td>
           <td class="delcell"><button class="btn btn-ghost btn-sm" onclick="Q.delSrc(${i})" title="מחיקת השורה">✕<span class="lbl"> מחיקה</span></button></td></tr>`;}).join('')}</tbody>
       </table></div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="Q.addSrc()">＋ נתון נוסף</button>`,
+      <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="Q.addSrc()">＋ נתון נוסף</button>
+      <div class="callout info">נתון פנימי עם פרטים של תושבים עובר <b>התממה</b> לפני שמשתמשים בו.${DD.help(ANON_TXT)}</div>`,
     export:()=>`
       <div class="party">
         <div class="big">✓</div>
@@ -320,6 +322,6 @@ const Q=(()=>{
   return {go,test,period,addSrc,delSrc,example,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
 })();
 </script>
-<script src="../../assets/site.js?v=12" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=13" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
