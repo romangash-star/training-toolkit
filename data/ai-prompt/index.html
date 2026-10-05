@@ -73,6 +73,9 @@
   @keyframes consultPulse{0%,100%{box-shadow:0 0 0 0 rgba(217,154,43,0);transform:scale(1)}50%{box-shadow:0 0 0 7px rgba(217,154,43,.6);transform:scale(1.04)}}
   .ex.main.used{animation:none}
   @media (prefers-reduced-motion:reduce){.ex.main{animation:none}}
+  .pastehint{margin-top:10px;font-size:14px;line-height:1.6;background:var(--teal-tint,#dcedea);border-radius:10px;padding:9px 12px;color:var(--ink)}
+  .pastehint kbd{font:700 12.5px var(--font-sans,Arial);background:#fffdf8;border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+  .toast{max-width:90vw}
 </style>
 <link rel="stylesheet" href="../../assets/site.css?v=5">
 </head>
@@ -120,8 +123,10 @@
           <div class="pv-actions">
             <button class="btn btn-brand" onclick="App.copy()">העתקת הפרומפט</button>
             <button class="btn btn-dark" onclick="App.toGemini()">העתק ופתח Gemini</button>
+            <button class="btn btn-dark" onclick="App.toCopilot()">העתק ופתח Copilot</button>
             <button class="btn btn-ghost" onclick="App.clear()">ניקוי</button>
           </div>
+          <div class="pastehint"><b>אחרי הלחיצה:</b> נפתח חלון חדש. לוחצים שם בתיבת הכתיבה ומדביקים את הפרומפט עם <kbd>Ctrl</kbd>+<kbd>V</kbd> (בטלפון: לחיצה ארוכה ← הדבקה).</div>
           <div class="guard"><b>שני כללי ברזל:</b> ה‑AI יכול להמציא מספר או מקור — אמתו כל עובדה מול המקור. ואל תזינו מידע מזהה של תושבים (שמות, ת״ז, כתובות) — הכלילו או נקו קודם.</div>
           <div class="sources">
             <h4>מקורות לאיתור ולתיקוף נתונים</h4>
@@ -196,14 +201,16 @@ const App=(()=>{
   }
   function fill(k){ const e=EX[k](); data={...e}; document.querySelectorAll('.ex.main').forEach(b=>b.classList.add('used')); F.forEach(id=>document.getElementById(id).value=data[id]); persist(); preview(); toast('הפרומפט נבנה. אפשר לערוך, ואז להעתיק'); }
   function clear(){ document.querySelectorAll('.ex.main').forEach(b=>b.classList.remove('used')); data={role:'',context:'',task:'',format:''}; F.forEach(id=>document.getElementById(id).value=''); persist(); preview(); }
-  function toGemini(){ copy(); window.open('https://gemini.google.com/app','_blank','noopener'); }
-  function copy(){ const t=build(); if(!t){toast('אין עדיין פרומפט'); return;} (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו ידנית:',t)); }
+  function openWith(url,name){ if(!build()){ toast('אין עדיין פרומפט'); return; } copy('הועתק ✓ ב-'+name+': לחצו בתיבה והדביקו עם Ctrl+V'); window.open(url,'_blank','noopener'); }
+  function toGemini(){ openWith('https://gemini.google.com/app','Gemini'); }
+  function toCopilot(){ openWith('https://m365.cloud.microsoft/chat','Copilot'); }
+  function copy(msg){ const t=build(); if(!t){toast('אין עדיין פרומפט'); return;} (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(typeof msg==='string'?msg:'הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו ידנית:',t)); }
 
   let recog=null;
   function dictate(el,btn){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){toast('הכתבה קולית נתמכת ב‑Chrome / Edge');return;} if(recog){recog.stop();return;} recog=new SR(); recog.lang='he-IL'; recog.interimResults=true; recog.continuous=false; const base=(el.value||'').trim(); btn.classList.add('rec'); recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k]; if(r.isFinal)f+=r[0].transcript; else i+=r[0].transcript;} el.value=(base?base+' ':'')+(f+i).trim(); el.dispatchEvent(new Event('input',{bubbles:true}));}; recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();}; recog.onerror=()=>{btn.classList.remove('rec');recog=null;}; try{recog.start();toast('מקשיב… דברו בעברית');}catch(e){btn.classList.remove('rec');recog=null;} }
 
   let tt; function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,fill,clear,copy,toGemini};
+  return {init,fill,clear,copy,toGemini,toCopilot};
 })();
 window.App=App; App.init();
 </script>
