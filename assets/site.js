@@ -3,7 +3,7 @@
         data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'   (label|href pairs, outermost first)
       The last pair is where the "חזרה" button goes. href "auto" resolves from ?from=maazim|ai.
    2. The seven floating data symbols (brand signature): in every hero (.cover / [data-sym]) and in the footer.
-   3. Footer with the partner logos.
+   3. Footer: symbols strip and credit.
    4. Small "?" help: <button class="help" data-help="הסבר קצר">?</button> (or SiteHelp.html('...') in templates). */
 (function(){
   'use strict';
@@ -64,7 +64,6 @@
   function footer(){
     var f=document.createElement('footer'); f.className='brandfoot';
     f.innerHTML='<div class="in">'+
-      '<div class="logos"><img src="'+base+'logos/national-digital.png" alt="מערך הדיגיטל הלאומי"><img src="'+base+'logos/hadigitalit.png" alt="הדיגיטלית"></div>'+
       strip(false)+
       '<div class="by">נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></div></div>';
     var old=document.querySelector('footer.credit');
