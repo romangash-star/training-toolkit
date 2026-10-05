@@ -77,7 +77,7 @@
   .pastehint kbd{font:700 12.5px var(--font-sans,Arial);background:#fffdf8;border:1px solid var(--line);border-radius:5px;padding:1px 6px}
   .toast{max-width:90vw}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=13">
+<link rel="stylesheet" href="../../assets/site.css?v=14">
 </head>
 <body>
   <header class="bar">
@@ -140,30 +140,21 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
+<script src="../assets/dd.js?v=14"></script>
 <script>
 const App=(()=>{
   'use strict';
   const LS='dd_ai_prompt_builder_v1';
   const F=['role','context','task','format'];
-  const QKEY='dd_question_v2', MAIN='להתייעץ על השאלה שלי';
-  /* the business question written in the previous tool (בונה השאלה העסקית) */
-  function myQuestion(){
-    try{
-      const d=JSON.parse(localStorage.getItem(QKEY)||'{}'), q=d.q||{};
-      if(!(q.who||q.what||q.question)) return '';
-      const v=(x,ph)=>(x||'').trim()||'['+ph+']';
-      let t=`${v(q.who,'מי מחליט')} צריך להחליט ${v(q.what,'מה')} עד ${v(q.when,'מתי')}, כדי ${v(q.goal,'תוצאה מדידה')}, ${v(q.limit,'אילוץ')}.`;
-      if((q.question||'').trim()) t+=' השאלה: '+q.question.trim();
-      return t;
-    }catch(e){ return ''; }
-  }
+  const MAIN='להתייעץ על השאלה שלי';
+  const myQuestion=()=>DD.businessQuestion();   // written in the previous tool (בונה השאלה העסקית)
   const ROLE='אתה יועץ מנוסה לקבלת החלטות מבוססת נתונים ברשויות מקומיות בישראל.';
   const ctx=()=>'זו השאלה העסקית שניסחתי:\n"'+(myQuestion()||'[הדביקו כאן את השאלה העסקית שלכם]')+'"';
-  const TEMPLATE='[מי מחליט] צריך להחליט [מה] עד [מתי], כדי [תוצאה מדידה], במסגרת [אילוץ].';
+  const TEMPLATE='כדי לעזור ל[מי מחליט] להחליט [איזו החלטה] — [מה מודדים] [מתי ואיפה]?';
   const EX={
     [MAIN]:()=>({role:ROLE,context:ctx(),task:'התייעץ איתי על השאלה. שאל אותי שלוש שאלות הבהרה, אחת בכל פעם, וחכה לתשובה שלי. אחר כך אמור מה חזק בשאלה ומה חלש בה, והצע ניסוח מדויק יותר.',format:'שיחה קצרה בעברית פשוטה. בסוף: השאלה המשופרת במשפט אחד, בתבנית: '+TEMPLATE}),
-    'לבדוק אותה ב-5 מבחנים':()=>({role:ROLE,context:ctx(),task:'בדוק את השאלה מול חמישה מבחנים: יש מחליט מזוהה? התשובה תשנה משהו בפועל? יש תאריך להחלטה? יש נתון שיכול לענות? התשובה עשויה להפתיע, או שאני בעצם מחפש אישוש?',format:'טבלה: המבחן · כן/לא · נימוק במשפט. אם יש "לא", הצע ניסוח מתוקן אחד.'}),
-    'שלושה ניסוחים אחרים':()=>({role:ROLE,context:ctx(),task:'הצע שלושה ניסוחים חלופיים לשאלה. כל אחד עם מדד מספרי ומסגרת זמן, עד 30 מילים. אל תמציא מספרים: סמן [להשלים] במקום שחסר נתון.',format:'רשימה ממוספרת, ומתחת לכל ניסוח משפט אחד: מה הוא משפר.'}),
+    'לבדוק אותה ב-5 בדיקות':()=>({role:ROLE,context:ctx(),task:'בדוק את השאלה מול חמש בדיקות: האם זו שאלה אחת ולא כמה שאלות במשפט? האם אין בה פתרון מוכן? האם אפשר לענות עליה בנתונים (לדמיין טבלה או גרף)? האם ברור איזו החלטה היא משרתת ומי ישתמש בתשובה? האם הרשות יכולה לפעול לפי התשובה?',format:'טבלה: הבדיקה · כן/לא · נימוק במשפט. אם יש "לא", הצע ניסוח מתוקן אחד.'}),
+    'שלושה ניסוחים אחרים':()=>({role:ROLE,context:ctx(),task:'הצע שלושה ניסוחים חלופיים לשאלה. בכל אחד ברור מי מחליט, איזו החלטה, מה מודדים, ומתי ואיפה. עד 30 מילים. אל תמציא מספרים: סמן [להשלים] במקום שחסר נתון.',format:'רשימה ממוספרת, ומתחת לכל ניסוח משפט אחד: מה הוא משפר.'}),
     'אילו נתונים צריך':()=>({role:ROLE,context:ctx(),task:'פרק את השאלה לארבע שאלות מידע. לכל אחת: מה סופרים, לפי מה מפלחים, איזו תקופה, ובאיזו מערכת ברשות הנתון בדרך כלל נמצא.',format:'טבלה: שאלת מידע · מה סופרים · פילוח · תקופה · מקור אפשרי.'}),
     'לאתגר אותי':()=>({role:'אתה מנכ"ל ספקן של רשות מקומית, עם חמש דקות ותשומת לב חלקית.',context:ctx(),task:'אל תהיה מנומס. אמור למה השאלה הזו עלולה לא להוביל להחלטה, מה חסר בה, ואיזו שאלה היית שואל במקומה.',format:'שלוש נקודות קצרות, ואז משפט אחד: מה לתקן קודם.'})
   };
@@ -215,6 +206,6 @@ const App=(()=>{
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=13" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=14" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

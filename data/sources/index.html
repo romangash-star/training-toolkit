@@ -6,7 +6,7 @@
 <title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=13">
+<link rel="stylesheet" href="../assets/dd.css?v=14">
 <style>
   .wrap{max-width:900px}
   body{padding-bottom:62px}
@@ -61,7 +61,7 @@
   }
   @media print{.savebar,.add,.sites,.del,.noprint{display:none!important}body{padding-bottom:0}}
 </style>
-<link rel="stylesheet" href="../../assets/site.css?v=13">
+<link rel="stylesheet" href="../../assets/site.css?v=14">
 </head>
 <body>
   <header class="bar">
@@ -87,11 +87,11 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=13"></script>
+<script src="../assets/dd.js?v=14"></script>
 <script>
 const S=(()=>{
   'use strict';
-  const LS='dd_sources_v1', QKEY='dd_question_v2', E=DD.esc;
+  const LS='dd_sources_v2', E=DD.esc;
   /* three places a piece of data can be: with us, on a public site, or still to be obtained */
   const GROUPS=[
     {k:'have', n:1, t:'נתונים שכבר יש לנו ברשות',
@@ -126,25 +126,16 @@ const S=(()=>{
   let data=DD.load(LS,fresh());
   function save(){ DD.save(LS,data); }
 
-  function question(){
-    try{
-      const q=(JSON.parse(localStorage.getItem(QKEY)||'{}').q)||{};
-      if(!(q.who||q.what||q.question)) return '';
-      const v=(x,ph)=>(x||'').trim()||'['+ph+']';
-      let t=`${v(q.who,'מי מחליט')} צריך להחליט ${v(q.what,'מה')} עד ${v(q.when,'מתי')}, כדי ${v(q.goal,'תוצאה מדידה')}, ${v(q.limit,'אילוץ')}.`;
-      if((q.question||'').trim()) t+=' השאלה: '+q.question.trim();
-      return t;
-    }catch(e){ return ''; }
-  }
+  const question=()=>DD.businessQuestion();
   /* rows already written in part 3 of the question builder come along, once */
   function importFromBuilder(){
     if(data.imported) return;
     data.imported=true;
-    try{
-      const src=(JSON.parse(localStorage.getItem(QKEY)||'{}').sources)||[];
-      const rows=src.filter(r=>(r.name||'').trim()).map(r=>[r.name.trim(),'',(r.owner||'').trim()]);
-      if(rows.length && data.have.every(r=>r.every(c=>!c))) data.have=rows;
-    }catch(e){}
+    const src=DD.builderSources().filter(r=>(r.name||'').trim());
+    const row=r=>[r.name.trim(),(r.where||'').trim(),(r.owner||'').trim()];
+    const missing=src.filter(r=>/לאסוף/.test(r.avail||'')), have=src.filter(r=>!/לאסוף/.test(r.avail||''));
+    if(have.length && data.have.every(r=>r.every(c=>!c))) data.have=have.map(row);
+    if(missing.length && data.need.every(r=>r.every(c=>!c))) data.need=missing.map(r=>[r.name.trim(),(r.owner||'').trim(),'']);
     save();
   }
   const filled=k=>data[k].filter(r=>r[0].trim());
@@ -260,6 +251,6 @@ const S=(()=>{
   return {go,search,add,del,site,doc,copyAll,mail,saveJson,loadJson};
 })();
 </script>
-<script src="../../assets/site.js?v=13" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=14" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

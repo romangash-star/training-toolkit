@@ -54,6 +54,21 @@ window.DD = (function(){
     if(!document.getElementById(start)){ try{ start=localStorage.getItem(key)||''; }catch(e){ start=''; } }
     show(document.getElementById(start) ? start : btns[0].dataset.tab);
   }
+  var QKEY='dd_question_v3';
+  /* "כדי לעזור ל[מי מחליט] להחליט [איזו החלטה] — [מה מודדים] [מתי ואיפה]?"  f(value, placeholder) formats each part */
+  function questionSentence(q, f){
+    return 'כדי לעזור ל'+f(q.who,'מי מחליט')+' להחליט '+f(q.decision,'איזו החלטה')+' — '+f(q.measure,'מה מודדים')+' '+f(q.scope,'מתי ואיפה')+'?';
+  }
+  /* the business question written in the question builder, as plain text ('' when not written yet) */
+  function businessQuestion(){
+    try{
+      var q=(JSON.parse(localStorage.getItem(QKEY)||'{}').q)||{};
+      if((q.own||'').trim()) return q.own.trim();
+      if(!(q.who||q.decision||q.measure||q.scope)) return '';
+      return questionSentence(q, function(v,ph){ return (v||'').trim()||'['+ph+']'; });
+    }catch(e){ return ''; }
+  }
+  function builderSources(){ try{ return (JSON.parse(localStorage.getItem(QKEY)||'{}').sources)||[]; }catch(e){ return []; } }
   function help(text){ return '<button type="button" class="help" aria-label="הסבר" aria-expanded="false" data-help="'+esc(text)+'">?</button>'; }
-  return {help:help, esc:esc, load:load, save:save, identity:identity, toast:toast, copy:copy, download:download, downloadDoc:downloadDoc, loadFile:loadFile, safeName:safeName, tabs:tabs};
+  return {questionSentence:questionSentence, businessQuestion:businessQuestion, builderSources:builderSources, help:help, esc:esc, load:load, save:save, identity:identity, toast:toast, copy:copy, download:download, downloadDoc:downloadDoc, loadFile:loadFile, safeName:safeName, tabs:tabs};
 })();
