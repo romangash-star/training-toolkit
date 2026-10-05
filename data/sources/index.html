@@ -6,7 +6,7 @@
 <title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=17">
+<link rel="stylesheet" href="../assets/dd.css?v=18">
 <style>
   .wrap{max-width:900px}
   body{padding-bottom:62px}
@@ -45,6 +45,10 @@
   .nextrow{display:flex;gap:10px;margin-top:14px}
   .nextrow .btn{flex:1;padding:13px;font-size:16px}
   @media (max-width:700px){.steps2{grid-template-columns:1fr}.site{grid-template-columns:1fr}.site .acts{justify-content:flex-start}.search{flex-wrap:wrap}}
+  .finish{border:2px solid var(--brand)!important;background:var(--brand-tint,#f4ded3)!important}
+  .finishbar{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:10px}
+  .finishbar .btn{padding:14px 10px;font-size:16px;white-space:normal}
+  @media (max-width:700px){.finishbar{grid-template-columns:1fr 1fr}}
   /* export is always within reach */
   .savebar{position:fixed;bottom:0;right:0;left:0;z-index:60;background:var(--surface-card,#fffdf8);border-top:2px solid var(--brand);box-shadow:0 -6px 24px rgba(42,33,27,.12);padding:10px 16px}
   .savebar .in{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -64,7 +68,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=17">
+<link rel="stylesheet" href="../../assets/site.css?v=18">
 </head>
 <body>
   <header class="bar">
@@ -90,7 +94,7 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=17"></script>
+<script src="../assets/dd.js?v=18"></script>
 <script>
 const S=(()=>{
   'use strict';
@@ -188,7 +192,17 @@ const S=(()=>{
           </div>
           <button class="btn btn-ghost btn-sm add" onclick="S.add('${g.k}')">+ עוד נתון</button>
         </div>`).join('')}
-      <div class="nextrow noprint"><button class="btn btn-ghost" onclick="S.go(1)">→ חזרה לשיטוט באתרים</button></div>
+      <div class="panel finish noprint">
+        <h2>סיימתם? שמרו את מה שכתבתם${DD.help('האתר שומר את הרשימה <b>רק בדפדפן הזה</b>. כדי שתהיה אצלכם גם בבית ובמפגש הבא, ייצאו אותה: <b>Word</b> למסמך, <b>מייל לעצמי</b> כדי לשלוח לעצמכם, או <b>קובץ</b> שאפשר לטעון בחזרה לאתר.')}</h2>
+        <p class="lead">זו המשימה שאתם לוקחים הביתה. ייצאו עותק לפני שסוגרים את הדף.</p>
+        <div class="finishbar">
+          <button class="btn btn-brand" onclick="S.doc()">ייצוא ל-Word</button>
+          <button class="btn btn-dark" onclick="S.mail()">מייל לעצמי</button>
+          <button class="btn btn-ghost" onclick="S.copyAll()">העתקה</button>
+          <button class="btn btn-ghost" onclick="S.saveJson()">שמירה כקובץ</button>
+        </div>
+        <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="S.go(1)">→ חזרה לשיטוט באתרים</button></div>
+      </div>
       <div class="callout info"><b>המשימה למפגש הבא:</b> מאתרים מקורות מידע לשאלה שלכם, <b>מתממים</b> את הקבצים הפנימיים עוד לפני שהם יוצאים מהמחשב, ומביאים אותם למפגש. ננתח אותם יחד בעזרת AI.${DD.help(ANON_HELP)}</div>`}`;
     const term=document.getElementById('term'); if(term) term.addEventListener('input',()=>{ data.term=term.value; save(); });
     document.querySelectorAll('[data-a]').forEach(el=>el.addEventListener('change',()=>{ data.have[+el.dataset.a][3]=el.value; save(); }));
@@ -253,6 +267,6 @@ const S=(()=>{
   return {go,search,add,del,site,doc,copyAll,mail,saveJson,loadJson};
 })();
 </script>
-<script src="../../assets/site.js?v=17" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=18" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
