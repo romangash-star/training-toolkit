@@ -29,7 +29,11 @@ for path in glob.glob(os.path.join(ROOT, '**', 'index.html'), recursive=True):
     s = re.sub(r'(assets/(?:dd|hub)\.(?:css|js))(?:\?v=\w+)?"', r'\1?v=' + V + '"', s)
     c = crumbs(rel)
     attrs = f" data-crumbs='{c}'" if c else ''
-    s = s.replace('</head>', f'<link rel="stylesheet" href="{up}assets/site.css?v={V}">\n</head>', 1)
+    s = re.sub(r'\n?<link rel="(?:icon|apple-touch-icon)"[^>]*>', '', s)
+    icons = (f'<link rel="icon" href="{up}assets/favicon.svg" type="image/svg+xml">\n'
+             f'<link rel="icon" href="{up}assets/favicon-32.png" sizes="32x32" type="image/png">\n'
+             f'<link rel="apple-touch-icon" href="{up}assets/apple-touch-icon.png">\n')
+    s = s.replace('</head>', icons + f'<link rel="stylesheet" href="{up}assets/site.css?v={V}">\n</head>', 1)
     i = s.rindex('</body>')
     s = s[:i] + f'<script src="{up}assets/site.js?v={V}"{attrs}></script>\n' + s[i:]
     open(path, 'w', encoding='utf-8', newline='\n').write(s)
