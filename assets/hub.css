@@ -54,3 +54,8 @@ main{flex:1;padding:var(--space-4) 0 var(--space-6)}
 
 @media (max-width:900px){.cards.c3{grid-template-columns:1fr 1fr}}
 @media (max-width:640px){.cards.c3,.cards.c2{grid-template-columns:1fr}.wrap{padding:0 16px}.idcard .fields{grid-template-columns:1fr}.day-h h2{font-size:23px;line-height:30px}}
+
+/* wipe-this-computer link at the bottom of the hub */
+.wipe{margin-top:var(--space-5);text-align:center}
+.wipe #wipeAll{background:none;border:none;cursor:pointer;font:400 14px var(--font-sans);color:var(--ink-muted);text-decoration:underline}
+.wipe #wipeAll:hover{color:var(--danger)}

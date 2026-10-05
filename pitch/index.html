@@ -142,7 +142,7 @@
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../assets/site.css?v=18">
+<link rel="stylesheet" href="../assets/site.css?v=19">
 </head>
 <body>
   <header class="bar">
@@ -180,7 +180,7 @@ const App=(()=>{
   let data=fresh();
   function fresh(){ return {meta:{title:'',team:''}, story:{audience:'',situation:'',pain:'',intervention:'',future:'',number:'',quote:'',image:''}, pitch:{hook:'',problem:'',solution:'',ask:'',c1:false,c2:false,c3:false,obj:[{o:'אין תקציב',r:''},{o:'אין זמן / כוח אדם',r:''},{o:'זה לא התפקיד שלנו',r:''}]}, design:{mood:'',palette:'',slideStyle:'',slides:'8'}}; }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
-  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function attr(s){return esc(s).replace(/"/g,'&quot;');}
 
   function init(){ try{const s=JSON.parse(localStorage.getItem(LS)); if(s&&s.story)data=Object.assign(fresh(),s);}catch(e){} document.getElementById('fileIn').addEventListener('change',onFile); render(); }
@@ -425,6 +425,6 @@ const App=(()=>{
 })();
 window.App=App; App.init();
 </script>
-<script src="../assets/site.js?v=18" data-crumbs='כל ההכשרות|../;מאיצים דיגיטליים|../maazim/'></script>
+<script src="../assets/site.js?v=19" data-crumbs='כל ההכשרות|../;מאיצים דיגיטליים|../maazim/'></script>
 </body>
 </html>

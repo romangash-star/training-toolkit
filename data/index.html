@@ -6,11 +6,11 @@
 <title>קבלת החלטות מבוססת נתונים · ארגז הכלים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/hub.css?v=18">
+<link rel="stylesheet" href="../assets/hub.css?v=19">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../assets/site.css?v=18">
+<link rel="stylesheet" href="../assets/site.css?v=19">
 </head>
 <body>
   <header class="hero">
@@ -115,6 +115,10 @@
           </a>
         </div>
       </section>
+      <div class="wipe">
+        <button type="button" id="wipeAll">מחיקת כל מה שמילאתי במחשב הזה</button>
+        <button type="button" class="help" aria-label="הסבר" data-help="כל מה שממלאים באתר נשמר רק בדפדפן של המחשב הזה. אם זה <b>מחשב משותף</b> (כיתה, ספרייה, עמדה במשרד), מי שיישב אחריכם יראה את מה שכתבתם. ייצאו קודם את מה שחשוב לכם, ואז מחקו.">?</button>
+      </div>
     </div>
   </main>
 
@@ -152,8 +156,16 @@
     };
   }
   render(false);
+  document.getElementById('wipeAll').onclick=function(){
+    if(!confirm('למחוק מהמחשב הזה את כל מה שמילאתם בכלים של ההכשרה, כולל השם והרשות? אי אפשר לשחזר.')) return;
+    try{
+      Object.keys(localStorage).filter(function(k){ return /^dd_/.test(k)||k==='toolkit_identity'||k==='site_progress'; })
+        .forEach(function(k){ localStorage.removeItem(k); });
+    }catch(e){}
+    location.reload();
+  };
 })();
 </script>
-<script src="../assets/site.js?v=18" data-crumbs='כל ההכשרות|../'></script>
+<script src="../assets/site.js?v=19" data-crumbs='כל ההכשרות|../'></script>
 </body>
 </html>

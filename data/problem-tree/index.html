@@ -215,7 +215,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=18">
+<link rel="stylesheet" href="../../assets/site.css?v=19">
 </head>
 <body>
 <div class="app">
@@ -577,7 +577,7 @@ const App = (() => {
   function copyText(){ const L1=mode==='objective'?['מטרה מרכזית','פעולות','תוצאות']:['הבעיה המרכזית','השורשים — סיבות','הצמרת — השלכות']; let t=`${data.meta.title||'עץ הבעיה'}\n`; if(data.meta.authority||data.meta.author) t+=`${[data.meta.authority,data.meta.author].filter(Boolean).join(' · ')}\n`; t+=`\n■ ${L1[0]}:\n${data.core||'—'}\n`; t+=`\n■ ${L1[1]}:\n`+(data.causes.map(c=>`• ${c.text}`+(c.children&&c.children.length?'\n'+c.children.map(k=>`   ↳ ${k.text}`).join('\n'):'')).join('\n')||'—'); t+=`\n\n■ ${L1[2]}:\n`+(data.effects.map(c=>`• ${c.text}`+(c.children&&c.children.length?'\n'+c.children.map(k=>`   ↳ ${k.text}`).join('\n'):'')).join('\n')||'—'); t+=`\n\n— נבנה בכלי "עץ הבעיה" מאת רומן גרינשטיין`; (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הסיכום הועתק')).catch(()=>prompt('העתיקו ידנית:',t)); }
   function saveFile(){ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const u=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=u; a.download=fileName('json'); a.click(); setTimeout(()=>URL.revokeObjectURL(u),1500); toast('קובץ העבודה נשמר'); }
 
-  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   let toastT; function toast(m){ const el=document.getElementById('toast'); el.textContent=m; el.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),2600); }
 
   function makeBlob(){
@@ -597,6 +597,6 @@ const App = (() => {
 if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(()=>{ if(document.getElementById('work').style.display!=='none') App._reflow(); }); }
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=18" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=19" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
