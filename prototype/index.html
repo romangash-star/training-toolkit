@@ -144,10 +144,6 @@
       </div>
     </div>
 
-    <div class="tabs">
-      <button data-tab="work" class="on" onclick="App.tab('work')">דף העבודה</button>
-      <button data-tab="prompt" class="star" onclick="App.tab('prompt')">הפרומפט שנוצר</button>
-    </div>
     <div id="content"></div>
   </main>
 
@@ -158,88 +154,73 @@
 const App=(()=>{
   'use strict';
   const LS='solution_tool_v4';
-  let cur='work';
   const PRESETS=[60,45,30];
-  const PATHS=[
-    {k:'פרוטוטייפ דיגיטלי',d:'אתר או אפליקציה פשוטה — בלי קוד.'},
-    {k:'הצעת פתרון כתובה',d:'הצעה על דף — כיוון, מה עושים, תוצאה.'},
-    {k:'תוכנית שדורשת מחקר',d:'כיוון + מה צריך לבדוק בהמשך.'}
-  ];
-  const PRINCIPLES=[
-    {t:'מתחילים קטן',d:'פיילוט בשכונה אחת עדיף על רפורמה בעיר.'},
-    {t:'משתמש אחד ברור',d:'למי בדיוק זה פותר? דמות אחת.'},
-    {t:'נשארים קונקרטיים',d:'"מה בדיוק קורה" — לא כותרות.'},
-    {t:'בודקים מול הבעיה',d:'האם זה מקל על הכאב שאימתנו?'}
-  ];
   let data=fresh();
   let timer={total:2700,remain:2700,running:false,id:null};
 
-  function fresh(){ return {meta:{title:'',team:''}, mode:'צוות', stage:'', problem:'', who:'', tried:'', ideas:'', barriers:'', direction:'', does:'', path:'', prin:[false,false,false,false]}; }
+  function fresh(){ return {meta:{title:'',team:''}, mode:'צוות', stage:'', problem:'', who:'', tried:'', ideas:'', barriers:'', direction:'', does:'', dataHave:'', dataHelp:''}; }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function attr(s){return esc(s).replace(/"/g,'&quot;');}
 
   function init(){ try{const s=JSON.parse(localStorage.getItem(LS)); if(s&&typeof s.problem==='string')data=Object.assign(fresh(),s);}catch(e){} paintPresets(); paintModes(); render(); }
-  function tab(t){cur=t;document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));render();window.scrollTo({top:0,behavior:'smooth'});}
   function ta(id,val,ph){return `<div class="in-wrap"><textarea data-f="${id}" placeholder="${attr(ph)}">${esc(val)}</textarea><button class="mic" data-t="${id}"></button></div>`;}
   const hasIdea=()=>data.stage==='יש לנו כיוון';
 
   function render(){
-    document.getElementById('content').innerHTML = cur==='work'?renderWork():renderPrompt();
+    document.getElementById('content').innerHTML = renderWork()+renderPrompt();
     wire();
   }
 
   function renderWork(){
+    let num=0; const n=()=>++num;   // section numbers follow what is actually shown
     return `<div class="panel">
       <div class="eyebrow">דף עבודה</div>
       <h2 class="title">מה יש לכם עד עכשיו?</h2>
       <div class="why">ענו במילים שלכם — <b>אין תשובות נכונות</b>. ככל שתכתבו יותר, הפרומפט יהיה מדויק יותר. אפשר להכתיב בקול .</div>
       <div class="metarow"><input class="txt" data-m="title" placeholder="שם האתגר" value="${attr(data.meta.title)}"><input class="txt" data-m="team" placeholder="שם ${data.mode==='אישי'?'ממלא/ת':'הצוות'}" value="${attr(data.meta.team)}"></div>
 
-      <div class="sub-h">1. הבעיה שאימתנו <span class="opt">(מימים 1–2)</span></div>
+      <div class="sub-h">${n()}. הבעיה שאימתנו <span class="opt">(מימים 1–2)</span></div>
       <div class="q">מה כואב, למי, וכמה זה רחב?</div>
       ${ta('problem',data.problem,'לדוגמה: 40% מבקשות הרישוי ננטשות באמצע התהליך.')}
 
-      <div class="sub-h">2. מי מרגיש את הכאב הזה?</div>
+      <div class="sub-h">${n()}. מי מרגיש את הכאב הזה?</div>
       <div class="q">מי הדמות המרכזית — ומה היא מנסה להשיג?</div>
       ${ta('who',data.who,'לדוגמה: בעל עסק קטן שרוצה לפתוח מסעדה ברחוב הראשי.')}
 
-      <div class="sub-h">3. מה כבר ניסו לעשות בנושא? <span class="opt">(לא חובה)</span></div>
+      <div class="sub-h">${n()}. אילו נתונים יש לכם?</div>
+      <div class="q">מה אספתם ומה מצאתם: קבצים, מספרים, ממצאים מהשטח.</div>
+      ${ta('dataHave',data.dataHave,'לדוגמה: קובץ ארנונה של 3 שנים; 40% מהעסקים שנסגרו היו בני פחות משנתיים; 12 ראיונות עם בעלי עסקים.')}
+      <div class="q" style="margin-top:12px">איך הנתונים האלה עוזרים לנו לקבל את ההחלטה? מה הם מראים, ומה עוד חסר?</div>
+      ${ta('dataHelp',data.dataHelp,'לדוגמה: הם מראים שהסגירות מרוכזות בעסקים חדשים, אז כדאי לתמוך בשנה הראשונה. חסר לנו מידע על הסיבות לסגירה.')}
+
+      <div class="sub-h">${n()}. מה כבר ניסו לעשות בנושא? <span class="opt">(לא חובה)</span></div>
       <div class="q">מה נוסה בעבר, ולמה זה לא פתר?</div>
       ${ta('tried',data.tried,'לדוגמה: הוסיפו דף הסבר באתר — אבל אנשים לא מגיעים אליו.')}
 
-      <div class="sub-h">4. איפה אתם נמצאים?</div>
+      <div class="sub-h">${n()}. איפה אתם נמצאים?</div>
       <div class="stage">
         <button class="${data.stage==='עדיין אין פתרון'?'on':''}" onclick="App.setStage('עדיין אין פתרון')"><div class="sn">עדיין אין לנו פתרון</div><div class="sd">רוצים ש-Gemini יעזור להציע כיוונים</div></button>
         <button class="${data.stage==='יש לנו כיוון'?'on':''}" onclick="App.setStage('יש לנו כיוון')"><div class="sn">יש לנו כיוון ראשוני</div><div class="sd">רוצים לחדד ולבחון אותו</div></button>
       </div>
 
-      <div class="sub-h">5. רעיונות גולמיים שעלו <span class="opt">(גם חצי-אפויים)</span></div>
+      <div class="sub-h">${n()}. רעיונות גולמיים שעלו <span class="opt">(גם חצי-אפויים)</span></div>
       <div class="q">מה כבר עלה בשיחה ביניכם — בלי לסנן?</div>
       ${ta('ideas',data.ideas,'לדוגמה: אולי ליווי אישי? אולי לשלוח תזכורות? אולי לאחד טפסים?')}
 
       ${hasIdea()?`
-      <div class="sub-h">6. הכיוון שגיבשנו</div>
+      <div class="sub-h">${n()}. הכיוון שגיבשנו</div>
       <div class="q">במשפט אחד — מה משנים, ולמי?</div>
       ${ta('direction',data.direction,'לדוגמה: מקצרים לבעלי עסקים את דרך הרישוי — ממאבק לליווי.')}
-      <div class="sub-h">7. מה הוא עושה בפועל?</div>
+      <div class="sub-h">${n()}. מה הוא עושה בפועל?</div>
       <div class="q">הצעד הקונקרטי שמסיר את הכאב</div>
       ${ta('does',data.does,'לדוגמה: מדריך דיגיטלי אחד + ליווי אישי בנקודות הנשירה.')}
       `:''}
 
-      <div class="sub-h">${hasIdea()?'8':'6'}. חסמים <span class="opt">(חשוב!)</span></div>
+      <div class="sub-h">${n()}. חסמים <span class="opt">(חשוב!)</span></div>
       <div class="q">מה עלול לעצור אתכם? תקציב, רגולציה, מערכות, כוח אדם, התנגדויות, שיתוף מידע בין אגפים…</div>
       ${ta('barriers',data.barriers,'לדוגמה: אין תקציב ייעודי; המידע יושב אצל שני אגפים שלא מדברים; חשש מעומס על המוקד.')}
-
-      <div class="sub-h">${hasIdea()?'9':'7'}. דרך הפיתוח המועדפת <span class="opt">(לא חובה)</span></div>
-      <div class="paths">${PATHS.map(p=>`<button class="path ${data.path===p.k?'on':''}" onclick="App.setPath('${p.k}')"><div class="pn">${p.k}</div><div class="pd">${p.d}</div></button>`).join('')}</div>
-
-      <div class="sub-h">עקרונות שכדאי לזכור</div>
-      <div class="check">${PRINCIPLES.map((p,i)=>`<label><input type="checkbox" data-p="${i}" ${data.prin[i]?'checked':''}><span><b>${p.t}</b><span>${p.d}</span></span></label>`).join('')}</div>
-
-      <div class="tipbox"><b>הכלל:</b> מהר, גס ו"מספיק טוב". אם קצת התביישתם להראות — כנראה עשיתם נכון.</div>
-    </div>
-    <button class="gotoprompt" onclick="App.tab('prompt')">צרו את הפרומפט ←</button>`;
+    </div>`;
   }
 
   function buildPrompt(){
@@ -252,6 +233,11 @@ const App=(()=>{
     t+=`הבעיה שאימתנו: ${data.problem||'—'}\n`;
     if(data.who) t+=`מי מרגיש את הכאב: ${data.who}\n`;
     if(data.tried) t+=`מה כבר ניסו: ${data.tried}\n`;
+    if(data.dataHave||data.dataHelp){
+      t+=`\n== הנתונים שיש לנו ==\n`;
+      if(data.dataHave) t+=`מה אספנו ומצאנו: ${data.dataHave}\n`;
+      if(data.dataHelp) t+=`איך זה עוזר לנו להחליט, ומה חסר: ${data.dataHelp}\n`;
+    }
     if(data.ideas) t+=`רעיונות גולמיים שעלו: ${data.ideas}\n`;
     if(!noSol){
       t+=`\n== הכיוון שגיבשנו ==\n`;
@@ -259,7 +245,6 @@ const App=(()=>{
       if(data.does) t+=`מה הוא עושה: ${data.does}\n`;
     }
     if(data.barriers) t+=`\n== חסמים שאנחנו רואים ==\n${data.barriers}\n`;
-    if(data.path) t+=`\nדרך הפיתוח המועדפת עלינו: ${data.path}\n`;
 
     t+=`\n== מה אני מבקש ממך ==\n`;
     if(noSol){
@@ -267,20 +252,22 @@ const App=(()=>{
       t+=`1. מה עוד לא ברור לך אצלנו? שאל אותי 3 שאלות פתוחות שיעזרו לך להבין את האתגר לעומק — ואל תמשיך עד שאענה.\n`;
       t+=`2. אילו זוויות של הבעיה אנחנו אולי לא רואים?\n`;
       t+=`3. הצע 5 כיווני פתרון שונים באופיים — מהקל והזול ועד השאפתני. לכל אחד: מה הוא עושה, למי, ומה הצעד הראשון.\n`;
-      t+=`4. איך רשויות אחרות בישראל או בעולם התמודדו עם אתגר דומה?\n`;
-      t+=`5. איזה כיוון היית ממליץ להתחיל ממנו — ולמה דווקא הוא?\n`;
-      t+=`6. איך אפשר לעקוף את החסמים שציינו, או להתחיל בקטן למרות שהם קיימים?\n`;
-      t+=`7. מה הדבר הראשון שכדאי לבדוק מול משתמש אמיתי — ואיזו שאלה פתוחה לשאול אותו?\n`;
+      t+=`4. מה הנתונים שלנו מלמדים על הכיוונים האלה: איזה כיוון הם תומכים בו, ואיזה נתון חסר כדי להחליט?\n`;
+      t+=`5. איך רשויות אחרות בישראל או בעולם התמודדו עם אתגר דומה?\n`;
+      t+=`6. איזה כיוון היית ממליץ להתחיל ממנו — ולמה דווקא הוא?\n`;
+      t+=`7. איך אפשר לעקוף את החסמים שציינו, או להתחיל בקטן למרות שהם קיימים?\n`;
+      t+=`8. מה הדבר הראשון שכדאי לבדוק מול משתמש אמיתי — ואיזו שאלה פתוחה לשאול אותו?\n`;
     } else {
       t+=`יש לנו כיוון ראשוני. עזור לנו לחדד ולבחון אותו:\n`;
       t+=`1. מה עוד לא ברור לך? שאל אותי 3 שאלות פתוחות לפני שתענה — ואל תמשיך עד שאענה.\n`;
       t+=`2. נסח מחדש את הפתרון שלנו במשפט אחד חד, כפי שהיית מציג אותו למקבל החלטות.\n`;
       t+=`3. מה החוזק המרכזי כאן — ומה 3 נקודות התורפה הקונקרטיות?\n`;
       t+=`4. האם הפתרון באמת מקל על הכאב שתיארנו, או פותר משהו אחר? הסבר.\n`;
-      t+=`5. הצע 3 כיוונים חלופיים או וריאציות שלא חשבנו עליהם.\n`;
-      t+=`6. איך אפשר לעקוף את החסמים שציינו, או להתחיל בקטן למרות שהם קיימים?\n`;
-      t+=`7. איך להפוך את הרעיון לפיילוט קטן שאפשר להתחיל בו מיד?\n`;
-      t+=`8. מה הדבר הראשון שכדאי לבדוק מול משתמש אמיתי — ואיזו שאלה פתוחה לשאול אותו?\n`;
+      t+=`5. האם הנתונים שלנו תומכים בכיוון הזה? איזה נתון היה משנה את דעתנו, ומה חסר כדי להחליט?\n`;
+      t+=`6. הצע 3 כיוונים חלופיים או וריאציות שלא חשבנו עליהם.\n`;
+      t+=`7. איך אפשר לעקוף את החסמים שציינו, או להתחיל בקטן למרות שהם קיימים?\n`;
+      t+=`8. איך להפוך את הרעיון לפיילוט קטן שאפשר להתחיל בו מיד?\n`;
+      t+=`9. מה הדבר הראשון שכדאי לבדוק מול משתמש אמיתי — ואיזו שאלה פתוחה לשאול אותו?\n`;
     }
     t+=`\n== איך לענות ==\n`;
     t+=`• בעברית, ענייני וקצר — משפט או שניים לכל סעיף.\n`;
@@ -291,10 +278,10 @@ const App=(()=>{
   }
 
   function renderPrompt(){
-    return `<div class="panel hero">
+    return `<div class="panel hero" id="promptSection">
       <div class="eyebrow amber">★ הפלט של העמוד</div>
       <h2 class="title big">הפרומפט שנוצר עבורכם</h2>
-      <div class="why">נבנה אוטומטית ממה שמילאתם. <b>זה לא פרומפט למצגת</b> — זה שותף חשיבה שיפתח איתכם דיון ויעזור להגיע לכיווני פתרון.</div>
+      <div class="why">נבנה אוטומטית ממה שמילאתם למעלה, ומתעדכן בזמן שאתם כותבים. <b>זה לא פרומפט למצגת</b> — זה שותף חשיבה שיפתח איתכם דיון ויעזור להגיע לכיווני פתרון.</div>
       <div class="prompt-box" id="promptBox">${esc(buildPrompt())}</div>
       <div class="pv-actions">
         <button class="btn btn-gem" onclick="App.toGemini()">העתק ופתח את Gemini</button>
@@ -306,18 +293,16 @@ const App=(()=>{
         <div><b>3. חוזרים</b>ומעדכנים כאן</div>
       </div>
       <div class="nextnote"><b>השלב הבא:</b> כשהפתרון מספיק ברור — עוברים לכלי <b>"מהנתון לפרומפט"</b> שבונה את הפרומפט לטיוטת המצגת.</div>
-      <button class="gotoprompt" style="background:#FFFDF8;color:var(--ink-soft);border:1px solid var(--line);box-shadow:none;margin-top:14px" onclick="App.tab('work')">→ חזרה לדף העבודה</button>
     </div>`;
   }
 
   function wire(){
-    document.querySelectorAll('[data-f]').forEach(el=>el.addEventListener('input',()=>{data[el.dataset.f]=el.value;persist();}));
-    document.querySelectorAll('[data-m]').forEach(el=>el.addEventListener('input',()=>{data.meta[el.dataset.m]=el.value;persist();}));
-    document.querySelectorAll('[data-p]').forEach(el=>el.addEventListener('change',()=>{data.prin[+el.dataset.p]=el.checked;persist();}));
+    const live=()=>{ const box=document.getElementById('promptBox'); if(box) box.textContent=buildPrompt(); };
+    document.querySelectorAll('[data-f]').forEach(el=>el.addEventListener('input',()=>{data[el.dataset.f]=el.value;persist();live();}));
+    document.querySelectorAll('[data-m]').forEach(el=>el.addEventListener('input',()=>{data.meta[el.dataset.m]=el.value;persist();live();}));
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.querySelector(`[data-f="${b.dataset.t}"]`),b)));
   }
   function setStage(s){data.stage=(data.stage===s?'':s);persist();render();}
-  function setPath(k){data.path=(data.path===k?'':k);persist();render();}
   function setMode(m){data.mode=m;persist();paintModes();render();}
   function paintModes(){const el=document.getElementById('modes');if(el)el.innerHTML=['אישי','צוות'].map(m=>`<button class="${data.mode===m?'on':''}" onclick="App.setMode('${m}')">${m==='אישי'?'אישי':'צוות'}</button>`).join('');}
   function copyPrompt(){const t=buildPrompt();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
@@ -338,7 +323,7 @@ const App=(()=>{
   function dictate(el,btn){if(!el)return;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('הכתבה קולית נתמכת ב-Chrome / Edge');return;}if(recog){recog.stop();return;}recog=new SR();recog.lang='he-IL';recog.interimResults=true;recog.continuous=false;const base=(el.value||'').trim();btn.classList.add('rec');recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k];if(r.isFinal)f+=r[0].transcript;else i+=r[0].transcript;}el.value=(base?base+' ':'')+(f+i).trim();el.dispatchEvent(new Event('input',{bubbles:true}));};recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();};recog.onerror=()=>{btn.classList.remove('rec');recog=null;};try{recog.start();toast('מקשיב…');}catch(e){btn.classList.remove('rec');recog=null;}}
 
   let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,tab,setStage,setPath,setMode,copyPrompt,toGemini,preset,toggleTimer,resetTimer};
+  return {init,setStage,setMode,copyPrompt,toGemini,preset,toggleTimer,resetTimer};
 })();
 window.App=App; App.init();
 </script>
