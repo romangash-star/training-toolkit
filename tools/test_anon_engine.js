@@ -59,25 +59,34 @@ ok(det('שם רחוב', ['הרצל']).type === 'address', 'street name is an add
 ok(det('שכונה', ['רמת השרון']).type === 'safe', 'neighbourhood is safe');
 ok(det('עובד מטפל', ['משה']).type === 'employee', 'employee');
 ok(det('טלפון נייד', ['050-1234567']).type === 'phone', 'phone header');
-ok(det('תיאור הפנייה', ['פינוי גזם ברחוב']).action === 'scrub', 'free text scrub');
+ok(det('תיאור הפנייה', ['פינוי גזם ברחוב']).type === 'freetext' && det('תיאור הפנייה', ['x']).action === 'keep', 'free text is kept (and cleaned)');
 ok(det('הערות', ['בעיה עם הפח, לחזור ל 050-1112223 בערב']).type === 'freetext', 'free text with phone');
 ok(det('מספר נכס', ['1002345']).type === 'property', 'property');
 ok(det('תזמון', ['בוקר']).type === 'safe', '"תזמון" is not an id');
 
-// --- rewriting: consistent tokens, empty stays empty, drop removes the column
+// --- rewriting: random but consistent numbers, empty stays empty, drop removes the column, free text cleaned
 const sheet = { cols: [
   { idx: 0, name: 'שם פונה', type: 'person', action: 'token' },
-  { idx: 1, name: 'טלפון', type: 'phone', action: 'mask' },
+  { idx: 1, name: 'טלפון', type: 'phone', action: 'token' },
   { idx: 2, name: 'קטגוריה', type: 'safe', action: 'keep' },
   { idx: 3, name: 'כתובת', type: 'address', action: 'drop' },
-  { idx: 4, name: 'תיאור', type: 'freetext', action: 'scrub' }],
+  { idx: 4, name: 'תיאור', type: 'freetext', action: 'keep' }],
   rows: [['דנה', '050-1234567', 'גזם', 'הגפן 3', 'חזרו אליי 050-1234567'], ['יוסי', '', 'תאורה', 'הזית 1', 'פנס שבור'], ['דנה', '052-1111111', 'גזם', 'הגפן 3', '']] };
-const ctx = E.newContext(), out = E.applySheet(sheet, ctx);
+const ctx = E.newContext(42), out = E.applySheet(sheet, ctx);
 ok(out.header.join('|') === 'שם פונה|טלפון|קטגוריה|תיאור', 'dropped column removed: ' + out.header);
-ok(out.rows[0][0] === 'תושב_001' && out.rows[1][0] === 'תושב_002' && out.rows[2][0] === 'תושב_001', 'consistent tokens');
-ok(out.rows[0][1] === '[מוסתר]' && out.rows[1][1] === '', 'mask, empty stays empty');
-ok(out.rows[0][3] === 'חזרו אליי [טלפון_הוסר]', 'scrub in sheet');
-ok(ctx.mapping.length === 2 && ctx.mapping[0].value === 'דנה', 'mapping file rows');
+const a0 = out.rows[0][0], a1 = out.rows[1][0], a2 = out.rows[2][0];
+ok(typeof a0 === 'number' && a0 >= 100000 && a0 <= 999999, 'six-digit random number: ' + a0);
+ok(a0 === a2 && a0 !== a1, 'same value, same number; other value, other number');
+ok(!E.isValidIsraeliId(String(a0)), 'a random number is never an id');
+ok(out.rows[1][1] === '', 'empty stays empty');
+ok(out.rows[0][3] === 'חזרו אליי [טלפון_הוסר]' && out.rows[1][3] === 'פנס שבור', 'free text kept and cleaned');
+ok(out.rows[0][2] === 'גזם', 'safe column untouched');
+ok(ctx.mapping.length === 4 && ctx.mapping[0].value === 'דנה' && ctx.mapping[0].token === a0, 'mapping file rows');
+const again = E.applySheet(sheet, E.newContext(42));
+ok(JSON.stringify(again.rows) === JSON.stringify(out.rows), 'same seed, same numbers (preview matches download)');
+const big = { cols: [{ idx: 0, name: 'x', type: 'person', action: 'token' }], rows: Array.from({ length: 5000 }, (_, i) => ['p' + i]) };
+const nums = E.applySheet(big, E.newContext(1)).rows.map(r => r[0]);
+ok(new Set(nums).size === 5000, '5000 different values get 5000 different numbers');
 
 console.log(`${n - fail}/${n} checks passed`);
 process.exit(fail ? 1 : 0);

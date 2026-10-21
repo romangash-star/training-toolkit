@@ -51,12 +51,12 @@
     employee: {label:'שם עובד',              prefix:'עובד',  action:'token'},
     phone:    {label:'טלפון',                prefix:'טלפון', action:'token'},
     email:    {label:'דוא״ל',                prefix:'מייל',  action:'token'},
-    address:  {label:'כתובת',                prefix:'כתובת', action:'mask'},
+    address:  {label:'כתובת',                prefix:'כתובת', action:'token'},
     payer:    {label:'מספר משלם',            prefix:'משלם',  action:'token'},
     property: {label:'מספר נכס / חשבון',     prefix:'נכס',   action:'token'},
     caseno:   {label:'מספר תיק',             prefix:'תיק',   action:'token'},
     vehicle:  {label:'מספר רכב',             prefix:'רכב',   action:'token'},
-    freetext: {label:'טקסט חופשי',           prefix:'טקסט',  action:'scrub'},
+    freetext: {label:'טקסט חופשי',           prefix:'טקסט',  action:'keep'},
     safe:     {label:'לא נמצא מידע מזהה',     prefix:'ערך',   action:'keep'}
   };
   /* checked in order: the more specific phrases first ("שם רחוב" is an address, not a name) */
@@ -118,25 +118,31 @@
   }
 
   /* ---------- rewriting ---------- */
-  function newContext(){ return {maps:{}, mapping:[], counts:{phone:0,email:0,id:0}, tokens:0}; }
-  function token(ctx, prefix, value, colName){
+  /* small seeded generator: the same file gives the same random numbers in the preview and in the download */
+  function seeded(seed){ var t=seed>>>0; return function(){ t=(t+0x6D2B79F5)>>>0; var r=Math.imul(t^(t>>>15),1|t); r^=r+Math.imul(r^(r>>>7),61|r); return ((r^(r>>>14))>>>0)/4294967296; }; }
+  function newContext(seed){ return {maps:{}, mapping:[], counts:{phone:0,email:0,id:0}, tokens:0, used:new Set(), rnd:seeded(seed==null?20261021:seed)}; }
+  /* each distinct value gets its own random 6-digit number, the same one everywhere in the file.
+     Six digits can never be a valid Israeli ID (those have 7–9), so the output is not mistaken for one. */
+  function token(ctx, group, value, colName){
     var key=String(value).trim();
-    var m=ctx.maps[prefix]||(ctx.maps[prefix]={map:new Map(),next:1});
-    if(!m.map.has(key)){
-      var t=prefix+'_'+String(m.next++).padStart(3,'0');
-      m.map.set(key,t); ctx.tokens++;
-      ctx.mapping.push({token:t, value:key, column:colName});
+    var m=ctx.maps[group]||(ctx.maps[group]=new Map());
+    if(!m.has(key)){
+      var n; do{ n=100000+Math.floor(ctx.rnd()*900000); }while(ctx.used.has(n));
+      ctx.used.add(n); m.set(key,n); ctx.tokens++;
+      ctx.mapping.push({token:n, value:key, column:colName});
     }
-    return m.map.get(key);
+    return m.get(key);
   }
-  /* returns the new value for one cell; undefined is never returned (drop is handled by the caller) */
+  /* returns the new value for one cell (drop is handled by the caller) */
   function transform(col, v, ctx){
     if(v===''||v==null) return v;
     switch(col.action){
       case 'token': return token(ctx, TYPES[col.type] ? TYPES[col.type].prefix : 'ערך', v instanceof Date ? v.toISOString() : v, col.name);
-      case 'mask':  return '[מוסתר]';
-      case 'scrub': return v instanceof Date ? v : (typeof v==='number' ? (isValidIsraeliId(String(v)) ? (ctx.counts.id++,'[תז_הוסרה]') : v) : scrubText(v, ctx.counts));
-      default:      return v;
+      case 'keep':
+        if(col.type!=='freetext' || v instanceof Date) return v;
+        if(typeof v==='number') return isValidIsraeliId(String(v)) ? (ctx.counts.id++,'[תז_הוסרה]') : v;
+        return scrubText(v, ctx.counts);
+      default: return v;
     }
   }
   /* applies the column decisions to a whole sheet: {header, rows} -> {header, rows} */
