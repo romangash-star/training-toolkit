@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- The browser itself blocks this page from sending data anywhere: no fetch, XHR, WebSocket or form posts. -->
+<meta http-equiv="Content-Security-Policy" content="connect-src 'none'; form-action 'none'; object-src 'none'">
+<title>מגן מידע מוניציפלי — התממת קובצי אקסל לפני AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dd.css?v=20">
+<style>
+  .wrap{max-width:1120px}
+  /* trust banner */
+  .trust{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--teal,#1f5f5b);color:#fffdf8;border-radius:14px;padding:16px 20px;margin-bottom:18px}
+  .trust .lock{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.14);display:grid;place-items:center;flex:0 0 auto}
+  .trust .tx{flex:1;min-width:260px}
+  .trust b{font-size:17px;display:block}
+  .trust p{margin:3px 0 0;font-size:14.5px;color:#c9e2de}
+  .net{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:7px 14px;font-weight:700;font-size:14px;white-space:nowrap}
+  .net .dot{width:10px;height:10px;border-radius:50%}
+  .net.on{background:#fffdf8;color:var(--ink)}.net.on .dot{background:var(--amber,#d99a2b)}
+  .net.off{background:#e7f4ec;color:#1e5e45}.net.off .dot{background:#2e7d4f}
+  /* steps */
+  .steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+  .steps4 div{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;font-weight:700;font-size:14.5px;color:var(--ink-soft);display:flex;gap:9px;align-items:center}
+  .steps4 .sn{width:26px;height:26px;border-radius:50%;background:var(--line);color:var(--ink);display:grid;place-items:center;font-size:14px;flex:0 0 auto}
+  .steps4 .on{border-color:var(--brand);color:var(--ink)}.steps4 .on .sn{background:var(--brand);color:#fff}
+  .steps4 .done .sn{background:var(--success,#2e7d4f);color:#fff}
+  /* upload */
+  .drop{border:2.5px dashed var(--line);border-radius:16px;padding:34px 20px;text-align:center;background:#fff;cursor:pointer;transition:.15s}
+  .drop.over,.drop:hover{border-color:var(--teal,#1f5f5b);background:var(--teal-tint,#dcedea)}
+  .drop b{font-size:19px;display:block}
+  .drop span{color:var(--ink-soft);font-size:14.5px}
+  .or{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+  .fileinfo{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:15px}
+  .fileinfo b{font-size:16px}
+  .sheets{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 4px}
+  .sheets button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+  .sheets button.on{background:var(--teal,#1f5f5b);border-color:var(--teal,#1f5f5b);color:#fff}
+  /* column inspector */
+  .bulk{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 14px}
+  .cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+  .col{border:1.5px solid var(--line);border-radius:14px;background:#fff;padding:13px 14px;display:flex;flex-direction:column;gap:8px}
+  .col.a-keep{border-color:#bfe0ce}.col.a-token{border-color:#b9c8e8}.col.a-mask{border-color:#efc79b}.col.a-scrub{border-color:#ead79a}.col.a-drop{border-color:#efb8b0;background:#fdf6f5}
+  .col h3{font-size:16.5px;word-break:break-word}
+  .col .det{font-size:13px;color:var(--ink-soft)}
+  .col .det b{color:var(--ink)}
+  .samples{display:flex;flex-direction:column;gap:3px;background:var(--paper);border-radius:9px;padding:7px 9px;font-size:13px;max-height:118px;overflow:hidden}
+  .samples span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .samples em{color:var(--ink-soft);font-style:normal}
+  .col select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font:700 14px var(--font-sans,Arial);background:#fff}
+  .badge{display:inline-block;border-radius:999px;padding:2px 11px;font-size:12.5px;font-weight:700}
+  .b-keep{background:#e7f4ec;color:#1e5e45}.b-token{background:#e6ecf8;color:#2b3f7a}.b-mask{background:#fbeadb;color:#8a4a12}.b-scrub{background:#fbf3d9;color:#7a5b06}.b-drop{background:#fbe5e2;color:#8f2b22}
+  .flag{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;background:#fbe5e2;color:#8f2b22}
+  .flag.ok{background:#e7f4ec;color:#1e5e45}
+  /* preview */
+  .pv{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .pv table{border-collapse:collapse;font-size:13px;min-width:100%}
+  .pv th{background:var(--paper);position:sticky;top:0;text-align:right;padding:7px 9px;border-bottom:2px solid var(--line);white-space:nowrap}
+  .pv td{padding:6px 9px;border-bottom:1px solid #eee5d6;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pv td.chg{background:#fff4c4}
+  .pv td.drop,.pv th.drop{background:#fbe5e2;color:#8f2b22;text-decoration:line-through}
+  .toggle{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:10px}
+  .toggle button{padding:7px 16px;font-weight:700;font-size:14px;background:#fff}
+  .toggle button.on{background:var(--teal,#1f5f5b);color:#fff}
+  /* summary */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0 14px}
+  .stat{background:var(--paper);border-radius:12px;padding:12px 14px}
+  .stat b{display:block;font-size:28px;color:var(--teal,#1f5f5b);line-height:1.1}
+  .stat span{font-size:13.5px;color:var(--ink-soft)}
+  .keyopt{display:flex;gap:10px;align-items:flex-start;background:#fbf3d9;border:1px solid #ead79a;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:14.5px;cursor:pointer}
+  .keyopt input{width:20px;height:20px;margin-top:2px;flex:0 0 auto}
+  .dl{display:flex;gap:10px;flex-wrap:wrap}
+  .dl .btn{padding:14px 22px;font-size:16.5px}
+  .hidden{display:none!important}
+  @media (max-width:760px){.steps4{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}}
+</style>
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/site.css?v=20">
+</head>
+<body>
+  <header class="bar">
+    <div class="brand">מגן מידע מוניציפלי</div>
+    <span class="daytag">התממה לפני AI</span>
+    <a class="hublink" href="../">‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap">
+    <div class="head">
+      <div class="eyebrow">כלי התממה לקובצי אקסל</div>
+      <h1>מגן מידע מוניציפלי</h1>
+      <p>מעלים קובץ, הכלי מזהה שמות, תעודות זהות, טלפונים וכתובות, ומוריד קובץ נקי שאפשר להעלות לכלי AI.</p>
+    </div>
+
+    <div class="trust" role="status">
+      <div class="lock"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="#fffdf8" stroke-width="2"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#f0b95a" stroke-width="2" stroke-linecap="round"/></svg></div>
+      <div class="tx">
+        <b>עיבוד מקומי ב-100%: הקובץ שלך לא עולה לשום שרת ולא יוצא מהמחשב.</b>
+        <p>העיבוד מתבצע בדפדפן בלבד. הדפדפן גם חוסם מהעמוד הזה כל שליחת מידע החוצה. רוצים להוכיח? נתקו את האינטרנט, והכלי ימשיך לעבוד.</p>
+      </div>
+      <div class="net on" id="net"><span class="dot"></span><span id="netText">מחובר לאינטרנט</span></div>
+    </div>
+
+    <div class="steps4" id="steps"></div>
+
+    <!-- 1. upload -->
+    <section class="panel" id="s1">
+      <h2><span class="num">1</span>העלאת קובץ</h2>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="בחירת קובץ">
+        <b>גררו לכאן קובץ, או לחצו לבחירה</b>
+        <span>Excel ‏(xlsx, xls) או CSV. הקובץ נקרא בתוך הדפדפן ולא נשלח לשום מקום.</span>
+      </div>
+      <input type="file" id="file" accept=".xlsx,.xls,.csv" class="hidden">
+      <div class="or"><button class="btn btn-ghost" id="demo">טען קובץ דוגמה עירוני (מוקד 106 / ארנונה)</button></div>
+      <div id="fileInfo" class="hidden" style="margin-top:14px"></div>
+    </section>
+
+    <!-- 2. columns -->
+    <section class="panel hidden" id="s2">
+      <h2><span class="num">2</span>זיהוי עמודות והחלטה מה לעשות בכל אחת</h2>
+      <p class="lead">הכלי בדק את שם כל עמודה ועד 100 ערכים מכל אחת, והציע פעולה. אפשר לשנות כל בחירה.</p>
+      <div class="sheets" id="sheets"></div>
+      <div class="bulk">
+        <button class="btn btn-ghost btn-sm" id="bulkSafe">סמן הכל כבטוח</button>
+        <button class="btn btn-ghost btn-sm" id="bulkReset">אפס להמלצות המערכת</button>
+      </div>
+      <div class="cols" id="cols"></div>
+    </section>
+
+    <!-- 3. preview -->
+    <section class="panel hidden" id="s3">
+      <h2><span class="num">3</span>תצוגה מקדימה: 10 השורות הראשונות</h2>
+      <p class="lead">תאים שהשתנו מסומנים בצהוב. עמודה שתימחק מסומנת באדום.</p>
+      <div class="toggle"><button id="tBefore">לפני</button><button id="tAfter" class="on">אחרי</button></div>
+      <div class="pv" id="preview"></div>
+    </section>
+
+    <!-- 4. export -->
+    <section class="panel hidden" id="s4">
+      <h2><span class="num">4</span>סיכום והורדה</h2>
+      <div class="stats" id="stats"></div>
+      <label class="keyopt"><input type="checkbox" id="withKey"><span><b>הורד גם טבלת מפתח פענוח (Mapping File) לשמירה מקומית</b><br>קובץ שני שמקשר בין <code>תושב_042</code> לבין השם והת״ז המקוריים. כך, אם ה-AI מצא משהו מעניין על תושב_042, תוכלו לבדוק במחשב שלכם במי מדובר. <b>את הקובץ הזה לא מעלים לשום מקום ולא שולחים.</b></span></label>
+      <div class="dl">
+        <button class="btn btn-brand" id="download">הורדת הקובץ המותמם</button>
+      </div>
+      <div class="callout warn" style="margin-top:14px"><b>לפני שמעלים:</b> פתחו את הקובץ המותמם ועברו עליו בעין. כלי אוטומטי לא מזהה הכול: שם בתוך משפט, כתובת שנכתבה במילים, או שילוב של פרטים שמזהה אדם ביישוב קטן.</div>
+    </section>
+  </main>
+
+  <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
+  <div class="toast" id="toast"></div>
+
+<script src="../assets/dd.js?v=20"></script>
+<script src="../assets/xlsx.full.min.js"></script>
+<script src="../assets/anon-engine.js?v=20"></script>
+<script>
+const AN=(()=>{
+  'use strict';
+  const E=DD.esc, ENG=window.AnonEngine;
+  const ACTIONS=[
+    {k:'keep',  t:'השאר ללא שינוי (בטוח ל-AI)'},
+    {k:'token', t:'החלפה במזהה עקבי (מומלץ לניתוח)'},
+    {k:'mask',  t:'מיסוך מלא: [מוסתר]'},
+    {k:'scrub', t:'ניקוי פרטים אישיים מתוך טקסט'},
+    {k:'drop',  t:'מחיקת העמודה'}
+  ];
+  const ACTION_HELP='<b>השאר:</b> ערך שאינו מזהה, כמו שכונה, תאריך, קטגוריה או סכום.<br><b>מזהה עקבי:</b> כל ערך מוחלף בקוד קבוע (תושב_001, תושב_002). ה-AI עדיין יכול לספור תושבים ולראות מי פנה כמה פעמים, בלי לדעת מי הם.<br><b>מיסוך:</b> כל ערך הופך ל-[מוסתר].<br><b>ניקוי טקסט:</b> המשפט נשאר, ורק טלפון, דוא״ל ות״ז שבתוכו מוסרים.<br><b>מחיקה:</b> העמודה לא תופיע בקובץ.';
+  let book=null, cur=0, view='after';
+
+  /* ---------- connection status: lets the trainer show that nothing goes out ---------- */
+  function paintNet(){
+    const on=navigator.onLine, el=document.getElementById('net');
+    el.className='net '+(on?'on':'off');
+    document.getElementById('netText').textContent= on ? 'מחובר לאינטרנט' : 'מצב אופליין מאובטח פעיל: עובד גם ללא אינטרנט';
+  }
+  window.addEventListener('online',paintNet); window.addEventListener('offline',paintNet);
+
+  function steps(){
+    const at=!book?1:4, names=['העלאת קובץ','זיהוי עמודות','תצוגה מקדימה','סיכום והורדה'];
+    document.getElementById('steps').innerHTML=names.map((n,i)=>`<div class="${book?'done':i===0?'on':''}"><span class="sn">${book?'✓':i+1}</span>${n}</div>`).join('');
+  }
+
+  /* ---------- reading ---------- */
+  function readFile(f){
+    if(!f) return;
+    if(!/\.(xlsx|xls|csv)$/i.test(f.name)){ DD.toast('אפשר להעלות רק xlsx, xls או csv'); return; }
+    if(f.size>40*1024*1024 && !confirm('הקובץ גדול ('+Math.round(f.size/1048576)+'MB) והעיבוד עלול להיות איטי. להמשיך?')) return;
+    const r=new FileReader();
+    r.onload=()=>{ try{
+        const wb=XLSX.read(new Uint8Array(r.result),{type:'array',cellDates:true,codepage:65001});
+        load(f.name, wb.SheetNames.map(n=>({name:n, aoa:XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,defval:'',raw:true,blankrows:false})})));
+      }catch(e){ DD.toast('לא הצלחנו לקרוא את הקובץ. בדקו שזה קובץ אקסל תקין'); }
+    };
+    r.readAsArrayBuffer(f);
+  }
+  function load(fileName, sheets){
+    book={fileName, sheets:sheets.map(s=>{
+      const aoa=s.aoa.filter(r=>r.some(c=>c!==''&&c!=null));
+      const header=(aoa[0]||[]).map((h,i)=>String(h===''||h==null?'עמודה '+(i+1):h).trim());
+      const rows=aoa.slice(1).map(r=>header.map((_,i)=>r[i]===undefined?'':r[i]));
+      const cols=header.map((h,i)=>{ const d=ENG.detectColumn(h, rows.map(r=>r[i])); return {idx:i, name:h, type:d.type, why:d.why, samples:d.samples, suggested:d.action, action:d.action}; });
+      return {name:s.name, header, rows, cols};
+    }).filter(s=>s.header.length)};
+    if(!book.sheets.length){ book=null; DD.toast('הקובץ ריק'); return; }
+    cur=0; render();
+    document.getElementById('s2').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  /* ---------- screens ---------- */
+  function render(){
+    steps();
+    ['s2','s3','s4','fileInfo'].forEach(id=>document.getElementById(id).classList.toggle('hidden',!book));
+    if(!book) return;
+    const rows=book.sheets.reduce((a,s)=>a+s.rows.length,0);
+    document.getElementById('fileInfo').innerHTML=`<div class="fileinfo"><span class="flag ok">✓ נטען</span><b>${E(book.fileName)}</b><span>${book.sheets.length} ${book.sheets.length>1?'גיליונות':'גיליון'} · ${rows.toLocaleString('he-IL')} שורות</span><button class="btn btn-ghost btn-sm" onclick="AN.clear()">קובץ אחר</button></div>`;
+    document.getElementById('sheets').innerHTML = book.sheets.length>1 ? book.sheets.map((s,i)=>`<button class="${i===cur?'on':''}" onclick="AN.sheet(${i})">${E(s.name)} <span style="font-weight:400">(${s.rows.length.toLocaleString('he-IL')})</span></button>`).join('') + `<span class="hint" style="align-self:center">כל הגיליונות יעובדו בהורדה. ההגדרות נשמרות לכל גיליון בנפרד.</span>` : '';
+    renderCols(); renderPreview(); renderStats();
+  }
+  function renderCols(){
+    const sh=book.sheets[cur];
+    document.getElementById('cols').innerHTML=sh.cols.map((c,i)=>{
+      const t=ENG.TYPES[c.type]; const risky=c.type!=='safe';
+      return `<div class="col a-${c.action}">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h3>${E(c.name)}</h3><span class="flag ${risky?'':'ok'}">${E(t.label)}</span></div>
+        <div class="det"><b>למה:</b> ${E(c.why)}</div>
+        <div class="samples">${c.samples.length?c.samples.map(v=>`<span>${E(v)}</span>`).join(''):'<em>אין ערכים</em>'}</div>
+        <label class="det" style="display:flex;align-items:center;gap:4px"><b>מה לעשות:</b>${DD.help(ACTION_HELP)}</label>
+        <select data-c="${i}" aria-label="מה לעשות בעמודה ${E(c.name)}">${ACTIONS.map(a=>`<option value="${a.k}" ${c.action===a.k?'selected':''}>${a.t}${a.k===c.suggested?' · מומלץ':''}</option>`).join('')}</select>
+        <span class="badge b-${c.action}">${ACTIONS.find(a=>a.k===c.action).t}</span>
+      </div>`;
+    }).join('');
+    document.querySelectorAll('[data-c]').forEach(el=>el.addEventListener('change',()=>{ sh.cols[+el.dataset.c].action=el.value; renderCols(); renderPreview(); renderStats(); }));
+  }
+  function renderPreview(){
+    const sh=book.sheets[cur], N=10, ctx=ENG.newContext();
+    const after=sh.cols.map(c=>c.action==='drop'?null:c);
+    const rows=sh.rows.slice(0,N), headCells=sh.cols.map(c=>`<th class="${view==='after'&&c.action==='drop'?'drop':''}">${E(c.name)}</th>`).join('');
+    const body=rows.map(r=>'<tr>'+sh.cols.map((c,i)=>{
+      const orig=r[i], disp=v=>v instanceof Date?v.toLocaleDateString('he-IL'):String(v==null?'':v);
+      if(view==='before') return `<td title="${E(disp(orig))}">${E(disp(orig))}</td>`;
+      if(c.action==='drop') return `<td class="drop">${E(disp(orig))}</td>`;
+      const nv=ENG.transform(c,orig,ctx), changed=disp(nv)!==disp(orig);
+      return `<td class="${changed?'chg':''}" title="${E(disp(nv))}">${E(disp(nv))}</td>`;
+    }).join('')+'</tr>').join('');
+    document.getElementById('preview').innerHTML=`<table><thead><tr>${headCells}</tr></thead><tbody>${body||'<tr><td>אין שורות</td></tr>'}</tbody></table>`;
+    document.getElementById('tBefore').classList.toggle('on',view==='before'); document.getElementById('tAfter').classList.toggle('on',view==='after');
+  }
+  /* runs the whole book; used by the summary and the download, so both always agree */
+  function processAll(){
+    const ctx=ENG.newContext(), out=book.sheets.map(sh=>({name:sh.name, ...ENG.applySheet(sh,ctx)}));
+    return {ctx,out};
+  }
+  function renderStats(){
+    const {ctx}=processAll();
+    const rows=book.sheets.reduce((a,s)=>a+s.rows.length,0);
+    const anonCols=book.sheets.reduce((a,s)=>a+s.cols.filter(c=>c.action!=='keep').length,0);
+    const dropped=book.sheets.reduce((a,s)=>a+s.cols.filter(c=>c.action==='drop').length,0);
+    const c=ctx.counts, inText=c.phone+c.email+c.id;
+    document.getElementById('stats').innerHTML=[
+      [rows.toLocaleString('he-IL'),'שורות נסרקו'],
+      [anonCols,'עמודות הותממו'+(dropped?` (${dropped} נמחקו)`:'')],
+      [ctx.tokens.toLocaleString('he-IL'),'ערכים הוחלפו במזהה עקבי'],
+      [inText,`פרטים נוקו מטקסט חופשי (${c.phone} טלפונים · ${c.email} דוא״ל · ${c.id} ת״ז)`]
+    ].map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('');
+    const summary=`נסרקו ${rows.toLocaleString('he-IL')} שורות, הותממו ${anonCols} עמודות, נוקו ${c.phone} מספרי טלפון מטקסט חופשי.`;
+    document.getElementById('stats').setAttribute('aria-label',summary);
+  }
+
+  /* ---------- writing ---------- */
+  const base=()=>book.fileName.replace(/\.(xlsx|xls|csv)$/i,'');
+  function exportFile(){
+    const {ctx,out}=processAll(), wb=XLSX.utils.book_new();
+    out.forEach(s=>{ const ws=XLSX.utils.aoa_to_sheet([s.header].concat(s.rows),{cellDates:true,dateNF:'dd/mm/yyyy'}); ws['!views']=[{RTL:true}]; XLSX.utils.book_append_sheet(wb,ws,s.name.slice(0,31)); });
+    wb.Workbook={Views:[{RTL:true}]};
+    XLSX.writeFile(wb, base()+'_מותמם_ל-AI.xlsx');
+    if(document.getElementById('withKey').checked && ctx.mapping.length){
+      const key=XLSX.utils.book_new(), rows=[['מזהה','ערך מקורי','עמודה']].concat(ctx.mapping.map(m=>[m.token,m.value,m.column]));
+      const ws=XLSX.utils.aoa_to_sheet(rows); ws['!views']=[{RTL:true}];
+      XLSX.utils.book_append_sheet(key,ws,'מפתח פענוח');
+      key.Workbook={Views:[{RTL:true}]};
+      setTimeout(()=>XLSX.writeFile(key, base()+'_מפתח_פענוח_לשמירה_מקומית_בלבד.xlsx'),400);
+    }
+    DD.toast('הקובץ המותמם הורד');
+  }
+
+  /* ---------- demo data: fake residents, valid-looking IDs, 106 calls and a property-tax sheet ---------- */
+  function demo(){
+    let seed=7; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647, pick=a=>a[Math.floor(rnd()*a.length)];
+    const first=['דנה','יוסי','מיכל','אבי','נועה','משה','רחל','איתי','שירה','דוד','אורית','עומר','תמר','אליהו','רונית','יעל','חיים','מרים','עידו','נגה'];
+    const last=['כהן','לוי','מזרחי','פרץ','ביטון','אברהם','פרידמן','שפירא','דהן','אזולאי','גבאי','קליין','חדד','עמר','בן דוד'];
+    const streets=['הרצל','הגפן','הזית','הדקל','בן גוריון','ז׳בוטינסקי','הנרקיס','האלה','הברוש','רבי עקיבא'];
+    const hoods=['מרכז העיר','נווה שאנן','רמת אלון','הגבעה','שכונת הפארק'];
+    const cats=['פינוי גזם','תאורת רחוב','מפגע בטיחותי','ניקיון','מים וביוב','חניה','רעש'];
+    const staff=['אורנה טל','יגאל שמש','ליאת ברק','רמי אלון'];
+    const people=Array.from({length:120},()=>({name:pick(first)+' '+pick(last), id:ENG.withCheckDigit(Math.floor(rnd()*9e7)+1e7),
+      phone:'05'+pick(['0','2','3','4','8'])+'-'+String(Math.floor(rnd()*9e6)+1e6), mail:'user'+Math.floor(rnd()*900+100)+'@'+pick(['gmail.com','walla.co.il','hotmail.com']),
+      addr:pick(streets)+' '+(Math.floor(rnd()*60)+1)+(rnd()<.4?'/'+(Math.floor(rnd()*12)+1):''), hood:pick(hoods), prop:String(100000+Math.floor(rnd()*899999))}));
+    const desc=p=>{ const c=rnd(); const base=pick(['גזם שלא פונה כבר שבועיים','פנס רחוב לא דולק בלילה','בור גדול במדרכה ליד הגן','פח אשפה עולה על גדותיו','נזילת מים ליד הבניין','רכב חונה על מעבר חצייה','רעש מעבודות בנייה בשבת']);
+      return c<.3 ? base+'. נא לחזור אליי בטלפון '+p.phone : c<.4 ? base+'. ת"ז של הפונה '+p.id : c<.47 ? base+'. אפשר לכתוב לי ל-'+p.mail : base; };
+    const calls=[['מספר פנייה','תאריך פתיחה','שם פונה','ת"ז','טלפון נייד','דוא"ל','כתובת','שכונה','קטגוריה','תיאור הפנייה','סטטוס','ימי טיפול','מספר נכס','עובד מטפל']];
+    for(let i=0;i<320;i++){
+      const p=people[Math.floor(Math.pow(rnd(),1.6)*people.length)];   // some residents call again and again
+      const d=new Date(2025,Math.floor(rnd()*12),Math.floor(rnd()*28)+1);
+      calls.push([24000+i,d,p.name,p.id,p.phone,rnd()<.7?p.mail:'',p.addr,p.hood,pick(cats),desc(p),pick(['סגור','סגור','סגור','פתוח','בטיפול']),Math.floor(rnd()*rnd()*40),p.prop,pick(staff)]);
+    }
+    const tax=[['מספר משלם','שם משלם','ת.ז','כתובת הנכס','שטח (מ"ר)','סכום חיוב שנתי','סוג הנחה']];
+    people.slice(0,80).forEach((p,i)=>tax.push([500000+i,p.name,p.id,p.addr,Math.floor(rnd()*120)+40,Math.floor(rnd()*6000)+2500,pick(['','','','אזרח ותיק','נכות','סטודנט'])]));
+    load('דוגמה_מוקד106_וארנונה.xlsx',[{name:'פניות מוקד 106',aoa:calls},{name:'ארנונה',aoa:tax}]);
+    DD.toast('נטען קובץ דוגמה עם נתונים בדויים');
+  }
+
+  /* ---------- wiring ---------- */
+  function setAll(fn){ book.sheets[cur].cols.forEach(fn); renderCols(); renderPreview(); renderStats(); }
+  const drop=document.getElementById('drop'), file=document.getElementById('file');
+  drop.addEventListener('click',()=>file.click());
+  drop.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); file.click(); } });
+  file.addEventListener('change',()=>{ readFile(file.files[0]); file.value=''; });
+  ['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{ e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{ e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop',e=>readFile(e.dataTransfer.files[0]));
+  document.getElementById('demo').addEventListener('click',demo);
+  document.getElementById('bulkSafe').addEventListener('click',()=>setAll(c=>c.action='keep'));
+  document.getElementById('bulkReset').addEventListener('click',()=>setAll(c=>c.action=c.suggested));
+  document.getElementById('tBefore').addEventListener('click',()=>{ view='before'; renderPreview(); });
+  document.getElementById('tAfter').addEventListener('click',()=>{ view='after'; renderPreview(); });
+  document.getElementById('download').addEventListener('click',exportFile);
+  paintNet(); steps();
+  return {sheet:i=>{ cur=i; render(); }, clear:()=>{ book=null; render(); window.scrollTo({top:0,behavior:'smooth'}); }, exportFile, demo, _book:()=>book};
+})();
+</script>
+<script src="../../assets/site.js?v=20" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+</body>
+</html>

@@ -111,7 +111,7 @@
      finished ones get a small check. Nothing moves or pops up; it is only a soft ring.
      ?nudge=5 in the address shortens the wait to 5 seconds (for demos and tests). */
   var PROGRESS='site_progress';
-  var EXPORT_SEL=['exportPNG','.doc(','docQuestion','mail(','copyAll(','saveJson(','saveFile(','copyText(','copyPrompt','toGemini','toCopilot','window.print']
+  var EXPORT_SEL=['exportPNG','exportFile','.doc(','docQuestion','mail(','copyAll(','saveJson(','saveFile(','copyText(','copyPrompt','toGemini','toCopilot','window.print']
         .map(function(k){ return 'button[onclick*="'+k+'"]'; }).concat('button[onclick="App.copy()"]').join(',');
   function norm(p){ p=p.replace(/index\.html$/,''); return p.charAt(p.length-1)==='/'?p:p+'/'; }
   function progress(){ try{ return JSON.parse(localStorage.getItem(PROGRESS)||'{}'); }catch(e){ return {}; } }

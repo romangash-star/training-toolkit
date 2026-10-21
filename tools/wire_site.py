@@ -5,7 +5,7 @@ with an old cached script.
 """
 import glob, os, re
 
-V = '19'
+V = '20'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HOME, DD, MZ, AI = 'כל ההכשרות', 'קבלת החלטות מבוססת נתונים', 'מאיצים דיגיטליים', 'הכשרת בינה מלאכותית'
 
@@ -26,7 +26,7 @@ for path in glob.glob(os.path.join(ROOT, '**', 'index.html'), recursive=True):
     s = open(path, encoding='utf-8').read()
     s = re.sub(r'\n?<link rel="stylesheet" href="[./]*assets/site\.css[^"]*">', '', s)
     s = re.sub(r'\n?<script src="[./]*assets/site\.js[^"]*"[^>]*></script>', '', s)
-    s = re.sub(r'(assets/(?:dd|hub)\.(?:css|js))(?:\?v=\w+)?"', r'\1?v=' + V + '"', s)
+    s = re.sub(r'(assets/(?:dd|hub|anon-engine)\.(?:css|js))(?:\?v=\w+)?"', r'\1?v=' + V + '"', s)
     c = crumbs(rel)
     attrs = f" data-crumbs='{c}'" if c else ''
     s = re.sub(r'\n?<link rel="(?:icon|apple-touch-icon)"[^>]*>', '', s)
