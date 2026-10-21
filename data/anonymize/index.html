@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!-- The browser itself blocks this page from sending data anywhere: no fetch, XHR, WebSocket or form posts. -->
 <meta http-equiv="Content-Security-Policy" content="connect-src 'none'; form-action 'none'; object-src 'none'">
-<title>מגן מידע מוניציפלי — התממת קובצי אקסל לפני AI</title>
+<title>התממת קובץ לפני AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/dd.css?v=22">
@@ -18,8 +18,8 @@
   .trust .row b{flex:1 1 200px;min-width:0;font-size:15.5px}
   .trust summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--teal,#1f5f5b);text-decoration:underline;text-underline-offset:3px;list-style:none}
   .trust summary::-webkit-details-marker{display:none}
-  .trust ol{margin:10px 0 2px;padding-inline-start:20px;font-size:14.5px;line-height:1.65}
-  .trust ol li{margin-bottom:4px}
+  .trust ul{margin:10px 0 2px;padding-inline-start:20px;font-size:14.5px;line-height:1.7}
+  .trust summary .btn{text-decoration:none}
   .net{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:5px 12px;font-weight:700;font-size:13px;white-space:nowrap;background:#fffdf8;color:var(--ink)}
   .net .dot{width:9px;height:9px;border-radius:50%;background:var(--amber,#d99a2b)}
   .net.off{background:#2e7d4f;color:#fff}.net.off .dot{background:#bff0d2}
@@ -31,8 +31,9 @@
   /* upload */
   .drop{border:2px dashed #d9cbb3;border-radius:16px;padding:30px 20px;text-align:center;background:#fff;cursor:pointer;transition:.15s}
   .drop.over,.drop:hover{border-color:var(--teal,#1f5f5b);background:var(--teal-tint,#dcedea)}
-  .drop b{font-size:18px;display:block;margin-bottom:4px}
-  .drop span{color:var(--ink-soft);font-size:14px}
+  .drop{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .drop .btn{padding:13px 30px;font-size:17px}
+  .drop>span:last-child{color:var(--ink-soft);font-size:14px}
   .or{text-align:center;margin-top:12px;font-size:14.5px;color:var(--ink-soft)}
   .linkbtn{background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--teal,#1f5f5b);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
   .fileinfo{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:15px}
@@ -53,7 +54,7 @@
   .pv th.gone{background:#f7dcd7}
   .t-keep{background:#e7f4ec;color:#1e5e45}.t-token{background:#dcedea;color:#17504c}.t-drop{background:#fbe5e2;color:#8f2b22}
   /* column decisions */
-  .bulk{display:flex;justify-content:flex-end;margin:-6px 0 8px}
+  .bulk{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 10px;font-size:14px;color:var(--ink-soft)}
   .cols{display:flex;flex-direction:column;gap:8px}
   .col{display:grid;grid-template-columns:minmax(170px,1.1fr) minmax(160px,1.4fr) auto;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-inline-start:5px solid #cfe3d7;border-radius:12px;padding:12px 14px}
   .col.a-token{border-inline-start-color:var(--teal,#1f5f5b)}
@@ -81,7 +82,9 @@
   .keyopt{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;cursor:pointer;margin:4px 0 14px;max-width:760px}
   .keyopt input{width:19px;height:19px;margin-top:3px;flex:0 0 auto;accent-color:var(--teal,#1f5f5b)}
   .keyopt small{display:block;color:var(--ink-soft);font-size:13.5px;margin-top:2px}
-  .dl .btn{padding:14px 26px;font-size:17px}
+  .dl{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .dl .btn-brand{padding:14px 26px;font-size:17px}
+  .sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin:0 4px 0 2px;border:1px solid #e5d9c5}.sw.chg{background:#fff4c4}.sw.gone{background:#f7dcd7;margin-inline-start:12px}
   .warnline{font-size:14px;color:#7d2a20;background:#fdf1ef;border-radius:12px;padding:10px 14px;margin-top:16px}
   .hidden{display:none!important}
   @media (max-width:760px){
@@ -97,43 +100,39 @@
 </head>
 <body>
   <header class="bar">
-    <div class="brand">מגן מידע מוניציפלי</div>
-    <span class="daytag">התממה לפני AI</span>
+    <div class="brand">התממת קובץ לפני AI</div>
     <a class="hublink" href="../">‹ כל הכלים</a>
   </header>
 
   <main class="wrap">
     <div class="head">
-      <div class="eyebrow">כלי התממה לקובצי אקסל</div>
-      <h1>מגן מידע מוניציפלי</h1>
-      <p>מעלים קובץ, מחליטים מה לעשות בכל עמודה, ומורידים קובץ נקי שאפשר להעלות לכלי AI.</p>
+      <h1>התממת קובץ לפני AI</h1>
     </div>
 
     <details class="trust">
-      <summary class="row" style="list-style:none">
-        <b>הקובץ לא יוצא מהמחשב שלכם. הכול קורה בתוך הדפדפן.</b>
+      <summary class="row">
+        <b>הקובץ לא יוצא מהמחשב</b>
         <span class="net" id="net"><span class="dot"></span><span id="netText">מחובר לאינטרנט</span></span>
-        <span class="linkbtn">איך זה עובד?</span>
+        <span class="btn btn-ghost btn-sm">איך זה עובד?</span>
       </summary>
-      <ol>
-        <li><b>האתר רק מביא את הכלי, לא מקבל את הקובץ.</b> כשנכנסים לעמוד, השרת שולח לדפדפן פעם אחת את קוד הכלי, כמו שמורידים תוכנה. מאותו רגע הכלי רץ אצלכם.</li>
-        <li><b>הקובץ נפתח בזיכרון של הדפדפן.</b> בחירת קובץ לא מעלה אותו. הדפדפן קורא אותו מהדיסק שלכם, והקוד מחליף ומוחק ערכים במחשב שלכם.</li>
-        <li><b>ההורדה נוצרת אצלכם.</b> הקובץ הנקי נבנה בדפדפן ונשמר ישר לתיקיית ההורדות. הוא לא עובר בשום שרת בדרך.</li>
-        <li><b>הדפדפן חוסם כל שליחה החוצה.</b> לעמוד הזה יש הגדרת אבטחה (CSP) שאוסרת עליו לשלוח מידע לכל כתובת. גם אם מישהו היה מנסה, הדפדפן היה עוצר את זה.</li>
-        <li><b>רוצים לבדוק בעצמכם?</b> אחרי שהעמוד נטען, נתקו את ה-Wi-Fi. הסימון למעלה יהפוך לירוק, והכלי ימשיך לעבוד כרגיל.</li>
-      </ol>
+      <ul>
+        <li>האתר שולח לדפדפן רק את הכלי. הקובץ לא נשלח אליו.</li>
+        <li>הקובץ נפתח ומעובד בדפדפן, במחשב שלכם.</li>
+        <li>הקובץ הנקי נשמר ישר להורדות.</li>
+        <li>הדפדפן חוסם מהעמוד כל שליחת מידע החוצה (CSP).</li>
+        <li>בדיקה: נתקו Wi-Fi. הכלי ממשיך לעבוד.</li>
+      </ul>
     </details>
 
     <!-- 1. upload -->
     <section class="step" id="s1">
       <h2><span class="num">1</span>בוחרים קובץ</h2>
-      <p class="lead">Excel ‏(xlsx, xls) או CSV.</p>
       <div id="pick">
         <div class="drop" id="drop" tabindex="0" role="button" aria-label="בחירת קובץ">
-          <b>גררו לכאן קובץ, או לחצו לבחירה</b>
-          <span>הקובץ נפתח בדפדפן בלבד</span>
+          <span class="btn btn-brand">בחירת קובץ</span>
+          <span>או גררו לכאן · xlsx, xls, csv</span>
         </div>
-        <div class="or">אין קובץ בהישג יד? <button class="linkbtn" id="demo">נסו עם קובץ דוגמה (מוקד 106 וארנונה, נתונים בדויים)</button></div>
+        <div class="or"><button class="btn btn-ghost" id="demo">קובץ דוגמה</button></div>
       </div>
       <input type="file" id="file" accept=".xlsx,.xls,.csv" class="hidden">
       <div id="fileInfo" class="hidden"></div>
@@ -142,7 +141,6 @@
     <!-- 2. look at the file -->
     <section class="step hidden" id="s2">
       <h2><span class="num">2</span>כך נראה הקובץ שלכם</h2>
-      <p class="lead">8 השורות הראשונות, כמו שהן. שימו לב לכותרות: לכל אחת מהן תחליטו בשלב הבא מה לעשות.</p>
       <div class="sheets" id="sheets"></div>
       <div class="pv" id="before"></div>
     </section>
@@ -150,25 +148,26 @@
     <!-- 3. decide per column -->
     <section class="step hidden" id="s3">
       <h2><span class="num">3</span>מה לעשות בכל עמודה?</h2>
-      <p class="lead">הכלי כבר סימן המלצה לכל עמודה. אפשר לשנות בלחיצה.</p>
-      <div class="legend">
-        <span><b>להשאיר</b>: מידע שלא מזהה אדם, כמו שכונה, תאריך או סכום</span>
-        <span><b>מספרים אקראיים</b>: כל ערך מקבל מספר קבוע, כך שה-AI עדיין רואה מי פנה כמה פעמים</span>
-        <span><b>למחוק</b>: העמודה לא תופיע בקובץ</span>
+      <div class="bulk">
+        <span>לכל העמודות:</span>
+        <button class="btn btn-ghost btn-sm" id="bulkReset">לפי ההמלצה</button>
+        <button class="btn btn-ghost btn-sm" id="bulkToken">הכל למספרים אקראיים</button>
+        <button class="btn btn-ghost btn-sm" id="bulkKeep">להשאיר הכל</button>
       </div>
-      <div class="bulk"><button class="linkbtn" id="bulkReset">חזרה להמלצות</button></div>
       <div class="cols" id="cols"></div>
     </section>
 
     <!-- 4. result + download -->
     <section class="step hidden" id="s4">
       <h2><span class="num">4</span>התוצאה</h2>
-      <p class="lead">כך ייראה הקובץ שתורידו. תאים שהשתנו בצהוב, עמודות שיימחקו באדום.</p>
+      <p class="lead"><span class="sw chg"></span>השתנה <span class="sw gone"></span>יימחק</p>
       <div class="pv" id="preview"></div>
       <div class="stats" id="stats"></div>
-      <label class="keyopt"><input type="checkbox" id="withKey"><span><b>להוריד גם קובץ פענוח, לשמירה אצלכם בלבד</b><small>קובץ שני שמראה איזה מספר אקראי שייך לאיזה שם. כך אם ה-AI מצא משהו על 483920, תוכלו לבדוק במי מדובר. את הקובץ הזה לא מעלים לשום מקום.</small></span></label>
-      <div class="dl"><button class="btn btn-brand" id="download">הורדת הקובץ הנקי</button></div>
-      <div class="warnline"><b>לפני שמעלים ל-AI:</b> פתחו את הקובץ ועברו עליו בעין. כלי אוטומטי לא תופס הכול, למשל שם שנכתב בתוך משפט.</div>
+      <div class="dl">
+        <button class="btn btn-brand" id="download">הורדת הקובץ הנקי</button>
+        <button class="btn btn-ghost" id="downloadKey" title="איזה מספר שייך לאיזה שם. לשמירה אצלכם, לא להעלות לשום מקום">קובץ פענוח (נשאר אצלכם)</button>
+      </div>
+      <div class="warnline">לפני שמעלים: עברו על הקובץ בעין</div>
     </section>
   </main>
 
@@ -183,9 +182,9 @@ const AN=(()=>{
   'use strict';
   const E=DD.esc, ENG=window.AnonEngine;
   const ACTIONS=[
-    {k:'keep',  t:'להשאיר כמו שזה', tag:'נשאר'},
-    {k:'token', t:'מספרים אקראיים', tag:'מספרים אקראיים'},
-    {k:'drop',  t:'למחוק',          tag:'יימחק'}
+    {k:'keep',  t:'להשאיר כמו שזה', tag:'נשאר',          tip:'מידע שלא מזהה אדם: שכונה, תאריך, סכום'},
+    {k:'token', t:'מספרים אקראיים', tag:'מספרים אקראיים', tip:'כל ערך מקבל מספר קבוע. ה-AI עדיין רואה מי פנה כמה פעמים'},
+    {k:'drop',  t:'למחוק',          tag:'יימחק',          tip:'העמודה לא תופיע בקובץ'}
   ];
   const act=k=>ACTIONS.find(a=>a.k===k)||ACTIONS[0];
   const N=8;
@@ -247,11 +246,11 @@ const AN=(()=>{
     document.getElementById('cols').innerHTML=sh.cols.map((c,i)=>{
       const t=ENG.TYPES[c.type], risky=c.type!=='safe';
       const smp=c.samples.length?c.samples.slice(0,4).map(v=>`<i>${E(v)}</i>`).join(''):'אין ערכים';
-      const note=c.type==='freetext'&&c.action==='keep'?'<div class="note">טקסט חופשי: גם אם משאירים, טלפונים, מיילים ות״ז שבתוך המשפטים יוסרו.</div>':'';
+      const note=c.type==='freetext'&&c.action==='keep'?'<div class="note">טלפונים, מיילים ות״ז בתוך הטקסט יוסרו</div>':'';
       return `<div class="col a-${c.action}">
         <div><div class="cname">${E(c.name)}</div><div class="kind ${risky?'risk':''}">${risky?'נראה כמו: '+E(t.label):'לא נראה מידע אישי'}</div></div>
         <div class="smp">${smp}</div>
-        <div class="seg" role="group" aria-label="מה לעשות בעמודה ${E(c.name)}">${ACTIONS.map(a=>`<button type="button" class="k-${a.k}" data-c="${i}" data-a="${a.k}" aria-pressed="${c.action===a.k}">${a.t}</button>`).join('')}</div>
+        <div class="seg" role="group" aria-label="מה לעשות בעמודה ${E(c.name)}">${ACTIONS.map(a=>`<button type="button" class="k-${a.k}" data-c="${i}" data-a="${a.k}" title="${a.tip}" aria-pressed="${c.action===a.k}">${a.t}</button>`).join('')}</div>
         ${note}
       </div>`;
     }).join('');
@@ -281,10 +280,10 @@ const AN=(()=>{
     const dropped=book.sheets.reduce((a,s)=>a+s.cols.filter(c=>c.action==='drop').length,0);
     const c=ctx.counts, inText=c.phone+c.email+c.id;
     document.getElementById('stats').innerHTML=[
-      [rows.toLocaleString('he-IL'),'שורות נבדקו'],
-      [ctx.tokens.toLocaleString('he-IL'),'ערכים הוחלפו במספרים אקראיים'],
-      [dropped,'עמודות יימחקו'],
-      [inText,`פרטים הוסרו מתוך טקסט (${c.phone} טלפונים · ${c.email} מיילים · ${c.id} ת״ז)`]
+      [rows.toLocaleString('he-IL'),'שורות'],
+      [ctx.tokens.toLocaleString('he-IL'),'הוחלפו במספרים'],
+      [dropped,'עמודות נמחקות'],
+      [inText,'פרטים הוסרו מטקסט']
     ].map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('');
   }
 
@@ -295,14 +294,20 @@ const AN=(()=>{
     out.forEach(s=>{ const ws=XLSX.utils.aoa_to_sheet([s.header].concat(s.rows),{cellDates:true,dateNF:'dd/mm/yyyy'}); ws['!views']=[{RTL:true}]; XLSX.utils.book_append_sheet(wb,ws,s.name.slice(0,31)); });
     wb.Workbook={Views:[{RTL:true}]};
     XLSX.writeFile(wb, base()+'_מותמם_ל-AI.xlsx');
-    if(document.getElementById('withKey').checked && ctx.mapping.length){
+    DD.toast('הקובץ הנקי הורד');
+  }
+  /* the key file: which random number stands for which original value. Stays on this computer. */
+  function exportKey(){
+    const {ctx}=processAll();
+    if(!ctx.mapping.length){ DD.toast('אין ערכים שהוחלפו במספרים'); return; }
+    {
       const key=XLSX.utils.book_new(), rows=[['מספר אקראי','ערך מקורי','עמודה']].concat(ctx.mapping.map(m=>[m.token,m.value,m.column]));
       const ws=XLSX.utils.aoa_to_sheet(rows); ws['!views']=[{RTL:true}];
       XLSX.utils.book_append_sheet(key,ws,'מפתח פענוח');
       key.Workbook={Views:[{RTL:true}]};
-      setTimeout(()=>XLSX.writeFile(key, base()+'_מפתח_פענוח_לשמירה_מקומית_בלבד.xlsx'),400);
+      XLSX.writeFile(key, base()+'_מפתח_פענוח_לשמירה_מקומית_בלבד.xlsx');
     }
-    DD.toast('הקובץ הנקי הורד');
+    DD.toast('קובץ הפענוח הורד. לא להעלות אותו לשום מקום');
   }
 
   /* ---------- demo data: fake residents, valid-looking IDs, 106 calls and a property-tax sheet ---------- */
@@ -344,10 +349,14 @@ const AN=(()=>{
     const b=e.target.closest('button[data-a]'); if(!b) return;
     book.sheets[cur].cols[+b.dataset.c].action=b.dataset.a; renderCols(); renderAfter();
   });
-  document.getElementById('bulkReset').addEventListener('click',()=>{ book.sheets[cur].cols.forEach(c=>c.action=c.suggested); renderCols(); renderAfter(); });
+  const setAll=fn=>{ book.sheets[cur].cols.forEach(fn); renderCols(); renderAfter(); };
+  document.getElementById('bulkReset').addEventListener('click',()=>setAll(c=>c.action=c.suggested));
+  document.getElementById('bulkToken').addEventListener('click',()=>setAll(c=>c.action='token'));
+  document.getElementById('bulkKeep').addEventListener('click',()=>setAll(c=>c.action='keep'));
   document.getElementById('download').addEventListener('click',exportFile);
+  document.getElementById('downloadKey').addEventListener('click',exportKey);
   paintNet();
-  return {sheet:i=>{ cur=i; render(); }, clear:()=>{ book=null; render(); window.scrollTo({top:0,behavior:'smooth'}); }, set:(i,a)=>{ book.sheets[cur].cols[i].action=a; renderCols(); renderAfter(); }, exportFile, demo, _book:()=>book};
+  return {sheet:i=>{ cur=i; render(); }, clear:()=>{ book=null; render(); window.scrollTo({top:0,behavior:'smooth'}); }, set:(i,a)=>{ book.sheets[cur].cols[i].action=a; renderCols(); renderAfter(); }, exportFile, exportKey, demo, _book:()=>book};
 })();
 </script>
 <script src="../../assets/site.js?v=22" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>

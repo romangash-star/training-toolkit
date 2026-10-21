@@ -1,4 +1,4 @@
-/* Anonymisation engine for the "מגן מידע מוניציפלי" tool.
+/* Anonymisation engine tool (data/anonymize).
    Pure functions, no DOM and no network: detects personal data in a table and rewrites it.
    Works in the browser (window.AnonEngine) and in Node (module.exports) for the tests. */
 (function(root){
