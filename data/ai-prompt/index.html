@@ -46,14 +46,14 @@
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(228,70,58,.5)}100%{box-shadow:0 0 0 12px rgba(228,70,58,0)}}
   .preview{position:sticky;top:80px}
   .preview h3{font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-  .prompt-box{background:#1C1512;color:#dce9e6;border-radius:14px;padding:18px;font-size:14.5px;line-height:1.7;white-space:pre-wrap;min-height:160px;word-break:break-word}
+  .prompt-box{background:#1C1512;color:#dce9e6;border-radius:14px;padding:18px;font-size:14.5px;line-height:1.7;white-space:pre-wrap;min-height:160px;word-break:break-word;max-height:440px;overflow:auto;margin-top:12px}
   .prompt-box .ph{color:#5f7b78}
-  .pv-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+  .pv-actions{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 10px}
   .pv-actions .btn{flex:1}
   .field.add textarea{border-color:var(--root);background:#fffaf0}
   .field.add .lab .n{background:var(--root)}
   .addtag{font-size:11.5px;font-weight:700;background:var(--root);color:#fffdf8;border-radius:999px;padding:1px 9px}
-  .refill{font-size:13px;font-weight:700;color:var(--core-1);text-decoration:underline;text-underline-offset:3px}
+  .refill{margin-inline-start:auto;font-size:13px;font-weight:700;color:var(--core-1);text-decoration:underline;text-underline-offset:3px}
   footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:12px 22px;text-align:center;font-size:13px;color:var(--ink-soft);background:rgba(250,245,236,.86);border-top:1px solid var(--line)}
   footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #FFFDF8;box-shadow:var(--shadow-sm)}
   footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
@@ -87,46 +87,31 @@
 
   <main class="wrap">
     <div class="head">
-      <div class="eyebrow">יום 1 · שלב 3</div>
       <h1>מתייעצים עם ה-AI על אתגר הנתונים</h1>
-      <p>הפרומפט כבר מוכן ממה שכתבתם בבונה האתגר. מוסיפים אילו נתונים יש לכם, מעתיקים ל-Gemini או ל-Copilot, וה-AI ישאל אתכם שאלות עד שהאתגר מדויק.</p>
     </div>
 
     <div class="grid">
       <div class="panel">
-        <div class="qbox" id="qbox"></div>
-        <div class="field add">
-          <div class="lab"><span class="n">+</span>אילו נתונים כבר יש לכם? <span class="addtag">להוסיף</span><button type="button" class="help" aria-label="הסבר" data-help="מה כבר נאסף ברשות ויכול לעזור: באיזו מערכת או קובץ, מאיזו שנה, מי מחזיק אותו. לא בטוחים? כתבו מה אתם מנחשים, וה-AI ישאל. <b>בלי שמות ופרטים של תושבים.</b>">?</button></div>
-          <div class="in-wrap"><textarea id="data" placeholder="לדוגמה: קובץ פניות מוקד 106 מ-2023, נתוני ארנונה של עסקים, רשימת רישיונות עסק מהמחלקה"></textarea><button class="mic" data-t="data"></button></div>
+        <div class="field">
+          <div class="lab"><span class="n">1</span>אתגר הנתונים שלכם <a class="refill" href="../question/">לבונה האתגר</a></div>
+          <div class="in-wrap"><textarea id="challenge" placeholder="כדי לעזור ל[מי מחליט] להחליט [איזו החלטה]: [מה מודדים] [מתי ואיפה]?"></textarea><button class="mic" data-t="challenge"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">1</span>הקשר <span class="sub">מבונה האתגר</span><button type="button" class="refill" onclick="App.refill('context')">לרענן מבונה האתגר</button></div>
-          <div class="in-wrap"><textarea id="context"></textarea><button class="mic" data-t="context"></button></div>
-        </div>
-        <div class="field">
-          <div class="lab"><span class="n">2</span>תפקיד ה-AI</div>
-          <div class="in-wrap"><textarea id="role"></textarea><button class="mic" data-t="role"></button></div>
-        </div>
-        <div class="field">
-          <div class="lab"><span class="n">3</span>איך ה-AI יעבוד איתכם<button type="button" class="help" aria-label="הסבר" data-help="ה-AI לא עונה במקומכם. הוא שואל שאלה אחת בכל פעם, מראה את הנוסח המעודכן, וממשיך עד שהאתגר עובר את חמש הבדיקות ויש נתונים לעבוד איתם.">?</button></div>
-          <div class="in-wrap"><textarea id="task"></textarea><button class="mic" data-t="task"></button></div>
-        </div>
-        <div class="field">
-          <div class="lab"><span class="n">4</span>בסוף השיחה</div>
-          <div class="in-wrap"><textarea id="format"></textarea><button class="mic" data-t="format"></button></div>
+          <div class="lab"><span class="n">2</span>על אילו נתונים אתם חושבים להתבסס?</div>
+          <div class="in-wrap"><textarea id="data" placeholder="לדוגמה: קובץ פניות מוקד 106 מ-2023, נתוני ארנונה של עסקים"></textarea><button class="mic" data-t="data"></button></div>
         </div>
       </div>
 
       <div class="preview">
         <div class="panel">
-          <h3>הפרומפט המוכן</h3>
-          <div class="prompt-box" id="preview"></div>
+          <h3>הפרומפט</h3>
           <div class="pv-actions">
-            <button class="btn btn-brand" onclick="App.copy()">העתקת הפרומפט</button>
-            <button class="btn btn-dark" onclick="App.toGemini()">העתק ופתח Gemini</button>
-            <button class="btn btn-dark" onclick="App.toCopilot()">העתק ופתח Copilot</button>
+            <button class="btn btn-brand" onclick="App.toGemini()">העתק ופתח Gemini</button>
+            <button class="btn btn-ghost" onclick="App.copy()">העתקה</button>
+            <button class="btn btn-ghost" onclick="App.toCopilot()">Copilot</button>
           </div>
-          <div class="pastehint"><b>אחרי הלחיצה:</b> נפתח חלון חדש. לוחצים שם בתיבת הכתיבה ומדביקים עם <kbd>Ctrl</kbd>+<kbd>V</kbd> (בטלפון: לחיצה ארוכה ← הדבקה). עונים על השאלות של ה-AI אחת אחת.</div>
+          <div class="pastehint">בחלון שנפתח: <kbd>Ctrl</kbd>+<kbd>V</kbd> ושליחה.</div>
+          <div class="prompt-box" id="preview"></div>
         </div>
       </div>
     </div>
@@ -139,67 +124,55 @@
 <script>
 const App=(()=>{
   'use strict';
-  const LS='dd_ai_prompt_v2';
-  const F=['data','context','role','task','format'];
-  const QLS='dd_question_v3';
-  const builder=()=>DD.load(QLS,{});
-  const myQuestion=()=>DD.businessQuestion();   // written in the previous tool (בונה אתגר הנתונים)
+  const LS='dd_ai_prompt_v3';
+  const F=['challenge','data'];
+  const builder=()=>DD.load('dd_question_v3',{});
   const TEMPLATE='כדי לעזור ל[מי מחליט] להחליט [איזו החלטה]: [מה מודדים] [מתי ואיפה]?';
-  /* everything the participant already wrote in the challenge builder */
-  function context(){
+  /* background from the challenge builder goes into the prompt without being shown */
+  function background(){
     const b=builder(), L=[], me=DD.identity();
     if(me) L.push('אני: '+me+'.');
     if((b.problem||'').trim()) L.push('הבעיה שאני רוצה לפתור: '+b.problem.trim());
     const whys=(b.whys||[]).slice(1).map(w=>(w||'').trim()).filter(Boolean);
     if(whys.length) L.push('שאלתי "למה זה קורה?" והגעתי ל:\n'+whys.map((w,i)=>(i+1)+'. '+w).join('\n'));
-    L.push('אתגר הנתונים שניסחתי:\n"'+(myQuestion()||'[כתבו כאן את אתגר הנתונים שלכם]')+'"');
     return L.join('\n\n');
   }
-  const GEN={
-    context,
-    role:()=>'אתה יועץ מנוסה לקבלת החלטות מבוססת נתונים ברשויות מקומיות בישראל. אתה עוזר לעובדי רשות לדייק אתגר נתונים, לא פותר אותו במקומם.',
-    task:()=>[
-      'המטרה: לוודא שיש לי אתגר נתונים אמיתי, כזה שאפשר להתחיל לעבוד עליו עם נתונים שכבר קיימים אצלנו או שאפשר להשיג.',
-      'עבוד איתי כך:',
-      '1. שאל אותי שאלה אחת בכל פעם, וחכה לתשובה שלי. אל תענה במקומי.',
-      '2. ברר: מי מחליט ואיזו החלטה, מה בדיוק מודדים, באיזו תקופה ואיפה.',
-      '3. ברר אילו נתונים באמת קיימים: באיזו מערכת או קובץ, מאיזו שנה, מי מחזיק אותם, והאם אפשר לקבל אותם. אם נתון חסר, שאל אם אפשר להשיג אותו או לאסוף אותו.',
-      '4. אם האתגר רחב מדי, יש בו פתרון מוכן, או שאין נתונים שיכולים לענות עליו, אמור לי את זה ישירות והצע כיוון מצומצם יותר.',
-      '5. אחרי כל תשובה שלי, הצג בשורה אחת את הנוסח המעודכן של האתגר.',
-      '6. המשך לשאול עד שהאתגר עובר חמש בדיקות: שאלה אחת; בלי פתרון בפנים; אפשר לענות עליה בנתונים שיש לנו; קשורה להחלטה; בתחום ההשפעה של הרשות. רק אז סכם.',
-      'אל תמציא נתונים, מספרים או מקורות. אם אתה לא יודע אם נתון קיים ברשות, שאל אותי.'
-    ].join('\n'),
-    format:()=>'שיחה בעברית פשוטה, שאלה אחת בכל הודעה. בסיום: אתגר הנתונים הסופי במשפט אחד, בתבנית: '+TEMPLATE+' ומתחתיו רשימה קצרה: אילו נתונים נשתמש בהם, איפה הם נמצאים, ומה עוד צריך להשיג.'
-  };
-  /* fields the participant has not touched follow the builder; edited ones are kept */
-  let data={values:{}, edited:{}};
+  const ROLE='אתה יועץ מנוסה לקבלת החלטות מבוססת נתונים ברשויות מקומיות בישראל. אתה עוזר לי לדייק אתגר נתונים, לא פותר אותו במקומי.';
+  const TASK=[
+    'המטרה: לוודא שיש לי אתגר נתונים אמיתי, כזה שאפשר להתחיל לעבוד עליו עם נתונים שכבר קיימים אצלנו או שאפשר להשיג.',
+    'עבוד איתי כך:',
+    '1. שאל אותי שאלה אחת בכל פעם, וחכה לתשובה שלי. אל תענה במקומי.',
+    '2. ברר: מי מחליט ואיזו החלטה, מה בדיוק מודדים, באיזו תקופה ואיפה.',
+    '3. ברר אילו נתונים באמת קיימים: באיזו מערכת או קובץ, מאיזו שנה, מי מחזיק אותם, והאם אפשר לקבל אותם. אם נתון חסר, שאל אם אפשר להשיג אותו או לאסוף אותו.',
+    '4. אם האתגר רחב מדי, יש בו פתרון מוכן, או שאין נתונים שיכולים לענות עליו, אמור לי את זה ישירות והצע כיוון מצומצם יותר.',
+    '5. אחרי כל תשובה שלי, הצג בשורה אחת את הנוסח המעודכן של האתגר.',
+    '6. המשך לשאול עד שהאתגר עובר חמש בדיקות: שאלה אחת; בלי פתרון בפנים; אפשר לענות עליה בנתונים שיש לנו; קשורה להחלטה; בתחום ההשפעה של הרשות. רק אז סכם.',
+    'אל תמציא נתונים, מספרים או מקורות. אם אתה לא יודע אם נתון קיים ברשות, שאל אותי.'
+  ].join('\n');
+  const END='בסוף השיחה: אתגר הנתונים הסופי במשפט אחד, בתבנית: '+TEMPLATE+' ומתחתיו רשימה קצרה: אילו נתונים נשתמש בהם, איפה הם נמצאים, ומה עוד צריך להשיג.\nכתוב בעברית פשוטה. התחל עכשיו בשאלה הראשונה.';
+  /* the challenge follows the builder until the participant edits it here */
+  let data={challenge:'', data:'', edited:false};
 
   function init(){
-    try{ const s=JSON.parse(localStorage.getItem(LS)); if(s&&s.values) data=s; }catch(e){}
-    F.forEach(id=>{ if(id!=='data' && !data.edited[id]) data.values[id]=GEN[id](); });
-    const q=myQuestion(), box=document.getElementById('qbox');
-    box.className='qbox'+(q?'':' missing');
-    box.innerHTML = q ? `<div class="ql"><span>אתגר הנתונים שלכם</span><a href="../question/">לעריכה ←</a></div>${esc(q)}`
-                      : `<div class="ql"><span>עדיין אין אתגר נתונים</span><a href="../question/">לבונה אתגר הנתונים ←</a></div>אפשר להמשיך גם כך: כתבו את האתגר בשדה "הקשר".`;
-    F.forEach(id=>{ const el=document.getElementById(id); el.value=data.values[id]||''; el.addEventListener('input',()=>{data.values[id]=el.value; data.edited[id]=true; persist(); preview(); grow(el);}); grow(el); });
+    try{ const s=JSON.parse(localStorage.getItem(LS)); if(s) data=Object.assign(data,s); }catch(e){}
+    if(!data.edited) data.challenge=DD.businessQuestion()||'';
+    F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; el.addEventListener('input',()=>{ data[id]=el.value; if(id==='challenge') data.edited=true; persist(); preview(); grow(el); }); grow(el); });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
-    persist(); preview();
+    preview();
   }
-  function refill(id){ data.values[id]=GEN[id](); data.edited[id]=false; const el=document.getElementById(id); el.value=data.values[id]; grow(el); persist(); preview(); toast('עודכן ממה שכתבתם בבונה האתגר'); }
-  function grow(el){ el.style.height='auto'; el.style.height=Math.max(92,el.scrollHeight+34)+'px'; }
+  function grow(el){ el.style.height='auto'; el.style.height=Math.max(110,el.scrollHeight+34)+'px'; }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function build(){
-    const v=id=>(data.values[id]||'').trim(), parts=[];
-    if(v('role')) parts.push(v('role'));
-    if(v('context')) parts.push(v('context'));
-    parts.push('הנתונים שכבר יש לנו (ככל שידוע לי):\n'+(v('data')||'עוד לא בדקתי. עזור לי לברר.'));
-    if(v('task')) parts.push(v('task'));
-    if(v('format')) parts.push('בסוף השיחה: '+v('format'));
+    const parts=[ROLE], bg=background();
+    if(bg) parts.push(bg);
+    parts.push('אתגר הנתונים שלי:\n"'+(data.challenge.trim()||'עוד לא ניסחתי. עזור לי לנסח אותו מהבעיה.')+'"');
+    parts.push('הנתונים שאני חושב להתבסס עליהם:\n'+(data.data.trim()||'עוד לא בדקתי. עזור לי לברר.'));
+    parts.push(TASK, END);
     return parts.join('\n\n');
   }
   function preview(){ document.getElementById('preview').innerHTML=esc(build()); }
-  function openWith(url,name){ copy('הועתק ✓ ב-'+name+': לחצו בתיבה והדביקו עם Ctrl+V'); window.open(url,'_blank','noopener'); }
+  function openWith(url,name){ copy('הועתק ✓ ב-'+name+': Ctrl+V ושליחה'); window.open(url,'_blank','noopener'); }
   function toGemini(){ openWith('https://gemini.google.com/app','Gemini'); }
   function toCopilot(){ openWith('https://m365.cloud.microsoft/chat','Copilot'); }
   function copy(msg){ const t=build(); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(typeof msg==='string'?msg:'הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו ידנית:',t)); }
@@ -208,7 +181,7 @@ const App=(()=>{
   function dictate(el,btn){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){toast('הכתבה קולית נתמכת ב‑Chrome / Edge');return;} if(recog){recog.stop();return;} recog=new SR(); recog.lang='he-IL'; recog.interimResults=true; recog.continuous=false; const base=(el.value||'').trim(); btn.classList.add('rec'); recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k]; if(r.isFinal)f+=r[0].transcript; else i+=r[0].transcript;} el.value=(base?base+' ':'')+(f+i).trim(); el.dispatchEvent(new Event('input',{bubbles:true}));}; recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();}; recog.onerror=()=>{btn.classList.remove('rec');recog=null;}; try{recog.start();toast('מקשיב… דברו בעברית');}catch(e){btn.classList.remove('rec');recog=null;} }
 
   let tt; function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,refill,copy,toGemini,toCopilot};
+  return {init,copy,toGemini,toCopilot};
 })();
 window.App=App; App.init();
 </script>
