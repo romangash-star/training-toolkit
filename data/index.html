@@ -7,19 +7,47 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/hub.css?v=23">
+<style>
+  /* this hub: compact and quiet, the tools are the content */
+  body.hubd .hero{padding:10px 0 12px}
+  body.hubd .hero h1{font-size:clamp(22px,2.6vw,28px)}
+  body.hubd main{padding:20px 0 32px}
+  body.hubd .idbar,body.hubd .idcard{margin-bottom:22px}
+  body.hubd .day{margin-top:28px}
+  body.hubd .day:first-of-type{margin-top:0}
+  body.hubd .day-h{margin-bottom:10px;border-bottom:2px solid var(--line);padding-bottom:6px}
+  body.hubd .day-h h2{font-size:22px;line-height:30px;color:var(--teal)}
+  body.hubd .cards{gap:10px}
+  body.hubd .cards.c2,body.hubd .cards.c3{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+  body.hubd .cardlink{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"n t" "n p";column-gap:12px;row-gap:2px;align-items:start;padding:14px 16px;box-shadow:none}
+  body.hubd .cardlink:hover{transform:none;border-color:var(--teal);background:#fff}
+  body.hubd .cardlink .n{position:static;grid-area:n;width:30px;height:30px;font-size:16px;margin-top:2px}
+  body.hubd .cardlink:not(:has(.n)){grid-template-areas:"t" "p";grid-template-columns:1fr}
+  body.hubd .cardlink h2{grid-area:t;font-size:17px;line-height:24px;margin:0!important}
+  body.hubd .cardlink p{grid-area:p;font-size:14px;line-height:21px}
+  body.hubd .cardlink .go{display:none}
+  body.hubd .cardlink .nexttag,body.hubd .cardlink .donetag{position:static;grid-column:1/-1;justify-self:start;margin-top:6px;font-size:12.5px;padding:1px 10px}
+  body.hubd .brandfoot .sym{display:none}
+  /* "who are you": one slim row instead of a big form */
+  body.hubd .idcard{max-width:none;padding:12px 16px;box-shadow:none;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-radius:var(--radius-md)}
+  body.hubd .idcard h3{font-size:16px;white-space:nowrap}
+  body.hubd .idcard .fields{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0;min-width:0}
+  body.hubd .idcard input{padding:8px 11px;font-size:14.5px}
+  body.hubd .idcard input.full{grid-column:auto}
+  body.hubd .idcard .save{width:auto;margin:0;padding:9px 18px;font-size:14.5px}
+  @media (max-width:860px){body.hubd .idcard .fields{grid-template-columns:1fr 1fr;flex-basis:100%}body.hubd .idcard .save{flex:1}}
+  body.hubd .wipe{margin-top:24px}
+</style>
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <link rel="stylesheet" href="../assets/site.css?v=23">
 </head>
-<body>
+<body class="hubd">
   <header class="hero">
     <div class="wrap">
-      <p class="eyebrow">שלושה ימים · שאלה ← תובנה ← החלטה</p>
       <h1>קבלת החלטות מבוססת <em>נתונים</em></h1>
-      <p class="lead">מתקדמים לפי הסדר, כלי אחרי כלי. מה שתמלאו נשמר במחשב שלכם.</p>
     </div>
-    <div data-sym="dark"></div>
   </header>
 
   <main>
@@ -27,39 +55,34 @@
       <div id="idZone"></div>
 
       <section class="day" id="day1">
-        <div class="day-h"><span class="d">יום 1</span><h2>הגדרת אתגר הנתונים, מקורות מידע ומבוא לבינה מלאכותית</h2></div>
+        <div class="day-h"><h2>יום הכשרה 1</h2></div>
         <div class="cards c2">
           <a class="cardlink" href="role-worksheet/">
             <span class="n">1</span>
-            <div class="ico" data-ico="table"></div>
             <h2>מה אני עושה ברשות?</h2>
             <p>התפקיד שלי, המשימות הגדולות והמשימות היומיומיות. מורידים כתמונה.</p>
             <span class="go">מתחילים כאן ←</span>
           </a>
           <a class="cardlink" href="question/">
             <span class="n">2</span>
-            <div class="ico" data-ico="bars"></div>
             <h2>בונה אתגר הנתונים</h2>
             <p>ארבעה שלבים קצרים: הכאב, חמש פעמים "למה", ניסוח האתגר וחמש בדיקות.</p>
             <span class="go">פתיחה ←</span>
           </a>
           <a class="cardlink" href="ai-prompt/">
             <span class="n">3</span>
-            <div class="ico" data-ico="line"></div>
             <h2>מתייעצים עם ה-AI</h2>
             <p>פרומפט מוכן מבונה האתגר. ה-AI שואל שאלות עד שהאתגר מדויק ויש לו נתונים.</p>
             <span class="go">פתיחה ←</span>
           </a>
           <a class="cardlink" href="sources/">
             <span class="n">4</span>
-            <div class="ico" data-ico="db"></div>
             <h2>מיפוי מקורות המידע</h2>
             <p>משימה לבית: אילו נתונים יש לנו, מה אפשר להשתמש בו אחרי התממה, ומה יש באתרים ציבוריים.</p>
             <span class="go">פתיחה ←</span>
           </a>
           <a class="cardlink" href="anonymize/">
             <span class="n">5</span>
-            <div class="ico" data-ico="db"></div>
             <h2>התממת קובץ לפני AI</h2>
             <p>מעלים קובץ אקסל, הכלי מזהה שמות, ת״ז וטלפונים, ומוריד קובץ נקי. הכול נשאר במחשב שלכם.</p>
             <span class="go">פתיחה ←</span>
@@ -68,23 +91,20 @@
       </section>
 
       <section class="day" id="day2">
-        <div class="day-h"><span class="d">יום 2</span><h2>מנתונים לתובנה</h2></div>
+        <div class="day-h"><h2>יום הכשרה 2</h2></div>
         <div class="cards c3">
           <a class="cardlink" href="analysis/">
             <span class="n">1</span>
-            <div class="ico" data-ico="db"></div>
             <h2>ארגז הניתוח</h2>
             <p>מנקים, מנתחים, מנסחים תובנה ובוחרים חלופה.</p>
             <span class="go">פתיחה ←</span>
           </a>
           <a class="cardlink quiet" href="insight/">
-            <div class="ico" data-ico="donut"></div>
             <h2>חילוץ תובנה</h2>
             <p>תובנה אחת, חמש בדיקות לפני שסומכים עליה.</p>
             <span class="go">פתיחה ←</span>
           </a>
           <a class="cardlink quiet" href="prompt/">
-            <div class="ico" data-ico="line"></div>
             <h2>פרומפט לניתוח נתונים</h2>
             <p>פרומפט טוב לניתוח נתונים עם AI.</p>
             <span class="go">פתיחה ←</span>
@@ -93,29 +113,25 @@
       </section>
 
       <section class="day" id="day3">
-        <div class="day-h"><span class="d">יום 3</span><h2>מתובנה להחלטה</h2></div>
+        <div class="day-h"><h2>יום הכשרה 3</h2></div>
         <div class="cards c2">
           <a class="cardlink" href="chart/">
             <span class="n">1</span>
-            <div class="ico" data-ico="bars"></div>
             <h2>בוחר הגרף וחמשת המשפטים</h2>
             <p>איזה גרף מתאים למסר, ומה אומרים למנהל.</p>
             <span class="go">פתיחה ←</span>
           </a>
           <a class="cardlink quiet" href="pitch/">
-            <div class="ico" data-ico="table"></div>
             <h2>מהנתון לפרומפט</h2>
             <p>פרומפט שבונה טיוטת מצגת ב-Gemini.</p>
             <span class="go">פתיחה ←</span>
           </a>
           <a class="cardlink quiet" href="prototype/">
-            <div class="ico" data-ico="scatter"></div>
             <h2>מפתחים את הפתרון</h2>
             <p>דף עבודה, גם כשעדיין אין פתרון.</p>
             <span class="go">פתיחה ←</span>
           </a>
           <a class="cardlink quiet" href="cards/">
-            <div class="ico" data-ico="donut"></div>
             <h2>כרטיסי הכיס</h2>
             <p>כל יום על כרטיס אחד, להדפסה.</p>
             <span class="go">פתיחה ←</span>
