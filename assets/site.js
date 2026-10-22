@@ -41,15 +41,22 @@
       if(from==='maazim'){ p.t='מאיצים דיגיטליים'; p.h='../maazim/'; } else { p.t='הכשרת בינה מלאכותית'; p.h='../ai/'; }
     });
     if(pairs.length) home=pairs[0].h;
-    var nav=document.createElement('nav'); nav.className='topbar'; nav.setAttribute('aria-label','ניווט');
-    var html='<a class="mark" href="'+home+'" title="לדף הבית">Roman<span>AI</span></a>';
+    /* two layers: the brand band, then a sticky way-finding row with one big "back" and the path */
+    var ARROW='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var CHEV='<svg class="sep" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 4l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var HOUSE='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v8.5a1.5 1.5 0 01-1.5 1.5H15v-6H9v6H5.5A1.5 1.5 0 014 19.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+    var band=document.createElement('nav'); band.className='topbar'; band.setAttribute('aria-label','RomanAI');
+    band.innerHTML='<a class="mark" href="'+home+'" title="לדף הבית">Roman<span>AI</span></a>'+
+      (pairs.length?'<a class="home" href="'+home+'">'+HOUSE+'<span>'+pairs[0].t+'</span></a>':'');
+    document.body.insertBefore(band,document.body.firstChild);
     if(pairs.length){
       var up=pairs[pairs.length-1], here=me.dataset.here||document.title.split(/[—·]/)[0].trim();
-      html+='<a class="back" href="'+up.h+'">→ חזרה ל'+up.t+'</a>'+
-        '<span class="trail">'+pairs.map(function(p){ return '<a href="'+p.h+'">'+p.t+'</a><span class="sep">‹</span>'; }).join('')+'<span class="here">'+here+'</span></span>';
+      var way=document.createElement('nav'); way.className='wayfind'; way.setAttribute('aria-label','איפה אני');
+      way.innerHTML='<a class="back" href="'+up.h+'">'+ARROW+'<span><small>חזרה ל</small>'+up.t+'</span></a>'+
+        '<ol class="trail">'+pairs.map(function(p){ return '<li><a href="'+p.h+'">'+p.t+'</a>'+CHEV+'</li>'; }).join('')+
+        '<li class="here" aria-current="page">'+here+'</li></ol>';
+      band.insertAdjacentElement('afterend',way);
     }
-    nav.innerHTML=html;
-    document.body.insertBefore(nav,document.body.firstChild);
     document.body.classList.add('has-topbar');
     /* a tool header that only repeats the page title is noise; keep it when it holds controls */
     document.querySelectorAll('header.bar').forEach(function(h){
@@ -144,7 +151,7 @@
     setInterval(function(){
       var now=Date.now(); if(!document.hidden) elapsed+=now-last; last=now;
       var k=stageKey(); if(k!==stage){ stage=k; elapsed=0; clear(); }
-      var back=document.querySelector('.topbar .back'), main=mainButton(), midWizard=main && main.classList.contains('next');
+      var back=document.querySelector('.wayfind .back'), main=mainButton(), midWizard=main && main.classList.contains('next');
       if(exported && !midWizard){ if(elapsed>=Math.min(wait,20000)) glow(back); }   // done here: point the way back
       else if(elapsed>=wait) glow(main);
     },1000);

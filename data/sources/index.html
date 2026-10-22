@@ -6,7 +6,7 @@
 <title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=22">
+<link rel="stylesheet" href="../assets/dd.css?v=23">
 <style>
   .wrap{max-width:900px}
   body{padding-bottom:62px}
@@ -68,7 +68,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=22">
+<link rel="stylesheet" href="../../assets/site.css?v=23">
 </head>
 <body>
   <header class="bar">
@@ -94,7 +94,7 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=22"></script>
+<script src="../assets/dd.js?v=23"></script>
 <script>
 const S=(()=>{
   'use strict';
@@ -116,7 +116,6 @@ const S=(()=>{
   ];
   /* step 1: the sites participants browse. `scope` is what the "search inside" button restricts Google to. */
   const SITES=[
-    {g:'המועצה', n:'מידע ושקיפות, גוש עציון', d:'עמוד המידע והשקיפות של המועצה.', u:'https://www.baitisraeli.co.il/%D7%A9%D7%A7%D7%99%D7%A4%D7%95%D7%AA/', scope:'site:baitisraeli.co.il'},
     {g:'ארצי', n:'הרשויות המקומיות בישראל (הלמ״ס)', d:'פרופיל לכל רשות: אוכלוסייה, חינוך, רווחה וכספים. טוב להשוואה בין רשויות.', u:'https://data.cbs.gov.il/muni/home', scope:'site:cbs.gov.il רשויות מקומיות'},
     {g:'ארצי', n:'מפקד האוכלוסין (הלמ״ס)', d:'מי גר איפה, לפי יישוב ואזור.', u:'https://census.cbs.gov.il/he', scope:'site:cbs.gov.il מפקד האוכלוסין'},
     {g:'ארצי', n:'הלשכה המרכזית לסטטיסטיקה', d:'האתר הראשי של הלמ״ס: הסטטיסטיקה הרשמית של ישראל.', u:'https://www.cbs.gov.il', scope:'site:cbs.gov.il'},
@@ -156,8 +155,8 @@ const S=(()=>{
         <p>איפה נמצאים הנתונים שיעזרו לענות על השאלה שלכם? עכשיו רק <b>מאתרים</b>. את הניתוח נעשה במפגש הבא.</p>
       </div>
       <div class="qbox ${q?'':'missing'}">${q
-        ? `<div class="ql"><span>השאלה העסקית שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
-        : `<div class="ql"><span>עדיין אין שאלה עסקית</span><a href="../question/">לבונה השאלה העסקית ←</a></div>אפשר למלא גם בלי, אבל קל יותר לחפש נתונים כשהשאלה מול העיניים.`}</div>
+        ? `<div class="ql"><span>אתגר הנתונים שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
+        : `<div class="ql"><span>עדיין אין אתגר נתונים</span><a href="../question/">לבונה אתגר הנתונים ←</a></div>אפשר למלא גם בלי, אבל קל יותר לחפש נתונים כשהשאלה מול העיניים.`}</div>
       <div class="steps2 noprint">
         <button class="stepbtn ${data.step===1?'on':''}" onclick="S.go(1)"><span class="sn">1</span><span>משוטטים באתרים<small>מה קיים בחוץ</small></span></button>
         <button class="stepbtn ${data.step===2?'on':''}" onclick="S.go(2)"><span class="sn">2</span><span>ממפים את המקורות<small>מה יש, מה ציבורי, מה חסר</small></span></button>
@@ -168,7 +167,7 @@ const S=(()=>{
         <p class="lead">פותחים, מסתכלים, ובודקים אם יש שם נתון שעוזר לשאלה שלכם. מה שמצאתם מוסיפים לרשימה.</p>
         <div class="field-label">מה מחפשים?${DD.help('כתבו מילה או שתיים מהשאלה שלכם, למשל ״פניות מוקד״ או ״ארנונה״. הכפתור <b>חיפוש באתר</b> ליד כל אתר יפתח חיפוש בגוגל של המילים האלה בתוך אותו אתר בלבד.')}</div>
         <div class="search"><input class="txt" id="term" placeholder="למשל: פינוי אשפה, ארנונה, תלמידים" value="${E(data.term)}"></div>
-        ${['המועצה','ארצי'].map(grp=>`<div class="sitegrp">${grp}</div>`+SITES.map((x,i)=>x.g!==grp?'':`
+        ${['ארצי'].map(grp=>`<div class="sitegrp">${grp}</div>`+SITES.map((x,i)=>x.g!==grp?'':`
           <div class="site ${inList(i)?'added':''}">
             <div><h3>${x.n}</h3><p>${x.d}</p></div>
             <div class="acts">
@@ -230,7 +229,7 @@ const S=(()=>{
   /* ---------- export ---------- */
   function asText(){
     const L=['מיפוי מקורות המידע'+(DD.identity()?' · '+DD.identity():''),''], q=question();
-    if(q) L.push('השאלה העסקית:',q,'');
+    if(q) L.push('אתגר הנתונים:',q,'');
     GROUPS.forEach(g=>{
       L.push(g.n+'. '+g.t);
       const rows=filled(g.k);
@@ -243,7 +242,7 @@ const S=(()=>{
   function doc(){
     const q=question();
     let b='<h1>מיפוי מקורות המידע</h1><p>'+E(DD.identity())+'</p>';
-    if(q) b+='<h2>השאלה העסקית</h2><p style="font-size:15px">'+E(q)+'</p>';
+    if(q) b+='<h2>אתגר הנתונים</h2><p style="font-size:15px">'+E(q)+'</p>';
     GROUPS.forEach(g=>{
       const rows=filled(g.k);
       const cols=g.anon?g.cols.concat('התממה'):g.cols;
@@ -267,6 +266,6 @@ const S=(()=>{
   return {go,search,add,del,site,doc,copyAll,mail,saveJson,loadJson};
 })();
 </script>
-<script src="../../assets/site.js?v=22" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=23" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

@@ -24,21 +24,31 @@ body{background:var(--surface-100)!important;background-image:none!important;col
 :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 
 /* ---------- top strip: wordmark + way back ---------- */
-.topbar{display:flex;align-items:center;gap:14px;padding:10px 20px;background:var(--teal);color:var(--on-teal);font-family:var(--font-sans);direction:rtl;flex-wrap:wrap}
-.topbar .mark{font-size:22px;font-weight:700;color:var(--on-teal);text-decoration:none;letter-spacing:-.3px;direction:ltr}
+.topbar{display:flex;align-items:center;gap:14px;padding:9px 24px;background:var(--teal);color:var(--on-teal);font-family:var(--font-sans);direction:rtl}
+.topbar .mark{font-size:22px;font-weight:700;color:var(--on-teal);text-decoration:none;letter-spacing:-.3px;direction:ltr;line-height:1}
 .topbar .mark span{color:#f0b95a}
-.topbar .back{display:inline-flex;align-items:center;gap:7px;background:var(--surface-card);color:var(--teal);border-radius:var(--radius-pill);padding:7px 18px;font-size:15px;font-weight:700;text-decoration:none}
-.topbar .back:hover{background:#fff}
-.topbar .trail{font-size:14px;color:#c9e2de}
-.topbar .trail a{color:#c9e2de;text-decoration:none}
-.topbar .trail a:hover{color:#fff;text-decoration:underline}
-.topbar .trail .sep{opacity:.6;margin:0 4px}
-.topbar .trail .here{color:#fff;font-weight:700}
+.topbar .home{margin-inline-start:auto;display:inline-flex;align-items:center;gap:7px;color:#d4e8e4;font-size:14.5px;font-weight:700;text-decoration:none;padding:5px 10px;border-radius:var(--radius-sm)}
+.topbar .home svg{width:18px;height:18px}
+.topbar .home:hover{color:#fff;background:rgba(255,255,255,.1)}
+/* way-finding row: stays in view while scrolling, so "back" is always one tap away */
+.wayfind{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:18px;padding:10px 24px;background:var(--surface-card);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(42,33,27,.07);font-family:var(--font-sans);direction:rtl}
+.wayfind .back{display:inline-flex;align-items:center;gap:10px;flex:0 0 auto;background:var(--teal);color:var(--on-teal);text-decoration:none;border-radius:var(--radius-md);padding:7px 16px 7px 18px;font-weight:700;font-size:15.5px;line-height:1.15;transition:background .15s ease-out,transform .15s ease-out}
+.wayfind .back svg{width:20px;height:20px;flex:0 0 auto;transition:transform .2s cubic-bezier(.2,.8,.2,1)}
+.wayfind .back small{display:block;font-size:11.5px;font-weight:400;color:#bfe0da}
+.wayfind .back:hover{background:#174a47}
+.wayfind .back:hover svg{transform:translateX(3px)}
+.wayfind .back:active{transform:scale(.98)}
+.wayfind .trail{display:flex;align-items:center;flex-wrap:wrap;gap:2px;list-style:none;margin:0;padding:0;font-size:14.5px;min-width:0}
+.wayfind .trail li{display:inline-flex;align-items:center;gap:2px}
+.wayfind .trail a{color:var(--ink-muted);text-decoration:none;padding:4px 6px;border-radius:var(--radius-sm)}
+.wayfind .trail a:hover{color:var(--teal);background:var(--teal-tint)}
+.wayfind .trail .sep{width:15px;height:15px;color:#b5a58c;flex:0 0 auto}
+.wayfind .trail .here{font-weight:700;color:var(--ink);font-size:16px;padding:4px 6px;box-shadow:inset 0 -3px 0 var(--amber)}
 body.has-topbar .hublink,body.has-topbar header.bar.plain,body.has-topbar header.bar>a{display:none!important}
 /* the older hubs: fewer words on each card */
 .feat,.flow-note,.day-h .sub,.day-h .line{display:none!important}
 body.has-topbar header.bar{position:static;background:var(--surface-200);backdrop-filter:none;border-bottom:1px solid var(--line)}
-@media (max-width:640px){.topbar{padding:9px 14px;gap:10px}.topbar .trail{display:none}.topbar .mark{font-size:19px}}
+@media (max-width:640px){.topbar{padding:8px 16px}.topbar .mark{font-size:19px}.topbar .home span{display:none}.wayfind{padding:8px 16px;gap:12px}.wayfind .back{font-size:14.5px;padding:6px 12px 6px 14px}.wayfind .trail li:not(.here){display:none}.wayfind .trail .here{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block}.wayfind .trail{flex-wrap:nowrap}}
 
 /* ---------- hero (hub covers) ---------- */
 .cover{background:var(--teal)!important;color:var(--on-teal)!important;padding-bottom:0!important}
@@ -115,9 +125,10 @@ footer.credit{display:none!important}
 
 /* "what's next" guide: the same soft ring, on whichever button is the next step */
 .nudge{outline:4px solid rgba(217,154,43,0);outline-offset:3px;animation:softRing 2.2s ease-in-out infinite}
-.topbar .back.nudge{outline-offset:2px}
+.wayfind .back.nudge{outline-offset:2px}
 .nexttag,.donetag{position:absolute;bottom:24px;left:24px;font:700 13.5px var(--font-sans);border-radius:var(--radius-pill);padding:3px 14px}
 .nexttag{background:var(--amber);color:var(--ink)}
 .donetag{background:#e7f4ec;color:var(--success)}
 @media (prefers-reduced-motion:reduce){.sym svg,.blink,.nudge{animation:none!important}.nudge{outline-color:rgba(217,154,43,.85)}}
-@media print{.topbar,.brandfoot,.help,.help-pop{display:none!important}}
+.wayfind ::selection,.topbar ::selection{background:var(--amber);color:var(--ink)}
+@media print{.wayfind,.topbar,.brandfoot,.help,.help-pop{display:none!important}}
