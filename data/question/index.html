@@ -6,7 +6,7 @@
 <title>בונה האתגר משולחן העבודה — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=24">
+<link rel="stylesheet" href="../assets/dd.css?v=25">
 <style>
   .wrap{max-width:1040px}
   .narrow{max-width:760px;margin-inline:auto}
@@ -23,6 +23,15 @@
   .stepper .arrow.part{align-self:flex-end;height:44px}
   .stepper .arrow.done{color:var(--success,#2e7d4f)}
   .stepper .stepbtn{flex:1;width:auto;min-width:0}
+  .gap{display:flex;align-items:stretch;gap:8px;margin:4px 0 6px;font-size:14px}
+  .gap div{flex:1;border-radius:10px;padding:9px 12px;background:var(--paper)}
+  .gap div:last-child{background:var(--teal-tint,#dcedea)}
+  .gap div span{display:block;font-weight:700;font-size:12.5px;color:var(--ink-soft)}
+  .gap b{align-self:center;color:var(--brand);font-size:20px}
+  .gapnote{font-size:14px;margin:0 0 6px;color:var(--ink)}
+  .signs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .signs button{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font:700 14px var(--font-sans,Arial);color:var(--ink-soft);text-align:right;cursor:pointer}
+  .signs button.on{border-color:var(--success,#2e7d4f);background:#e7f4ec;color:#1e5e45}
   .ladder{display:flex;align-items:stretch;gap:6px;margin:4px 0 14px;font-size:13.5px}
   .ladder div{flex:1;background:var(--paper);border-radius:10px;padding:8px 10px;color:var(--ink-soft)}
   .ladder div span{display:block;font-weight:700;color:var(--ink);font-size:12.5px}
@@ -63,7 +72,7 @@
   @keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
   .srcsum{font-weight:700;text-align:center;border-radius:9px;padding:6px}
   .srcsum.g{background:#E7F4EC;color:#1e5e45}.srcsum.y{background:#FCF3E1;color:#7a5410}.srcsum.r{background:#FBE9E6;color:#7d2a20}
-  @media (max-width:760px){.stepper{gap:3px}.stepper{justify-content:center}.sgroup{flex:0 0 auto!important}.sglabel{display:none}.stepper .stepbtn{flex:0 0 auto;padding:7px}.stepper .stepbtn .nm{display:none}.stepper .arrow{font-size:15px;padding:0}.stepper .arrow.part{height:auto;align-self:center}.ladder{flex-direction:column}.ladder i{display:none}}
+  @media (max-width:760px){.stepper{gap:3px}.stepper{justify-content:center}.sgroup{flex:0 0 auto!important}.sglabel{display:none}.stepper .stepbtn{flex:0 0 auto;padding:7px}.stepper .stepbtn .nm{display:none}.stepper .arrow{font-size:15px;padding:0}.stepper .arrow.part{height:auto;align-self:center}.ladder{flex-direction:column}.ladder i{display:none}.gap{flex-direction:column}.gap b{display:none}.signs{grid-template-columns:1fr}}
   .nextcta{display:flex;margin:18px auto 0;max-width:420px;padding:15px 22px;font-size:17px}
   .idea{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff}
   .idea h3{font-size:18px;display:flex;align-items:center}
@@ -87,7 +96,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=24">
+<link rel="stylesheet" href="../../assets/site.css?v=25">
 </head>
 <body>
   <header class="bar">
@@ -101,7 +110,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=24"></script>
+<script src="../assets/dd.js?v=25"></script>
 <script>
 const Q=(()=>{
   'use strict';
@@ -110,8 +119,8 @@ const Q=(()=>{
   const LS='dd_question_v3', E=DD.esc;
   const DBN='<small class="dbn">(מבוסס נתונים)</small>';
   const FIELDS=[
-    {k:'who',     l:'מי מחליט',    ph:'מנהלת האגף לפיתוח כלכלי',                      h:'למי התשובה מיועדת: ראש הרשות, מנהל האגף, הוועדה? אדם או גוף אחד שבסמכותו להחליט.'},
-    {k:'decision',l:'איזו החלטה',  ph:'באילו עסקים לתמוך',                            h:'מה נבחר, נשנה או נתקצב בעקבות התשובה? כתבו את ההחלטה עצמה.'},
+    {k:'who',     l:'מי מחליט',    ph:'מנהלת האגף לפיתוח כלכלי',                      h:'למי התשובה מיועדת: ראש הרשות, מנהל האגף, הוועדה?'},
+    {k:'decision',l:'איזו החלטה',  ph:'באילו עסקים לתמוך',                            h:'מה נבחר, נשנה או נתקצב בעקבות התשובה?'},
     {k:'measure', l:'מה מודדים',   ph:'אילו עסקים נסגרו, ומה מבדיל אותם מאלה ששרדו', h:'משהו שאפשר לספור או להשוות, לא ״שביעות רצון״ כללית.'},
     {k:'scope',   l:'מתי ואיפה',   ph:'במרכז המסחרי, בשנתיים האחרונות',               h:'באיזו תקופה, באילו שכונות, לאיזו אוכלוסייה.'}
   ];
@@ -120,9 +129,9 @@ const Q=(()=>{
   const TESTS=[
     {q:'שאלה אחת', d:'לא שלוש שאלות במשפט אחד.'},
     {q:'בלי פתרון בפנים', d:'לא ״איך נקים אפליקציה ש…״.'},
-    {q:'ניתנת למענה בנתונים', d:'אפשר לדמיין טבלה או גרף שעונים עליה.'},
-    {q:'קשורה להחלטה', d:'ברור מי ישתמש בתשובה ולמה.'},
-    {q:'בתחום ההשפעה שלנו', d:'הרשות יכולה לפעול לפי התשובה.'}
+    {q:'עונים עליה בנתונים', d:'אפשר לדמיין טבלה או גרף.'},
+    {q:'ברור מי ישתמש בתשובה', d:'יש מחליט, ויש החלטה שהתשובה משרתת.'},
+    {q:'בתחום ההשפעה שלנו', d:'הרשות יכולה לפעול לפיה.'}
   ];
   /* slides 39–40: three directions, with the deck's example */
   const IDEAS=[
@@ -136,6 +145,7 @@ const Q=(()=>{
      eg:['ראיונות','תצפית','סקר קצר'],
      ex:'שיחות עם בעלי עסקים\nתצפית על תנועת קונים'}
   ];
+  const SIGNS=['פוגע ביכולת לבצע את המשימה','חוזר על עצמו שוב ושוב','יש לו עלות: בזמן, בכסף או באמון','תושבים או עובדים מתלוננים עליו'];
   const SOLUTION_WORDS=/^\s*(אין|חסר|חסרים|חסרה|צריך|צריכים|לא מספיק|אנחנו צריכים|יש צורך|איך נקים|איך נבנה)/;
   const STEPS=['pain','template','tests','whys','ideas','export'];
   const STEP_NAMES=['הכאב','ניסוח האתגר','5 בדיקות','5 פעמים למה','איפה המידע?','מוכן'];
@@ -144,9 +154,10 @@ const Q=(()=>{
   function fresh(){ return { step:0, problem:'', whys:['','','','','',''],
     q:{who:'',decision:'',measure:'',scope:'',own:''}, tests:TESTS.map(()=>''),
     kpi:{metric:'',base:'',target:'',date:'',output:''},
-    ideas:{internal:'',open:'',field:''} }; }
+    ideas:{internal:'',open:'',field:''}, signs:[false,false,false,false] }; }
   let data=DD.load(LS,fresh());
   data.ideas=Object.assign({internal:'',open:'',field:''},data.ideas||{});
+  if(!Array.isArray(data.signs)) data.signs=[false,false,false,false];
   function save(){ DD.save(LS,data); }
 
   const slot=html=>(v,ph)=>{ v=(v||'').trim(); return html ? `<span class="slot ${v?'':'empty'}">${E(v||ph)}</span>` : (v||'['+ph+']'); };
@@ -158,10 +169,20 @@ const Q=(()=>{
 
   const SCREENS={
     pain:()=>`
-      ${head(1,'הכאב'+DD.help('כאב = הפער בין הרצוי למצוי. כתבו מה <b>לא עובד היום</b>, מנקודת המבט של התושב או של העובדים, בלי פתרון בפנים. במקום ״אין מספיק פקחים״ כתבו ״הטיפול בפנייה לוקח יותר מ-14 יום״.'),'חלק 1 · שלב 1 מתוך 4')}
-      <p class="lead">מה הבעיה שאתם רוצים לפתוח? מתארים <b>מה לא עובד היום</b>, בלי פתרון בפנים.</p>
-      <textarea id="problem" style="min-height:110px" placeholder="לדוגמה: עסקים במרכז המסחרי נסגרים כל הזמן">${E(data.problem)}</textarea>
-      <div id="probWarn"></div>`,
+      ${head(1,'הכאב'+DD.help('כתבו מה <b>לא עובד היום</b>, מנקודת המבט של התושב או של העובדים, בלי פתרון בפנים. במקום ״אין מספיק פקחים״ כתבו ״הטיפול בפנייה לוקח יותר מ-14 יום״.'),'חלק 1 · שלב 1 מתוך 4')}
+      <p class="lead">חזרו לרשימה שעשיתם בתחילת היום (<a href="../role-worksheet/">מה אני עושה ברשות</a>): איפה הציבור הכי מתלונן? איפה תהליך נתקע? בחרו בעיה <b>שיש לכם עליה נתונים</b>, ושאתם רוצים להתעסק בה.</p>
+      <div class="gap">
+        <div><span>המצוי</span>תושב ממתין 3 שבועות לאישור, ולא יודע באיזה שלב הבקשה</div>
+        <b aria-hidden="true">⇄</b>
+        <div><span>הרצוי</span>אישור תוך ימים, עם עדכון שקוף בכל שלב</div>
+      </div>
+      <p class="gapnote"><b>כאב = הפער בין הרצוי למצוי.</b> ככל שהפער גדול יותר, חוזר יותר ויקר יותר, כך כדאי יותר לטפל בו.</p>
+      <div class="field-label">הכאב שלכם</div>
+      <textarea id="problem" style="min-height:100px" placeholder="לדוגמה: עסקים במרכז המסחרי נסגרים כל הזמן">${E(data.problem)}</textarea>
+      <div id="probWarn"></div>
+      <div class="field-label">כאב אמיתי, או רק חוסר נוחות?${DD.help('המבחן: האם זה פוגע במשהו אמיתי, או שזה פשוט מעצבן? חוסר נוחות הוא חד-פעמי, לא חוסם, ונעלם מעצמו עם הזמן. מחפשים כאב אמיתי.')}</div>
+      <div class="signs">${SIGNS.map((x,i)=>`<button type="button" class="${data.signs[i]?'on':''}" aria-pressed="${!!data.signs[i]}" onclick="Q.sign(${i})">${data.signs[i]?'✓ ':''}${x}</button>`).join('')}</div>
+      <div id="signNote"></div>`,
     template:()=>`
       ${head(2,'ניסוח האתגר'+DD.help('אתגר משולחן העבודה הוא לא נושא ולא תלונה. זו שאלה שמובילה להחלטה, ושאפשר לענות עליה בנתונים. המבחן: <b>אם נקבל תשובה, מה נעשה אחרת?</b>'),'חלק 1 · שלב 2 מתוך 4')}
       <div class="ladder">
@@ -246,6 +267,8 @@ const Q=(()=>{
   function paintLive(){
     const set=(id,html)=>{const el=document.getElementById(id); if(el) el.innerHTML=html;};
     const p=data.problem.trim();
+    const n=data.signs.filter(Boolean).length;
+    set('signNote', !n ? '' : n>=2 ? '<div class="callout ok">נשמע כמו כאב אמיתי. ממשיכים.</div>' : '<div class="callout warn">סימן אחד בלבד: אולי זה חוסר נוחות. נסו לחדד, או לבחור בעיה אחרת.</div>');
     set('probWarn', p&&SOLUTION_WORDS.test(p) ? '<div class="callout warn">זה נשמע כמו <b>פתרון</b>, לא כמו כאב. נסו לתאר מה לא עובד היום, רצוי במספר.</div>' : '');
     set('root', root()?E(root()):'<span style="color:#9aa6b1">יופיע כאן</span>');
     set('sentence', sentence(true));
@@ -255,6 +278,7 @@ const Q=(()=>{
     data.step=Math.max(0,Math.min(STEPS.length-1,n)); save(); render(); window.scrollTo({top:0,behavior:'smooth'});
   }
   if(!(data.step>=0 && data.step<STEPS.length)) data.step=0;   // saves from an older step layout
+  function sign(i){ data.signs[i]=!data.signs[i]; save(); render(); }
   function test(i,v){ data.tests[i]=data.tests[i]===v?'':v; save(); render(); }
   function example(){
     if(FIELDS.some(f=>data.q[f.k].trim()) && !confirm('להחליף את מה שכתבתם בדוגמה?')) return;
@@ -273,6 +297,7 @@ const Q=(()=>{
   function asText(){
     const L=[TITLE+(DD.identity()?' · '+DD.identity():''),''];
     L.push('חלק 1 · האתגר משולחן העבודה','הכאב: '+(data.problem||'—'));
+    const sg=SIGNS.filter((_,i)=>data.signs[i]); if(sg.length) L.push('סימנים לכאב אמיתי: '+sg.join(' · '));
     L.push('','האתגר: '+sentence(false),'');
     TESTS.forEach((t,i)=>L.push(`  ${data.tests[i]==='y'?'✓':data.tests[i]==='n'?'✗':'☐'} ${t.q}`));
     if(data.whys.slice(1).some(Boolean)){ L.push('','חמש פעמים למה:'); data.whys.forEach((w,i)=>{ if(i>0&&w) L.push(`  למה ${i}: ${w}`); }); }
@@ -301,9 +326,9 @@ const Q=(()=>{
   function reset(){ if(confirm('למחוק את כל מה שמילאתם ולהתחיל מחדש?')){ data=fresh(); save(); render(); } }
 
   render();
-  return {go,test,example,idea,ideasExample,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
+  return {go,sign,test,example,idea,ideasExample,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
 })();
 </script>
-<script src="../../assets/site.js?v=24" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=25" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

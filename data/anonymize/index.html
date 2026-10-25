@@ -8,7 +8,7 @@
 <title>התממת קובץ לפני AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=24">
+<link rel="stylesheet" href="../assets/dd.css?v=25">
 <style>
   .wrap{max-width:1080px}
   .head p{max-width:640px}
@@ -52,7 +52,7 @@
   .pv td.gone,.pv th.gone{color:#a3473b}
   .pv td.gone{text-decoration:line-through;background:#fdf1ef}
   .pv th.gone{background:#f7dcd7}
-  .t-keep{background:#e7f4ec;color:#1e5e45}.t-token{background:#dcedea;color:#17504c}.t-drop{background:#fbe5e2;color:#8f2b22}
+  .t-keep{background:#e7f4ec;color:#1e5e45}.t-generalize{background:#f8ecd2;color:#7a5b06}.t-token{background:#dcedea;color:#17504c}.t-drop{background:#fbe5e2;color:#8f2b22}
   /* column decisions */
   .bulk{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0 10px;font-size:14px;color:var(--ink-soft)}
   .cols{display:flex;flex-direction:column;gap:8px}
@@ -71,6 +71,7 @@
   .seg button:hover{color:var(--ink);background:#fbf6ee}
   .seg button[aria-pressed="true"].k-keep{background:#fff;color:#1e5e45;box-shadow:0 1px 3px rgba(0,0,0,.12)}
   .seg button[aria-pressed="true"].k-token{background:var(--teal,#1f5f5b);color:#fff}
+  .seg button[aria-pressed="true"].k-generalize{background:#d99a2b;color:#2a211b}
   .seg button[aria-pressed="true"].k-drop{background:#c4533f;color:#fff}
   .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--ink-soft);margin:0 0 12px;padding-inline-start:40px}
   .legend b{color:var(--ink)}
@@ -96,7 +97,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=24">
+<link rel="stylesheet" href="../../assets/site.css?v=25">
 </head>
 <body>
   <header class="bar">
@@ -151,7 +152,7 @@
       <div class="bulk">
         <span>לכל העמודות:</span>
         <button class="btn btn-ghost btn-sm" id="bulkReset">לפי ההמלצה</button>
-        <button class="btn btn-ghost btn-sm" id="bulkToken">הכל למספרים אקראיים</button>
+        <button class="btn btn-ghost btn-sm" id="bulkToken">הכל למספר רץ</button>
         <button class="btn btn-ghost btn-sm" id="bulkKeep">להשאיר הכל</button>
       </div>
       <div class="cols" id="cols"></div>
@@ -165,7 +166,7 @@
       <div class="stats" id="stats"></div>
       <div class="dl">
         <button class="btn btn-brand" id="download">הורדת הקובץ הנקי</button>
-        <button class="btn btn-ghost" id="downloadKey" title="איזה מספר שייך לאיזה שם. לשמירה אצלכם, לא להעלות לשום מקום">קובץ פענוח (נשאר אצלכם)</button>
+        <button class="btn btn-ghost" id="downloadKey" title="איזה מספר רץ שייך לאיזה שם. לשמירה אצלכם, לא להעלות לשום מקום">קובץ פענוח (נשאר אצלכם)</button>
       </div>
       <div class="warnline">לפני שמעלים: עברו על הקובץ בעין</div>
     </section>
@@ -174,19 +175,22 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=24"></script>
+<script src="../assets/dd.js?v=25"></script>
 <script src="../assets/xlsx.full.min.js"></script>
-<script src="../assets/anon-engine.js?v=24"></script>
+<script src="../assets/anon-engine.js?v=25"></script>
 <script>
 const AN=(()=>{
   'use strict';
   const E=DD.esc, ENG=window.AnonEngine;
   const ACTIONS=[
     {k:'keep',  t:'להשאיר כמו שזה', tag:'נשאר',          tip:'מידע שלא מזהה אדם: שכונה, תאריך, סכום'},
-    {k:'token', t:'מספרים אקראיים', tag:'מספרים אקראיים', tip:'כל ערך מקבל מספר קבוע. ה-AI עדיין רואה מי פנה כמה פעמים'},
+    {k:'token', t:'מספר רץ',        tag:'מספר רץ',        tip:'כל ערך מקבל מספר קבוע (תושב 001, תושב 002). ה-AI עדיין רואה מי פנה כמה פעמים'},
+    {k:'generalize', t:'להכליל',    tag:'הוכלל',          tip:'גיל ← טווח, תאריך ← חודש, כתובת ← רחוב בלי מספר'},
     {k:'drop',  t:'למחוק',          tag:'יימחק',          tip:'העמודה לא תופיע בקובץ'}
   ];
   const act=k=>ACTIONS.find(a=>a.k===k)||ACTIONS[0];
+  const GEN_TIP={age:'גיל ← טווח גילים (35–44)',birth:'תאריך לידה ← טווח גילים',date:'תאריך ← חודש ושנה',address:'כתובת ← שם הרחוב, בלי מספר בית'};
+  const actionsFor=c=>ACTIONS.filter(a=>a.k!=='generalize'||c.gen);
   const N=8;
   let book=null, cur=0;
 
@@ -216,7 +220,7 @@ const AN=(()=>{
       const aoa=s.aoa.filter(r=>r.some(c=>c!==''&&c!=null));
       const header=(aoa[0]||[]).map((h,i)=>String(h===''||h==null?'עמודה '+(i+1):h).trim());
       const rows=aoa.slice(1).map(r=>header.map((_,i)=>r[i]===undefined?'':r[i]));
-      const cols=header.map((h,i)=>{ const d=ENG.detectColumn(h, rows.map(r=>r[i])); return {idx:i, name:h, type:d.type, why:d.why, samples:d.samples, suggested:d.action, action:d.action}; });
+      const cols=header.map((h,i)=>{ const d=ENG.detectColumn(h, rows.map(r=>r[i])); return {idx:i, name:h, type:d.type, gen:d.gen, idcol:d.idcol, why:d.why, samples:d.samples, suggested:d.action, action:d.action}; });
       return {name:s.name, header, rows, cols};
     }).filter(s=>s.header.length)};
     if(!book.sheets.length){ book=null; DD.toast('הקובץ ריק'); return; }
@@ -250,7 +254,7 @@ const AN=(()=>{
       return `<div class="col a-${c.action}">
         <div><div class="cname">${E(c.name)}</div><div class="kind ${risky?'risk':''}">${risky?'נראה כמו: '+E(t.label):'לא נראה מידע אישי'}</div></div>
         <div class="smp">${smp}</div>
-        <div class="seg" role="group" aria-label="מה לעשות בעמודה ${E(c.name)}">${ACTIONS.map(a=>`<button type="button" class="k-${a.k}" data-c="${i}" data-a="${a.k}" title="${a.tip}" aria-pressed="${c.action===a.k}">${a.t}</button>`).join('')}</div>
+        <div class="seg" role="group" aria-label="מה לעשות בעמודה ${E(c.name)}">${actionsFor(c).map(a=>`<button type="button" class="k-${a.k}" data-c="${i}" data-a="${a.k}" title="${a.k==='generalize'?GEN_TIP[c.gen]:a.tip}" aria-pressed="${c.action===a.k}">${a.t}</button>`).join('')}</div>
         ${note}
       </div>`;
     }).join('');
@@ -281,7 +285,7 @@ const AN=(()=>{
     const c=ctx.counts, inText=c.phone+c.email+c.id;
     document.getElementById('stats').innerHTML=[
       [rows.toLocaleString('he-IL'),'שורות'],
-      [ctx.tokens.toLocaleString('he-IL'),'הוחלפו במספרים'],
+      [ctx.tokens.toLocaleString('he-IL'),'הוחלפו במספר רץ'],
       [dropped,'עמודות נמחקות'],
       [inText,'פרטים הוסרו מטקסט']
     ].map(s=>`<div class="stat"><b>${s[0]}</b><span>${s[1]}</span></div>`).join('');
@@ -301,7 +305,7 @@ const AN=(()=>{
     const {ctx}=processAll();
     if(!ctx.mapping.length){ DD.toast('אין ערכים שהוחלפו במספרים'); return; }
     {
-      const key=XLSX.utils.book_new(), rows=[['מספר אקראי','ערך מקורי','עמודה']].concat(ctx.mapping.map(m=>[m.token,m.value,m.column]));
+      const key=XLSX.utils.book_new(), rows=[['מספר רץ','ערך מקורי','עמודה']].concat(ctx.mapping.map(m=>[m.token,m.value,m.column]));
       const ws=XLSX.utils.aoa_to_sheet(rows); ws['!views']=[{RTL:true}];
       XLSX.utils.book_append_sheet(key,ws,'מפתח פענוח');
       key.Workbook={Views:[{RTL:true}]};
@@ -321,14 +325,14 @@ const AN=(()=>{
     const staff=['אורנה טל','יגאל שמש','ליאת ברק','רמי אלון'];
     const people=Array.from({length:120},()=>({name:pick(first)+' '+pick(last), id:ENG.withCheckDigit(Math.floor(rnd()*9e7)+1e7),
       phone:'05'+pick(['0','2','3','4','8'])+'-'+String(Math.floor(rnd()*9e6)+1e6), mail:'user'+Math.floor(rnd()*900+100)+'@'+pick(['gmail.com','walla.co.il','hotmail.com']),
-      addr:pick(streets)+' '+(Math.floor(rnd()*60)+1)+(rnd()<.4?'/'+(Math.floor(rnd()*12)+1):''), hood:pick(hoods), prop:String(100000+Math.floor(rnd()*899999))}));
+      addr:pick(streets)+' '+(Math.floor(rnd()*60)+1)+(rnd()<.4?'/'+(Math.floor(rnd()*12)+1):''), hood:pick(hoods), prop:String(100000+Math.floor(rnd()*899999)), age:20+Math.floor(rnd()*65)}));
     const desc=p=>{ const c=rnd(); const base=pick(['גזם שלא פונה כבר שבועיים','פנס רחוב לא דולק בלילה','בור גדול במדרכה ליד הגן','פח אשפה עולה על גדותיו','נזילת מים ליד הבניין','רכב חונה על מעבר חצייה','רעש מעבודות בנייה בשבת']);
       return c<.3 ? base+'. נא לחזור אליי בטלפון '+p.phone : c<.4 ? base+'. ת"ז של הפונה '+p.id : c<.47 ? base+'. אפשר לכתוב לי ל-'+p.mail : base; };
-    const calls=[['מספר פנייה','תאריך פתיחה','שם פונה','ת"ז','טלפון נייד','דוא"ל','כתובת','שכונה','קטגוריה','תיאור הפנייה','סטטוס','ימי טיפול','מספר נכס','עובד מטפל']];
+    const calls=[['מספר פנייה','תאריך פתיחה','שם פונה','ת"ז','טלפון נייד','דוא"ל','גיל','כתובת','שכונה','קטגוריה','תיאור הפנייה','סטטוס','ימי טיפול','מספר נכס','עובד מטפל']];
     for(let i=0;i<320;i++){
       const p=people[Math.floor(Math.pow(rnd(),1.6)*people.length)];   // some residents call again and again
       const d=new Date(2025,Math.floor(rnd()*12),Math.floor(rnd()*28)+1);
-      calls.push([24000+i,d,p.name,p.id,p.phone,rnd()<.7?p.mail:'',p.addr,p.hood,pick(cats),desc(p),pick(['סגור','סגור','סגור','פתוח','בטיפול']),Math.floor(rnd()*rnd()*40),p.prop,pick(staff)]);
+      calls.push([24000+i,d,p.name,p.id,p.phone,rnd()<.7?p.mail:'',p.age,p.addr,p.hood,pick(cats),desc(p),pick(['סגור','סגור','סגור','פתוח','בטיפול']),Math.floor(rnd()*rnd()*40),p.prop,pick(staff)]);
     }
     const tax=[['מספר משלם','שם משלם','ת.ז','כתובת הנכס','שטח (מ"ר)','סכום חיוב שנתי','סוג הנחה']];
     people.slice(0,80).forEach((p,i)=>tax.push([500000+i,p.name,p.id,p.addr,Math.floor(rnd()*120)+40,Math.floor(rnd()*6000)+2500,pick(['','','','אזרח ותיק','נכות','סטודנט'])]));
@@ -359,6 +363,6 @@ const AN=(()=>{
   return {sheet:i=>{ cur=i; render(); }, clear:()=>{ book=null; render(); window.scrollTo({top:0,behavior:'smooth'}); }, set:(i,a)=>{ book.sheets[cur].cols[i].action=a; renderCols(); renderAfter(); }, exportFile, exportKey, demo, _book:()=>book};
 })();
 </script>
-<script src="../../assets/site.js?v=24" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=25" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

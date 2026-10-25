@@ -51,7 +51,9 @@
     employee: {label:'שם עובד',              prefix:'עובד',  action:'token'},
     phone:    {label:'טלפון',                prefix:'טלפון', action:'token'},
     email:    {label:'דוא״ל',                prefix:'מייל',  action:'token'},
-    address:  {label:'כתובת',                prefix:'כתובת', action:'token'},
+    address:  {label:'כתובת',                prefix:'כתובת', action:'generalize'},
+    birth:    {label:'תאריך לידה',           prefix:'לידה',  action:'generalize'},
+    age:      {label:'גיל',                  prefix:'גיל',   action:'generalize'},
     payer:    {label:'מספר משלם',            prefix:'משלם',  action:'token'},
     property: {label:'מספר נכס / חשבון',     prefix:'נכס',   action:'token'},
     caseno:   {label:'מספר תיק',             prefix:'תיק',   action:'token'},
@@ -61,6 +63,8 @@
   };
   /* checked in order: the more specific phrases first ("שם רחוב" is an address, not a name) */
   var HEADER_RULES=[
+    ['birth',   ['תאריך לידה','ת. לידה','שנת לידה','לידה']],
+    ['age',     ['גיל']],
     ['freetext',['תוכן פנייה','תוכן הפנייה','פירוט','תיאור','הערות','הערה','טקסט חופשי','סיכום שיחה','מלל חופשי']],
     ['property',['מספר נכס','מס נכס','חשבון ארנונה','מספר חשבון']],
     ['payer',   ['מספר משלם','קוד משלם','מס משלם']],
@@ -114,30 +118,61 @@
     if(byHead && byContent && byHead.type==='safe') pick=byContent;
     if(byHead && byContent && byContent.type!==byHead.type && byHead.type!=='freetext') pick={type:byHead.type, why:byHead.why+'; וגם '+byContent.why};
     if(byHead && byHead.type==='freetext' && embedded>0) pick={type:'freetext', why:byHead.why+'; נמצאו פרטים אישיים בתוך הטקסט'};
-    return {type:pick.type, why:pick.why, action:TYPES[pick.type].action, samples:sample.slice(0,5).map(function(v){ return v instanceof Date ? v.toLocaleDateString('he-IL') : String(v); })};
+    var dates=sample.filter(function(v){ return v instanceof Date || DATE_TEXT.test(String(v).trim()); }).length;
+    var gen = pick.type==='birth'||pick.type==='age'||pick.type==='address' ? pick.type : (n && dates/n>=0.5 ? 'date' : null);
+    /* ID numbers get their own running numbers (ת"ז 001), so a name and an ID are never read as two residents */
+    var idcol = share(ids)>=0.15 || /ת\.?"?ז|תעודת זהות|מספר זהות|דרכון/.test(normHeader(header));
+    return {type:pick.type, why:pick.why, action:TYPES[pick.type].action, gen:gen, idcol:idcol, samples:sample.slice(0,5).map(function(v){ return v instanceof Date ? v.toLocaleDateString('he-IL') : String(v); })};
   }
 
   /* ---------- rewriting ---------- */
-  /* small seeded generator: the same file gives the same random numbers in the preview and in the download */
-  function seeded(seed){ var t=seed>>>0; return function(){ t=(t+0x6D2B79F5)>>>0; var r=Math.imul(t^(t>>>15),1|t); r^=r+Math.imul(r^(r>>>7),61|r); return ((r^(r>>>14))>>>0)/4294967296; }; }
-  function newContext(seed){ return {maps:{}, mapping:[], counts:{phone:0,email:0,id:0}, tokens:0, used:new Set(), rnd:seeded(seed==null?20261021:seed)}; }
-  /* each distinct value gets its own random 6-digit number, the same one everywhere in the file.
-     Six digits can never be a valid Israeli ID (those have 7–9), so the output is not mistaken for one. */
+  function newContext(){ return {maps:{}, mapping:[], counts:{phone:0,email:0,id:0}, tokens:0}; }
+  /* each distinct value gets a running number in its group (תושב 001, תושב 002…), the same one everywhere in the file */
   function token(ctx, group, value, colName){
     var key=String(value).trim();
-    var m=ctx.maps[group]||(ctx.maps[group]=new Map());
-    if(!m.has(key)){
-      var n; do{ n=100000+Math.floor(ctx.rnd()*900000); }while(ctx.used.has(n));
-      ctx.used.add(n); m.set(key,n); ctx.tokens++;
-      ctx.mapping.push({token:n, value:key, column:colName});
+    var m=ctx.maps[group]||(ctx.maps[group]={map:new Map(),next:1});
+    if(!m.map.has(key)){
+      var t=group+' '+String(m.next++).padStart(3,'0');
+      m.map.set(key,t); ctx.tokens++;
+      ctx.mapping.push({token:t, value:key, column:colName});
     }
-    return m.get(key);
+    return m.map.get(key);
+  }
+  /* ---------- generalising (slide 74): age -> range, birth date -> age range, date -> month, address -> street ---------- */
+  var DATE_TEXT=/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})$|^(\d{4})-(\d{1,2})-(\d{1,2})/;
+  function toDate(v){
+    if(v instanceof Date) return isNaN(v) ? null : v;
+    var m=DATE_TEXT.exec(String(v).trim()); if(!m) return null;
+    if(m[4]) return new Date(+m[4], +m[5]-1, +m[6]);
+    var y=+m[3]; if(y<100) y+= y>40 ? 1900 : 2000;
+    return new Date(y, +m[2]-1, +m[1]);
+  }
+  function ageBand(age){
+    if(!(age>=0)) return null;
+    if(age<5) return '0–4';
+    var lo=Math.floor((age-5)/10)*10+5;
+    return lo+'–'+(lo+9);
+  }
+  function generalize(kind, v, now){
+    if(kind==='age'){ var a=parseFloat(v); var b=ageBand(a); return b==null ? v : b; }
+    if(kind==='birth' || kind==='date'){
+      var d=toDate(v); if(!d) return v;
+      if(kind==='date') return String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+      now=now||new Date();
+      var age=now.getFullYear()-d.getFullYear()-((now.getMonth()<d.getMonth()||(now.getMonth()===d.getMonth()&&now.getDate()<d.getDate()))?1:0);
+      return ageBand(age)||v;
+    }
+    if(kind==='address'){
+      return String(v).replace(/\s*\d+\s*[א-ת]?(\s*\/\s*\d+)?/g,'').replace(/\s+,/g,',').replace(/\s{2,}/g,' ').replace(/^[,\s]+|[,\s]+$/g,'') || v;
+    }
+    return v;
   }
   /* returns the new value for one cell (drop is handled by the caller) */
   function transform(col, v, ctx){
     if(v===''||v==null) return v;
     switch(col.action){
-      case 'token': return token(ctx, TYPES[col.type] ? TYPES[col.type].prefix : 'ערך', v instanceof Date ? v.toISOString() : v, col.name);
+      case 'token': return token(ctx, col.idcol ? 'ת"ז' : TYPES[col.type] ? TYPES[col.type].prefix : 'ערך', v instanceof Date ? v.toISOString() : v, col.name);
+      case 'generalize': return col.gen ? generalize(col.gen, v) : v;
       case 'keep':
         if(col.type!=='freetext' || v instanceof Date) return v;
         if(typeof v==='number') return isValidIsraeliId(String(v)) ? (ctx.counts.id++,'[תז_הוסרה]') : v;
@@ -157,6 +192,6 @@
   }
 
   var api={isValidIsraeliId:isValidIsraeliId, withCheckDigit:withCheckDigit, isPhone:isPhone, isEmail:isEmail, scrubText:scrubText,
-           headerType:headerType, detectColumn:detectColumn, newContext:newContext, transform:transform, applySheet:applySheet, TYPES:TYPES};
+           headerType:headerType, detectColumn:detectColumn, newContext:newContext, generalize:generalize, ageBand:ageBand, transform:transform, applySheet:applySheet, TYPES:TYPES};
   if(typeof module!=='undefined' && module.exports) module.exports=api; else root.AnonEngine=api;
 })(this);
