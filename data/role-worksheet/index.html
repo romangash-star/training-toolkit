@@ -91,7 +91,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=25">
+<link rel="stylesheet" href="../../assets/site.css?v=26">
 </head>
 <body>
   <header class="bar">
@@ -127,7 +127,7 @@ const App=(()=>{
 
   function listHTML(arr,key){
     const items=arr.map(it=>`<div class="item">
-      <input class="txt" data-t="${key}:${it.id}" placeholder="הוסיפו משימה…" value="${attr(it.text)}">
+      <input class="txt" data-t="${key}:${it.id}" aria-label="משימה" value="${attr(it.text)}">
       <button class="aibtn ${it.ai?'on':''}" title="AI יכול לחסוך זמן כאן" onclick="App.toggleAi('${key}','${it.id}')">AI</button>
       <button class="del" title="מחיקה" onclick="App.del('${key}','${it.id}')">×</button>
     </div>`).join('');
@@ -156,7 +156,7 @@ const App=(()=>{
       <div class="sec s1">
         <div class="sh"><span class="num">1</span><h3>מה התפקיד שלי ברשות?</h3></div>
         <span class="ex">דוגמה: רכזת פניות ותושבים באגף שירות</span>
-        <div class="in-wrap micwrap"><input class="txt" id="role" data-t="role" placeholder="כתבו את התפקיד שלכם…" value="${attr(data.role)}"><button class="mic" data-t="role"></button></div>
+        <div class="in-wrap micwrap"><input class="txt" id="role" data-t="role" aria-label="התפקיד שלי" value="${attr(data.role)}"><button class="mic" data-t="role"></button></div>
       </div>
 
       <div class="cols">
@@ -253,6 +253,6 @@ const App=(()=>{
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=25" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=26" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

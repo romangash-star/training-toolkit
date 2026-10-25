@@ -6,7 +6,7 @@
 <title>בונה האתגר משולחן העבודה — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=25">
+<link rel="stylesheet" href="../assets/dd.css?v=26">
 <style>
   .wrap{max-width:1040px}
   .narrow{max-width:760px;margin-inline:auto}
@@ -28,6 +28,7 @@
   .gap div:last-child{background:var(--teal-tint,#dcedea)}
   .gap div span{display:block;font-weight:700;font-size:12.5px;color:var(--ink-soft)}
   .gap b{align-self:center;color:var(--brand);font-size:20px}
+  .whyex{margin:6px 0 0;padding-inline-start:20px;font-size:14px;color:var(--ink-soft);line-height:1.7}
   .gapnote{font-size:14px;margin:0 0 6px;color:var(--ink)}
   .signs{display:grid;grid-template-columns:1fr 1fr;gap:6px}
   .signs button{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;font:700 14px var(--font-sans,Arial);color:var(--ink-soft);text-align:right;cursor:pointer}
@@ -96,7 +97,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=25">
+<link rel="stylesheet" href="../../assets/site.css?v=26">
 </head>
 <body>
   <header class="bar">
@@ -110,12 +111,12 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=25"></script>
+<script src="../assets/dd.js?v=26"></script>
 <script>
 const Q=(()=>{
   'use strict';
-  /* Follows the day-1 deck. Part 1 (slides 33–37): the pain, the four components, five checks, five whys.
-     Part 2 (slides 38–41): where the data might be, as directions only. Success (KPI) is the next tool. */
+  /* Follows the day-1 deck, slides 26–37: the pain, the four components, five checks, five whys.
+     Where the data might be and the KPI (slides 38–45) are the next tool. */
   const LS='dd_question_v3', E=DD.esc;
   const DBN='<small class="dbn">(מבוסס נתונים)</small>';
   const FIELDS=[
@@ -134,22 +135,11 @@ const Q=(()=>{
     {q:'בתחום ההשפעה שלנו', d:'הרשות יכולה לפעול לפיה.'}
   ];
   /* slides 39–40: three directions, with the deck's example */
-  const IDEAS=[
-    {k:'internal', t:'בתוך הרשות', d:'מערכות וקבצים שכבר קיימים אצלכם או אצל עמיתים.', ph:'איזה מידע שכבר נאסף ברשות יכול לעזור?',
-     eg:['מוקד ופניות','ארנונה וגבייה','רישוי עסקים','הנדסה ו-GIS','חינוך','רווחה וקהילה','קבצי אקסל באגף'],
-     ex:'ארנונה: מי פעיל ומי נסגר\nרישוי עסקים\nפניות למוקד 106'},
-    {k:'open', t:'מידע פתוח', d:'נתונים שהמדינה מפרסמת, וכל אחד יכול להוריד.', ph:'איזה נתון ציבורי היה עוזר להשוות או להשלים?',
-     eg:['הלמ״ס','data.gov.il','שקיפות בחינוך','רשות המסים','משרד התחבורה'],
-     ex:'הלמ״ס: אוכלוסייה\nרשות המסים'},
-    {k:'field', t:'איסוף בשטח', d:'כשאין נתון קיים: שואלים, מסתכלים, סופרים.', ph:'מה צריך לברר בעצמכם, ואצל מי?',
-     eg:['ראיונות','תצפית','סקר קצר'],
-     ex:'שיחות עם בעלי עסקים\nתצפית על תנועת קונים'}
-  ];
   const SIGNS=['פוגע ביכולת לבצע את המשימה','חוזר על עצמו שוב ושוב','יש לו עלות: בזמן, בכסף או באמון','תושבים או עובדים מתלוננים עליו'];
   const SOLUTION_WORDS=/^\s*(אין|חסר|חסרים|חסרה|צריך|צריכים|לא מספיק|אנחנו צריכים|יש צורך|איך נקים|איך נבנה)/;
-  const STEPS=['pain','template','tests','whys','ideas','export'];
-  const STEP_NAMES=['הכאב','ניסוח האתגר','5 בדיקות','5 פעמים למה','איפה המידע?','מוכן'];
-  const PARTS=[{t:'חלק 1 · האתגר משולחן העבודה',steps:[0,1,2,3]},{t:'חלק 2 · איפה המידע',steps:[4]},{t:'',steps:[5]}];
+  const STEPS=['pain','template','tests','whys','export'];
+  const STEP_NAMES=['הכאב','ניסוח האתגר','5 בדיקות','5 פעמים למה','מוכן'];
+  const PARTS=[{t:'האתגר משולחן העבודה',steps:[0,1,2,3]},{t:'',steps:[4]}];
 
   function fresh(){ return { step:0, problem:'', whys:['','','','','',''],
     q:{who:'',decision:'',measure:'',scope:'',own:''}, tests:TESTS.map(()=>''),
@@ -165,11 +155,10 @@ const Q=(()=>{
   function sentence(html){ const own=(data.q.own||'').trim(); return own ? (html?E(own):own) : DD.questionSentence(data.q, slot(html)); }
   const plain=t=>E(t).replace(/\n/g,'<br>');
   const root=()=>[...data.whys].reverse().find(w=>w.trim())||'';
-  const hasIdeas=()=>IDEAS.some(g=>(data.ideas[g.k]||'').trim());
 
   const SCREENS={
     pain:()=>`
-      ${head(1,'הכאב'+DD.help('כתבו מה <b>לא עובד היום</b>, מנקודת המבט של התושב או של העובדים, בלי פתרון בפנים. במקום ״אין מספיק פקחים״ כתבו ״הטיפול בפנייה לוקח יותר מ-14 יום״.'),'חלק 1 · שלב 1 מתוך 4')}
+      ${head(1,'הכאב'+DD.help('כתבו מה <b>לא עובד היום</b>, מנקודת המבט של התושב או של העובדים, בלי פתרון בפנים. במקום ״אין מספיק פקחים״ כתבו ״הטיפול בפנייה לוקח יותר מ-14 יום״.'),'שלב 1 מתוך 4')}
       <p class="lead">חזרו לרשימה שעשיתם בתחילת היום (<a href="../role-worksheet/">מה אני עושה ברשות</a>): איפה הציבור הכי מתלונן? איפה תהליך נתקע? בחרו בעיה <b>שיש לכם עליה נתונים</b>, ושאתם רוצים להתעסק בה.</p>
       <div class="gap">
         <div><span>המצוי</span>תושב ממתין 3 שבועות לאישור, ולא יודע באיזה שלב הבקשה</div>
@@ -178,27 +167,27 @@ const Q=(()=>{
       </div>
       <p class="gapnote"><b>כאב = הפער בין הרצוי למצוי.</b> ככל שהפער גדול יותר, חוזר יותר ויקר יותר, כך כדאי יותר לטפל בו.</p>
       <div class="field-label">הכאב שלכם</div>
-      <textarea id="problem" style="min-height:100px" placeholder="לדוגמה: עסקים במרכז המסחרי נסגרים כל הזמן">${E(data.problem)}</textarea>
+      <textarea id="problem" style="min-height:100px" aria-label="הכאב שלכם">${E(data.problem)}</textarea>
       <div id="probWarn"></div>
       <div class="field-label">כאב אמיתי, או רק חוסר נוחות?${DD.help('המבחן: האם זה פוגע במשהו אמיתי, או שזה פשוט מעצבן? חוסר נוחות הוא חד-פעמי, לא חוסם, ונעלם מעצמו עם הזמן. מחפשים כאב אמיתי.')}</div>
       <div class="signs">${SIGNS.map((x,i)=>`<button type="button" class="${data.signs[i]?'on':''}" aria-pressed="${!!data.signs[i]}" onclick="Q.sign(${i})">${data.signs[i]?'✓ ':''}${x}</button>`).join('')}</div>
       <div id="signNote"></div>`,
     template:()=>`
-      ${head(2,'ניסוח האתגר'+DD.help('אתגר משולחן העבודה הוא לא נושא ולא תלונה. זו שאלה שמובילה להחלטה, ושאפשר לענות עליה בנתונים. המבחן: <b>אם נקבל תשובה, מה נעשה אחרת?</b>'),'חלק 1 · שלב 2 מתוך 4')}
+      ${head(2,'ניסוח האתגר'+DD.help('אתגר משולחן העבודה הוא לא נושא ולא תלונה. זו שאלה שמובילה להחלטה, ושאפשר לענות עליה בנתונים. המבחן: <b>אם נקבל תשובה, מה נעשה אחרת?</b>'),'שלב 2 מתוך 4')}
       <div class="ladder">
         <div><span>נושא</span>״העסקים במרכז המסחרי״</div><i aria-hidden="true">←</i>
         <div><span>תלונה</span>״עסקים נסגרים כל הזמן״</div><i aria-hidden="true">←</i>
         <div class="on"><span>אתגר משולחן העבודה</span>״אילו עסקים במרכז המסחרי נסגרו בשנתיים האחרונות, ומה מבדיל אותם מאלה ששרדו?״</div>
       </div>
       <p class="lead">ארבעה רכיבים של שאלה טובה. המשפט נבנה בזמן שאתם כותבים.</p>
-      <div class="grid2">${FIELDS.map(f=>`<div><div class="field-label" style="margin-top:4px">${f.l}${DD.help(f.h)}</div><input class="txt" data-q="${f.k}" placeholder="${E(f.ph)}" value="${E(data.q[f.k])}"></div>`).join('')}</div>
+      <div class="grid2">${FIELDS.map(f=>`<div><div class="field-label" style="margin-top:4px">${f.l}${DD.help(f.h)}</div><input class="txt" data-q="${f.k}" aria-label="${f.l}" value="${E(data.q[f.k])}"></div>`).join('')}</div>
       <div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="Q.example()">הדוגמה מהמצגת</button></div>
       <div class="field-label">האתגר שלכם</div>
       <div class="out" id="sentence"></div>
-      <details class="more"><summary>רוצים לנסח במילים שלכם?</summary>
-        <textarea data-q="own" style="margin-top:8px" placeholder="אם תכתבו כאן, זה הנוסח שיישמר ויופיע בייצוא">${E(data.q.own)}</textarea></details>`,
+      <details class="more"><summary>רוצים לנסח במילים שלכם? מה שתכתבו כאן יופיע בייצוא</summary>
+        <textarea data-q="own" style="margin-top:8px" aria-label="האתגר במילים שלכם">${E(data.q.own)}</textarea></details>`,
     tests:()=>`
-      ${head(3,'חמש בדיקות לאתגר שלכם'+DD.help('בדיקה עצמית לפני שממשיכים. אם עניתם ״לא״ על אחת מהן, חוזרים לשלב 2 ומחדדים את הניסוח.'),'חלק 1 · שלב 3 מתוך 4')}
+      ${head(3,'חמש בדיקות לאתגר שלכם'+DD.help('בדיקה עצמית לפני שממשיכים. אם עניתם ״לא״ על אחת מהן, חוזרים לשלב 2 ומחדדים את הניסוח.'),'שלב 3 מתוך 4')}
       <div class="out" style="font-size:15.5px;margin-bottom:14px">${plain(sentence(false))}</div>
       ${TESTS.map((t,i)=>`
         <div class="check ${data.tests[i]==='y'?'on':data.tests[i]==='n'?'bad':''}">
@@ -207,35 +196,24 @@ const Q=(()=>{
         </div>`).join('')}
       ${data.tests.includes('n')?'<div class="callout warn">עניתם "לא" על אחת הבדיקות. <a href="#" onclick="Q.go(1);return false">חוזרים ומחדדים את הניסוח ←</a></div>':''}`,
     whys:()=>`
-      ${head(4,'חמש פעמים "למה"'+DD.help('בכל שורה עונים על ״למה זה קורה?״ לגבי השורה שמעליה. לא חייבים למלא את כל החמש: עוצרים כשמגיעים לסיבה שאפשר לבדוק ולתקן.'),'חלק 1 · שלב 4 מתוך 4')}
+      ${head(4,'חמש פעמים "למה"'+DD.help('בכל שורה עונים על ״למה זה קורה?״ לגבי השורה שמעליה. לא חייבים למלא את כל החמש: עוצרים כשמגיעים לסיבה שאפשר לבדוק ולתקן.'),'שלב 4 מתוך 4')}
       <p class="lead">יורדים לשורש: שואלים "למה?" שוב ושוב. אם השורש שונה ממה שניסחתם, <a href="#" onclick="Q.go(1);return false">חוזרים לניסוח</a> ומעדכנים.</p>
-      ${data.whys.map((w,i)=>`<div class="why-row"><span class="lbl">${i===0?'הכאב':'← למה? '+i}</span><input class="txt" data-why="${i}" placeholder="${E(WHY_PH[i])}" value="${E(w)}"></div>`).join('')}
+      ${data.whys.map((w,i)=>`<div class="why-row"><span class="lbl">${i===0?'הכאב':'← למה? '+i}</span><input class="txt" data-why="${i}" aria-label="${i===0?'הכאב':'למה '+i}" value="${E(w)}"></div>`).join('')}
+      <details class="more"><summary>הדוגמה מהמצגת</summary><ol class="whyex">${WHY_PH.map((w,i)=>`<li>${i?'למה? ':''}${E(w)}</li>`).join('')}</ol></details>
       <div class="field-label">השורש שאליו הגעתם</div>
       <div class="out" id="root"></div>`,
-    ideas:()=>`
-      ${head(5,'איפה יכול להיות המידע?'+DD.help('עוד לא ממפים לעומק. רק חושבים בקול: איזה מידע היה עוזר לענות על האתגר, ואיפה הוא עשוי להימצא. מיפוי מפורט נעשה בהמשך, בכלי <b>מיפוי מקורות המידע</b>.'),'חלק 2')}
-      <p class="lead">שלושה כיווני מחשבה. בכל אחד כותבים בחופשיות מה עולה. <b>כיווני מחשבה, לא רשימה מדויקת.</b></p>
-      <div style="margin:0 0 12px"><button class="btn btn-ghost btn-sm" onclick="Q.ideasExample()">הדוגמה מהמצגת: עסקים במרכז המסחרי</button></div>
-      ${IDEAS.map(g=>`
-        <div class="idea">
-          <h3>${g.t}</h3>
-          <p>${g.d}</p>
-          <div class="eg">${g.eg.map(x=>`<button type="button" onclick="Q.idea('${g.k}','${x}')">+ ${x}</button>`).join('')}</div>
-          <textarea data-idea="${g.k}" placeholder="${E(g.ph)}">${E(data.ideas[g.k])}</textarea>
-        </div>`).join('')}`,
     export:()=>`
       <div class="party">
         <div class="big">✓</div>
         <h2>יש לכם אתגר משולחן העבודה ${DBN}</h2>
         <div class="out">${plain(sentence(false))}</div>
-        <div class="out" style="margin-top:10px"><b>איפה יכול להיות המידע</b><br>${hasIdeas()?IDEAS.filter(g=>(data.ideas[g.k]||'').trim()).map(g=>'<b>'+g.t+':</b> '+plain(data.ideas[g.k].trim().replace(/\n+/g,' · '))).join('<br>'):'<span style="color:#9aa6b1">עדיין לא מולא</span>'}</div>
         <div class="exportbar" style="margin:16px 0 0">
           <button class="btn btn-ghost" onclick="Q.doc()">ייצוא ל-Word</button>
           <button class="btn btn-ghost" onclick="Q.copyAll()">העתקה</button>
           <button class="btn btn-ghost" onclick="Q.saveJson()">שמירה</button>
           <button class="btn btn-ghost" onclick="Q.loadJson()">טעינה</button>
         </div>
-        <a class="btn btn-brand nextcta" href="../kpi/">ממשיכים: איך נדע שהצלחנו? (KPI) ←</a>
+        <a class="btn btn-brand nextcta" href="../kpi/">ממשיכים: איתור מקורות מידע ומדדי הצלחה ←</a>
         <div style="margin-top:14px"><button class="btn btn-ghost btn-sm" onclick="Q.reset()">להתחיל מחדש</button></div>
       </div>`
   };
@@ -246,7 +224,7 @@ const Q=(()=>{
     const btn=k=>`<button class="stepbtn ${st===k?'on':st>k?'done':''}" onclick="Q.go(${k})" ${st===k?'aria-current="step"':''}><span class="sn">${st>k||k===last?'✓':k+1}</span><span class="nm">${STEP_NAMES[k]}</span></button>`;
     const arrow=k=>`<span class="arrow ${st>=k?'done':''}" aria-hidden="true">←</span>`;
     const stepper=PARTS.map((p,i)=>`<div class="sgroup${p.steps.includes(st)?' on':''}">${p.t?`<div class="sglabel">${p.t}</div>`:'<div class="sglabel">&nbsp;</div>'}<div class="srow">${p.steps.map((k,j)=>(j?arrow(k):'')+btn(k)).join('')}</div></div>`).join(`<span class="arrow part" aria-hidden="true">←</span>`);
-    const nextLabel={whys:'ממשיכים לחלק 2: איפה המידע? ←',ideas:'סיום וייצוא ←'}[key]||'הבא: '+STEP_NAMES[st+1]+' ←';
+    const nextLabel={whys:'סיימתי, לאתגר המוכן ←'}[key]||'הבא: '+STEP_NAMES[st+1]+' ←';
     document.getElementById('app').innerHTML=`
       <div class="pagehead"><h1>בונה האתגר משולחן העבודה ${DBN}</h1></div>
       <nav class="stepper" aria-label="שלבים">${stepper}</nav>
@@ -262,7 +240,6 @@ const Q=(()=>{
     on('#problem',el=>data.problem=el.value);
     on('[data-why]',el=>data.whys[+el.dataset.why]=el.value);
     on('[data-q]',el=>data.q[el.dataset.q]=el.value);
-    on('[data-idea]',el=>data.ideas[el.dataset.idea]=el.value);
   }
   function paintLive(){
     const set=(id,html)=>{const el=document.getElementById(id); if(el) el.innerHTML=html;};
@@ -285,24 +262,16 @@ const Q=(()=>{
     FIELDS.forEach(f=>data.q[f.k]=f.ph); data.q.own='';
     save(); render();
   }
-  /* tapping an example adds it as a line, so nobody starts from an empty box */
-  function idea(k,x){ const cur=(data.ideas[k]||'').trim(); if(cur.split(/\n/).includes(x)) return; data.ideas[k]=cur?cur+'\n'+x:x; save(); render(); }
-  function ideasExample(){
-    if(hasIdeas() && !confirm('להחליף את מה שכתבתם בדוגמה?')) return;
-    IDEAS.forEach(g=>data.ideas[g.k]=g.ex); save(); render();
-  }
 
   /* ---------- export ---------- */
   const TITLE='האתגר משולחן העבודה (מבוסס נתונים)';
   function asText(){
     const L=[TITLE+(DD.identity()?' · '+DD.identity():''),''];
-    L.push('חלק 1 · האתגר משולחן העבודה','הכאב: '+(data.problem||'—'));
+    L.push('הכאב: '+(data.problem||'—'));
     const sg=SIGNS.filter((_,i)=>data.signs[i]); if(sg.length) L.push('סימנים לכאב אמיתי: '+sg.join(' · '));
     L.push('','האתגר: '+sentence(false),'');
     TESTS.forEach((t,i)=>L.push(`  ${data.tests[i]==='y'?'✓':data.tests[i]==='n'?'✗':'☐'} ${t.q}`));
     if(data.whys.slice(1).some(Boolean)){ L.push('','חמש פעמים למה:'); data.whys.forEach((w,i)=>{ if(i>0&&w) L.push(`  למה ${i}: ${w}`); }); }
-    L.push('','חלק 2 · איפה יכול להיות המידע');
-    IDEAS.forEach(g=>{ if((data.ideas[g.k]||'').trim()) L.push('  '+g.t+': '+data.ideas[g.k].trim().replace(/\n+/g,' · ')); });
     return L.join('\n');
   }
   function copyQuestion(){ DD.copy('האתגר שלי משולחן העבודה\n'+sentence(false),'האתגר הועתק ✓'); }
@@ -314,11 +283,10 @@ const Q=(()=>{
   function doc(){
     const h=s=>'<h2>'+E(s)+'</h2>', p=s=>'<p>'+E(s||'—').replace(/\n/g,'<br>')+'</p>';
     let b='<h1>'+E(TITLE)+'</h1><p>'+E(DD.identity())+'</p>';
-    b+=h('חלק 1 · האתגר משולחן העבודה')+p('הכאב: '+data.problem);
+    b+=p('הכאב: '+data.problem);
     b+='<p style="font-size:15px"><b>האתגר:</b> '+plain(sentence(false))+'</p>';
     b+='<table>'+TESTS.map((t,i)=>'<tr><td>'+E(t.q)+'</td><td>'+(data.tests[i]==='y'?'✓ כן':data.tests[i]==='n'?'✗ לא':'')+'</td></tr>').join('')+'</table>';
     if(data.whys.slice(1).some(Boolean)) b+='<p><b>חמש פעמים למה</b></p><ol>'+data.whys.slice(1).filter(Boolean).map(w=>'<li>'+E(w)+'</li>').join('')+'</ol>';
-    b+=h('חלק 2 · איפה יכול להיות המידע')+'<table>'+IDEAS.map(g=>'<tr><th>'+g.t+'</th><td>'+plain((data.ideas[g.k]||'').trim())+'</td></tr>').join('')+'</table><p>מיפוי מעמיק של המקורות: בכלי ״מיפוי מקורות המידע״.</p>';
     DD.downloadDoc('האתגר משולחן העבודה',TITLE,b); DD.toast('המסמך הורד');
   }
   function saveJson(){ DD.download(DD.safeName(data.q.decision,'אתגר משולחן העבודה')+'.json', JSON.stringify(data,null,2)); }
@@ -326,9 +294,9 @@ const Q=(()=>{
   function reset(){ if(confirm('למחוק את כל מה שמילאתם ולהתחיל מחדש?')){ data=fresh(); save(); render(); } }
 
   render();
-  return {go,sign,test,example,idea,ideasExample,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
+  return {go,sign,test,example,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
 })();
 </script>
-<script src="../../assets/site.js?v=25" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=26" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
