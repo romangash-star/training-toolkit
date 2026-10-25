@@ -31,7 +31,6 @@
   .levels div em{font-style:normal;display:block;margin-top:4px;color:var(--brand-deep);font-weight:700}
   .levels div.main{background:var(--teal-tint,#dcedea);outline:2px solid var(--teal,#1f5f5b)}
   .levels i{font-style:normal;align-self:center;color:#c4b49a;font-weight:700}
-  .tip{font-size:14px;margin:8px 0 0;color:var(--ink)}
   .exrow{margin:12px 0 0}
   .stephead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
   .stephead .num{width:34px;height:34px;border-radius:10px;background:var(--brand);color:#FFFDF8;display:grid;place-items:center;font-size:17px;font-weight:700;flex:0 0 auto}
@@ -77,7 +76,6 @@ const K=(()=>{
   const IDEAS_EX='ארנונה: מי פעיל ומי נסגר\nרישוי עסקים\nפניות למוקד 106';
   const IEMPTY={internal:'',open:'',field:'',hasFile:''};
   const EMPTY={metric:'',base:'',target:'',date:'',output:''};
-  const EX={metric:'עסקים שנסגרו בשנה',base:'18%',target:'10%',date:'2027',output:'50 סדנאות לבעלי עסקים'};
   let rec=DD.load(LS,{});
   rec.kpi=Object.assign({},EMPTY,rec.kpi||{});
   rec.ideas=Object.assign({},IEMPTY,rec.ideas||{});
@@ -87,9 +85,9 @@ const K=(()=>{
 
   const slot=html=>(v,ph)=>{ v=(v||'').trim(); return html ? `<span class="slot ${v?'':'empty'}">${E(v||ph)}</span>` : (v||'['+ph+']'); };
   function sentence(html){
-    const s=slot(html), o=(k().output||'').trim();
+    const s=slot(html);
     return `נדע שהצלחנו כאשר ${s(k().metric,'מדד')} ישתנה מ-${s(k().base,'נקודת מוצא')} ל-${s(k().target,'יעד')} עד ${s(k().date,'מועד')}.`
-      + (o ? ' לצדו נעקוב אחרי מדד התפוקה: '+(html?E(o):o)+'.' : '');
+      ;
   }
   const LABELS={metric:'מדד',base:'נקודת מוצא',target:'יעד',date:'מועד',output:'מדד תפוקה'};
   const input=f=>`<input class="txt" data-k="${f}" aria-label="${LABELS[f]}" value="${E(k()[f])}">`;
@@ -114,6 +112,7 @@ const K=(()=>{
 
       <div class="panel">
         <div class="stephead"><span class="num">2</span><h2>איך נדע שהצלחנו? (KPI)${DD.help('<b>KPI</b> = Key Performance Indicator, מדד ביצוע מרכזי. הצלחה היא מספר, לא תחושה: מדד אחד שאפשר לספור, המספר של היום, ולאן רוצים להגיע ועד מתי.')}</h2></div>
+        <div class="out" id="sentence" style="margin:0 0 12px"></div>
         <div class="kpi3">
           <div class="k"><b>מדד</b><span>מה בדיוק סופרים</span>${input('metric')}</div>
           <div class="k"><b>נקודת מוצא</b><span>איפה אנחנו היום</span>${input('base')}</div>
@@ -125,14 +124,9 @@ const K=(()=>{
           <div class="main"><b>תוצאה</b>מה השתנה בשטח?<em>פחות עסקים נסגרים</em></div><i aria-hidden="true">←</i>
           <div><b>השפעה</b>האם המצב באמת טוב יותר?<em>מרכז מסחרי חי ותוסס</em></div>
         </div>
-        <p class="tip">בוחרים <b>מדד תוצאה</b> ראשי (למעלה), ולצדו <b>מדד תפוקה</b>:</p>
-        ${input('output')}
-        <div class="exrow"><button class="btn btn-ghost btn-sm" onclick="K.example()">הדוגמה מהמצגת</button> <span class="hint">המספרים בדוגמה להמחשה בלבד</span></div>
       </div>
 
       <div class="panel">
-        <div class="field-label" style="margin-top:0">המשפט שלכם</div>
-        <div class="out" id="sentence"></div>
         <div class="exportbar" style="grid-template-columns:1fr 1fr;margin-top:12px">
           <button class="btn btn-ghost" onclick="K.doc()">ייצוא ל-Word</button>
           <button class="btn btn-ghost" onclick="K.copyText()">העתקה</button>
@@ -144,10 +138,6 @@ const K=(()=>{
     paint();
   }
   function paint(){ document.getElementById('sentence').innerHTML=sentence(true); }
-  function example(){
-    if(Object.keys(EMPTY).some(f=>(k()[f]||'').trim()) && !confirm('להחליף את מה שכתבתם בדוגמה?')) return;
-    rec.kpi=Object.assign({},EX); save(); render();
-  }
   /* tapping an example adds it as a line, so nobody starts from an empty box */
   function idea(x){ const cur=(rec.ideas.internal||'').trim(); if(cur.split(/\n/).includes(x)) return; rec.ideas.internal=cur?cur+'\n'+x:x; save(); render(); }
   function has(v){ rec.ideas.hasFile=rec.ideas.hasFile===v?'':v; save(); render(); }
@@ -164,7 +154,7 @@ const K=(()=>{
       ideas.length?'איפה יכול להיות המידע:':'', ...ideas, '',
       'איך נדע שהצלחנו (KPI):',
       'מדד: '+(x.metric||'—'),'נקודת מוצא: '+(x.base||'—'),'יעד: '+(x.target||'—')+' עד '+(x.date||'—'),
-      x.output?'מדד תפוקה: '+x.output:'','',sentence(false)].filter((l,i,a)=>l!==''||a[i-1]!=='').join('\n');
+      '',sentence(false)].filter((l,i,a)=>l!==''||a[i-1]!=='').join('\n');
   }
   function copyText(){ DD.copy(text(),'הועתק ✓'); }
   function doc(){
@@ -173,12 +163,12 @@ const K=(()=>{
     if(q) b+='<p><b>האתגר משולחן העבודה:</b> '+E(q)+'</p>';
     b+='<h2>איפה יכול להיות המידע</h2><table><tr><th>יש קובץ נתונים?</th><td>'+E((HAS.find(h=>h[0]===rec.ideas.hasFile)||['',''])[1])+'</td></tr><tr><th>איפה</th><td>'+E((rec.ideas.internal||'').trim()).replace(/\n/g,'<br>')+'</td></tr></table><p>מיפוי מעמיק של המקורות: בכלי ״מיפוי מקורות המידע״.</p>';
     b+='<h2>איך נדע שהצלחנו (KPI)</h2>';
-    b+='<table><tr><th>מדד</th><td>'+E(x.metric)+'</td></tr><tr><th>נקודת מוצא</th><td>'+E(x.base)+'</td></tr><tr><th>יעד</th><td>'+E(x.target)+'</td></tr><tr><th>מועד</th><td>'+E(x.date)+'</td></tr>'+(x.output?'<tr><th>מדד תפוקה</th><td>'+E(x.output)+'</td></tr>':'')+'</table>';
+    b+='<table><tr><th>מדד</th><td>'+E(x.metric)+'</td></tr><tr><th>נקודת מוצא</th><td>'+E(x.base)+'</td></tr><tr><th>יעד</th><td>'+E(x.target)+'</td></tr><tr><th>מועד</th><td>'+E(x.date)+'</td></tr>'+'</table>';
     b+='<p style="font-size:15px">'+E(sentence(false))+'</p>';
     DD.downloadDoc('מקורות מידע ומדדי הצלחה','איתור מקורות מידע ומדדי הצלחה',b); DD.toast('המסמך הורד');
   }
   render();
-  return {example,idea,has,ideasExample,copyText,doc};
+  return {idea,has,ideasExample,copyText,doc};
 })();
 </script>
 <script src="../../assets/site.js?v=26" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
