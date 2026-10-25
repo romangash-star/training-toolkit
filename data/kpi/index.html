@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>איך נדע שהצלחנו? (KPI) — קבלת החלטות מבוססת נתונים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/dd.css?v=24">
+<style>
+  .wrap{max-width:820px}
+  .pagehead{text-align:center;margin:0 0 16px}
+  .pagehead h1{font-size:clamp(24px,3vw,30px)}
+  .pagehead p{color:var(--ink-soft);margin:4px 0 0;font-size:15.5px}
+  .qbox{border:1.5px solid var(--teal,#1f5f5b);background:var(--teal-tint,#dcedea);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:15px;line-height:1.6}
+  .qbox .ql{font-size:13px;font-weight:700;color:var(--teal,#1f5f5b);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .qbox .ql a{color:var(--teal,#1f5f5b)}
+  .qbox.missing{border-color:var(--warning,#9a6514);background:#fbf1e0}
+  /* slide 43: metric, starting point, target and date */
+  .kpi3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 6px}
+  .kpi3 .k{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;display:flex;flex-direction:column;gap:6px}
+  .kpi3 .k b{font-size:16px}
+  .kpi3 .k span{font-size:13px;color:var(--ink-soft)}
+  .kpi3 .k .txt{margin-top:2px}
+  .kpi3 .pair{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  /* slide 44: output, outcome, impact */
+  .levels{display:flex;align-items:stretch;gap:6px;margin:6px 0 4px}
+  .levels div{flex:1;border-radius:12px;padding:10px 12px;background:var(--paper);font-size:13.5px;color:var(--ink-soft)}
+  .levels div b{display:block;color:var(--ink);font-size:15px}
+  .levels div em{font-style:normal;display:block;margin-top:4px;color:var(--brand-deep);font-weight:700}
+  .levels div.main{background:var(--teal-tint,#dcedea);outline:2px solid var(--teal,#1f5f5b)}
+  .levels i{font-style:normal;align-self:center;color:#c4b49a;font-weight:700}
+  .tip{font-size:14px;margin:8px 0 0;color:var(--ink)}
+  .exrow{margin:12px 0 0}
+  .stephead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .stephead .num{width:34px;height:34px;border-radius:10px;background:var(--brand);color:#FFFDF8;display:grid;place-items:center;font-size:17px;font-weight:700;flex:0 0 auto}
+  .stephead h2{font-size:21px;letter-spacing:-.3px;display:flex;align-items:center}
+  .nextcta{display:flex;margin:18px auto 0;max-width:420px;padding:15px 22px;font-size:17px}
+  @media (max-width:640px){.kpi3{grid-template-columns:1fr}.levels{flex-direction:column}.levels i{display:none}}
+</style>
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/site.css?v=24">
+</head>
+<body>
+  <header class="bar">
+    <div class="brand">איך נדע שהצלחנו? (KPI)</div>
+    <a class="hublink" href="../">‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap" id="app"></main>
+
+  <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
+  <div class="toast" id="toast"></div>
+
+<script src="../assets/dd.js?v=24"></script>
+<script>
+const K=(()=>{
+  'use strict';
+  /* Follows slides 42–45 of the day-1 deck. Saved next to the challenge (dd_question_v3.kpi),
+     so the builder, this tool and the AI prompt share one record. */
+  const LS='dd_question_v3', E=DD.esc;
+  const EMPTY={metric:'',base:'',target:'',date:'',output:''};
+  const EX={metric:'עסקים שנסגרו בשנה',base:'18%',target:'10%',date:'2027',output:'50 סדנאות לבעלי עסקים'};
+  let rec=DD.load(LS,{});
+  rec.kpi=Object.assign({},EMPTY,rec.kpi||{});
+  const k=()=>rec.kpi;
+  function save(){ const cur=DD.load(LS,{}); cur.kpi=rec.kpi; DD.save(LS,cur); }   // keep whatever the builder saved meanwhile
+
+  const slot=html=>(v,ph)=>{ v=(v||'').trim(); return html ? `<span class="slot ${v?'':'empty'}">${E(v||ph)}</span>` : (v||'['+ph+']'); };
+  function sentence(html){
+    const s=slot(html), o=(k().output||'').trim();
+    return `נדע שהצלחנו כאשר ${s(k().metric,'מדד')} ישתנה מ-${s(k().base,'נקודת מוצא')} ל-${s(k().target,'יעד')} עד ${s(k().date,'מועד')}.`
+      + (o ? ' לצדו נעקוב אחרי מדד התפוקה: '+(html?E(o):o)+'.' : '');
+  }
+  const input=(f,ph)=>`<input class="txt" data-k="${f}" placeholder="${E(ph)}" value="${E(k()[f])}">`;
+
+  function render(){
+    const q=DD.businessQuestion();
+    document.getElementById('app').innerHTML=`
+      <div class="pagehead"><h1>איך נדע שהצלחנו? (KPI)</h1><p>הצלחה היא מספר, לא תחושה. מגדירים אותה מראש.</p></div>
+      <div class="qbox ${q?'':'missing'}">${q
+        ? `<div class="ql"><span>האתגר משולחן העבודה שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
+        : `<div class="ql"><span>עדיין אין אתגר משולחן העבודה</span><a href="../question/">לבונה האתגר ←</a></div>אפשר להגדיר מדד גם בלי, אבל קל יותר כשהאתגר מול העיניים.`}</div>
+
+      <div class="panel">
+        <div class="stephead"><span class="num">1</span><h2>מדד, נקודת מוצא, יעד ומועד${DD.help('<b>KPI</b> = Key Performance Indicator, מדד ביצוע מרכזי. מדד אחד שאפשר לספור, המספר של היום, ולאן רוצים להגיע ועד מתי.')}</h2></div>
+        <div class="kpi3">
+          <div class="k"><b>מדד</b><span>מה בדיוק סופרים</span>${input('metric','עסקים שנסגרו בשנה')}</div>
+          <div class="k"><b>נקודת מוצא</b><span>איפה אנחנו היום</span>${input('base','היום: 18%')}</div>
+          <div class="k"><b>יעד ומועד</b><span>לאן ועד מתי</span><div class="pair">${input('target','10%')}${input('date','2027')}</div></div>
+        </div>
+        <div class="exrow"><button class="btn btn-ghost btn-sm" onclick="K.example()">הדוגמה מהמצגת</button> <span class="hint">המספרים בדוגמה להמחשה בלבד</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="stephead"><span class="num">2</span><h2>תפוקה · תוצאה · השפעה</h2></div>
+        <div class="levels">
+          <div><b>תפוקה</b>כמה עשינו?<em>50 סדנאות לבעלי עסקים</em></div><i aria-hidden="true">←</i>
+          <div class="main"><b>תוצאה</b>מה השתנה בשטח?<em>פחות עסקים נסגרים</em></div><i aria-hidden="true">←</i>
+          <div><b>השפעה</b>האם המצב באמת טוב יותר?<em>מרכז מסחרי חי ותוסס</em></div>
+        </div>
+        <p class="tip">בוחרים <b>מדד תוצאה</b> ראשי (למעלה), ולצדו <b>מדד תפוקה</b>:</p>
+        ${input('output','50 סדנאות לבעלי עסקים')}
+      </div>
+
+      <div class="panel">
+        <div class="field-label" style="margin-top:0">המשפט שלכם</div>
+        <div class="out" id="sentence"></div>
+        <div class="exportbar" style="grid-template-columns:1fr 1fr;margin-top:12px">
+          <button class="btn btn-ghost" onclick="K.doc()">ייצוא ל-Word</button>
+          <button class="btn btn-ghost" onclick="K.copyText()">העתקה</button>
+        </div>
+      </div>
+      <a class="btn btn-brand nextcta" href="../ai-prompt/">ממשיכים: מתייעצים עם ה-AI ←</a>`;
+    document.querySelectorAll('[data-k]').forEach(el=>el.addEventListener('input',()=>{ k()[el.dataset.k]=el.value; save(); paint(); }));
+    paint();
+  }
+  function paint(){ document.getElementById('sentence').innerHTML=sentence(true); }
+  function example(){
+    if(Object.keys(EMPTY).some(f=>(k()[f]||'').trim()) && !confirm('להחליף את מה שכתבתם בדוגמה?')) return;
+    rec.kpi=Object.assign({},EX); save(); render();
+  }
+  function text(){
+    const q=DD.businessQuestion(), x=k();
+    return ['איך נדע שהצלחנו (KPI)'+(DD.identity()?' · '+DD.identity():''),'',
+      q?'האתגר משולחן העבודה: '+q:'', '',
+      'מדד: '+(x.metric||'—'),'נקודת מוצא: '+(x.base||'—'),'יעד: '+(x.target||'—')+' עד '+(x.date||'—'),
+      x.output?'מדד תפוקה: '+x.output:'','',sentence(false)].filter((l,i,a)=>l!==''||a[i-1]!=='').join('\n');
+  }
+  function copyText(){ DD.copy(text(),'הועתק ✓'); }
+  function doc(){
+    const q=DD.businessQuestion(), x=k();
+    let b='<h1>איך נדע שהצלחנו (KPI)</h1><p>'+E(DD.identity())+'</p>';
+    if(q) b+='<p><b>האתגר משולחן העבודה:</b> '+E(q)+'</p>';
+    b+='<table><tr><th>מדד</th><td>'+E(x.metric)+'</td></tr><tr><th>נקודת מוצא</th><td>'+E(x.base)+'</td></tr><tr><th>יעד</th><td>'+E(x.target)+'</td></tr><tr><th>מועד</th><td>'+E(x.date)+'</td></tr>'+(x.output?'<tr><th>מדד תפוקה</th><td>'+E(x.output)+'</td></tr>':'')+'</table>';
+    b+='<p style="font-size:15px">'+E(sentence(false))+'</p>';
+    DD.downloadDoc('איך נדע שהצלחנו - KPI','איך נדע שהצלחנו',b); DD.toast('המסמך הורד');
+  }
+  render();
+  return {example,copyText,doc};
+})();
+</script>
+<script src="../../assets/site.js?v=24" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+</body>
+</html>

@@ -77,7 +77,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=23">
+<link rel="stylesheet" href="../../assets/site.css?v=24">
 </head>
 <body>
   <header class="bar">
@@ -87,13 +87,13 @@
 
   <main class="wrap">
     <div class="head">
-      <h1>מתייעצים עם ה-AI על אתגר הנתונים</h1>
+      <h1>מתייעצים עם ה-AI על האתגר משולחן העבודה <small class="dbn">(מבוסס נתונים)</small></h1>
     </div>
 
     <div class="grid">
       <div class="panel">
         <div class="field">
-          <div class="lab"><span class="n">1</span>אתגר הנתונים שלכם <a class="refill" href="../question/">לבונה האתגר</a></div>
+          <div class="lab"><span class="n">1</span>האתגר משולחן העבודה שלכם <a class="refill" href="../question/">לבונה האתגר</a></div>
           <div class="in-wrap"><textarea id="challenge" placeholder="כדי לעזור ל[מי מחליט] להחליט [איזו החלטה]: [מה מודדים] [מתי ואיפה]?"></textarea><button class="mic" data-t="challenge"></button></div>
         </div>
         <div class="field">
@@ -120,7 +120,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=23"></script>
+<script src="../assets/dd.js?v=24"></script>
 <script>
 const App=(()=>{
   'use strict';
@@ -135,11 +135,21 @@ const App=(()=>{
     if((b.problem||'').trim()) L.push('הבעיה שאני רוצה לפתור: '+b.problem.trim());
     const whys=(b.whys||[]).slice(1).map(w=>(w||'').trim()).filter(Boolean);
     if(whys.length) L.push('שאלתי "למה זה קורה?" והגעתי ל:\n'+whys.map((w,i)=>(i+1)+'. '+w).join('\n'));
+    const k=b.kpi||{};
+    if((k.metric||'').trim()) L.push('איך נדע שהצלחנו (KPI): '+k.metric.trim()+(k.base?', היום '+k.base.trim():'')+(k.target?', יעד '+k.target.trim():'')+(k.date?' עד '+k.date.trim():'')+'.');
     return L.join('\n\n');
   }
-  const ROLE='אתה יועץ מנוסה לקבלת החלטות מבוססת נתונים ברשויות מקומיות בישראל. אתה עוזר לי לדייק אתגר נתונים, לא פותר אותו במקומי.';
+  /* part 2 of the builder (where the data might be), as one line per direction */
+  function ideasText(){
+    const i=DD.builderIdeas(), L=[];
+    if(i.internal.length) L.push('בתוך הרשות: '+i.internal.join(', '));
+    if(i.open.length) L.push('מידע פתוח: '+i.open.join(', '));
+    if(i.field.length) L.push('איסוף בשטח: '+i.field.join(', '));
+    return L.join('\n');
+  }
+  const ROLE='אתה יועץ מנוסה לקבלת החלטות מבוססת נתונים ברשויות מקומיות בישראל. אתה עוזר לי לדייק "אתגר משולחן העבודה": שאלה אחת מבוססת נתונים, שמובילה להחלטה. אתה לא פותר אותו במקומי.';
   const TASK=[
-    'המטרה: לוודא שיש לי אתגר נתונים אמיתי, כזה שאפשר להתחיל לעבוד עליו עם נתונים שכבר קיימים אצלנו או שאפשר להשיג.',
+    'המטרה: לוודא שיש לי אתגר משולחן העבודה אמיתי, כזה שאפשר להתחיל לעבוד עליו עם נתונים שכבר קיימים אצלנו או שאפשר להשיג.',
     'עבוד איתי כך:',
     '1. שאל אותי שאלה אחת בכל פעם, וחכה לתשובה שלי. אל תענה במקומי.',
     '2. ברר: מי מחליט ואיזו החלטה, מה בדיוק מודדים, באיזו תקופה ואיפה.',
@@ -149,14 +159,15 @@ const App=(()=>{
     '6. המשך לשאול עד שהאתגר עובר חמש בדיקות: שאלה אחת; בלי פתרון בפנים; אפשר לענות עליה בנתונים שיש לנו; קשורה להחלטה; בתחום ההשפעה של הרשות. רק אז סכם.',
     'אל תמציא נתונים, מספרים או מקורות. אם אתה לא יודע אם נתון קיים ברשות, שאל אותי.'
   ].join('\n');
-  const END='בסוף השיחה: אתגר הנתונים הסופי במשפט אחד, בתבנית: '+TEMPLATE+' ומתחתיו רשימה קצרה: אילו נתונים נשתמש בהם, איפה הם נמצאים, ומה עוד צריך להשיג.\nכתוב בעברית פשוטה. התחל עכשיו בשאלה הראשונה.';
+  const END='בסוף השיחה: האתגר משולחן העבודה הסופי במשפט אחד, בתבנית: '+TEMPLATE+' ומתחתיו רשימה קצרה: אילו נתונים נשתמש בהם, איפה הם נמצאים, ומה עוד צריך להשיג.\nכתוב בעברית פשוטה. התחל עכשיו בשאלה הראשונה.';
   /* the challenge follows the builder until the participant edits it here */
-  let data={challenge:'', data:'', edited:false};
+  let data={challenge:'', data:'', edited:false, dataEdited:false};
 
   function init(){
     try{ const s=JSON.parse(localStorage.getItem(LS)); if(s) data=Object.assign(data,s); }catch(e){}
     if(!data.edited) data.challenge=DD.businessQuestion()||'';
-    F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; el.addEventListener('input',()=>{ data[id]=el.value; if(id==='challenge') data.edited=true; persist(); preview(); grow(el); }); grow(el); });
+    if(!data.dataEdited) data.data=ideasText();
+    F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; el.addEventListener('input',()=>{ data[id]=el.value; if(id==='challenge') data.edited=true; else data.dataEdited=true; persist(); preview(); grow(el); }); grow(el); });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
     preview();
   }
@@ -166,7 +177,7 @@ const App=(()=>{
   function build(){
     const parts=[ROLE], bg=background();
     if(bg) parts.push(bg);
-    parts.push('אתגר הנתונים שלי:\n"'+(data.challenge.trim()||'עוד לא ניסחתי. עזור לי לנסח אותו מהבעיה.')+'"');
+    parts.push('האתגר משולחן העבודה שלי:\n"'+(data.challenge.trim()||'עוד לא ניסחתי. עזור לי לנסח אותו מהבעיה.')+'"');
     parts.push('הנתונים שאני חושב להתבסס עליהם:\n'+(data.data.trim()||'עוד לא בדקתי. עזור לי לברר.'));
     parts.push(TASK, END);
     return parts.join('\n\n');
@@ -185,6 +196,6 @@ const App=(()=>{
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=23" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=24" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

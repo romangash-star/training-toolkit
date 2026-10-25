@@ -6,7 +6,7 @@
 <title>מיפוי מקורות המידע — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=23">
+<link rel="stylesheet" href="../assets/dd.css?v=24">
 <style>
   .wrap{max-width:900px}
   body{padding-bottom:62px}
@@ -68,7 +68,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=23">
+<link rel="stylesheet" href="../../assets/site.css?v=24">
 </head>
 <body>
   <header class="bar">
@@ -94,7 +94,7 @@
   <footer class="credit"><span>נבנה ע"י רומן גרינשטיין</span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=23"></script>
+<script src="../assets/dd.js?v=24"></script>
 <script>
 const S=(()=>{
   'use strict';
@@ -150,13 +150,13 @@ const S=(()=>{
     const q=question(), phone=window.matchMedia('(max-width:700px)').matches;
     document.getElementById('app').innerHTML=`
       <div class="head">
-        <div class="eyebrow">יום 1 · שלב 4 · שיעורי בית</div>
+        <div class="eyebrow">יום 1 · שלב 5 · שיעורי בית</div>
         <h1>מיפוי מקורות המידע</h1>
         <p>איפה נמצאים הנתונים שיעזרו לענות על השאלה שלכם? עכשיו רק <b>מאתרים</b>. את הניתוח נעשה במפגש הבא.</p>
       </div>
       <div class="qbox ${q?'':'missing'}">${q
-        ? `<div class="ql"><span>אתגר הנתונים שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
-        : `<div class="ql"><span>עדיין אין אתגר נתונים</span><a href="../question/">לבונה אתגר הנתונים ←</a></div>אפשר למלא גם בלי, אבל קל יותר לחפש נתונים כשהשאלה מול העיניים.`}</div>
+        ? `<div class="ql"><span>האתגר משולחן העבודה שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
+        : `<div class="ql"><span>עדיין אין אתגר משולחן העבודה</span><a href="../question/">לבונה האתגר משולחן העבודה ←</a></div>אפשר למלא גם בלי, אבל קל יותר לחפש נתונים כשהשאלה מול העיניים.`}</div>
       <div class="steps2 noprint">
         <button class="stepbtn ${data.step===1?'on':''}" onclick="S.go(1)"><span class="sn">1</span><span>משוטטים באתרים<small>מה קיים בחוץ</small></span></button>
         <button class="stepbtn ${data.step===2?'on':''}" onclick="S.go(2)"><span class="sn">2</span><span>ממפים את המקורות<small>מה יש, מה ציבורי, מה חסר</small></span></button>
@@ -229,7 +229,7 @@ const S=(()=>{
   /* ---------- export ---------- */
   function asText(){
     const L=['מיפוי מקורות המידע'+(DD.identity()?' · '+DD.identity():''),''], q=question();
-    if(q) L.push('אתגר הנתונים:',q,'');
+    if(q) L.push('האתגר משולחן העבודה:',q,'');
     GROUPS.forEach(g=>{
       L.push(g.n+'. '+g.t);
       const rows=filled(g.k);
@@ -242,7 +242,7 @@ const S=(()=>{
   function doc(){
     const q=question();
     let b='<h1>מיפוי מקורות המידע</h1><p>'+E(DD.identity())+'</p>';
-    if(q) b+='<h2>אתגר הנתונים</h2><p style="font-size:15px">'+E(q)+'</p>';
+    if(q) b+='<h2>האתגר משולחן העבודה</h2><p style="font-size:15px">'+E(q)+'</p>';
     GROUPS.forEach(g=>{
       const rows=filled(g.k);
       const cols=g.anon?g.cols.concat('התממה'):g.cols;
@@ -266,6 +266,6 @@ const S=(()=>{
   return {go,search,add,del,site,doc,copyAll,mail,saveJson,loadJson};
 })();
 </script>
-<script src="../../assets/site.js?v=23" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=24" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
