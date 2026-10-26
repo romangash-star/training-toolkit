@@ -115,7 +115,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=26">
+<link rel="stylesheet" href="../../assets/site.css?v=27">
 </head>
 <body>
   <header class="bar">
@@ -128,7 +128,7 @@
     <div class="goal">
       <div class="g1">★ מטרת העמוד</div>
       <h1>ליצור פרומפט מפורט שימשיך לפתח איתכם את החשיבה על הפתרון</h1>
-      <p>ממלאים כאן מה שיש לכם — גם אם עדיין אין פתרון. הכלי בונה פרומפט שיפתח דיון עם Gemini ויעזור לכם להגיע לכיווני פתרון.</p>
+      <p>ממלאים כאן מה שיש לכם — גם אם עדיין אין פתרון. הכלי בונה פרומפט שיפתח דיון עם Gemini או Copilot ויעזור לכם להגיע לכיווני פתרון.</p>
       <div class="tags"><span>עבודה אישית או בצוות</span><span>שאלות פתוחות</span><span>הפלט: פרומפט</span></div>
     </div>
 
@@ -200,7 +200,7 @@ const App=(()=>{
 
       <div class="sub-h">${n()}. איפה אתם נמצאים?</div>
       <div class="stage">
-        <button class="${data.stage==='עדיין אין פתרון'?'on':''}" onclick="App.setStage('עדיין אין פתרון')"><div class="sn">עדיין אין לנו פתרון</div><div class="sd">רוצים ש-Gemini יעזור להציע כיוונים</div></button>
+        <button class="${data.stage==='עדיין אין פתרון'?'on':''}" onclick="App.setStage('עדיין אין פתרון')"><div class="sn">עדיין אין לנו פתרון</div><div class="sd">רוצים ש-AI יעזור להציע כיוונים</div></button>
         <button class="${data.stage==='יש לנו כיוון'?'on':''}" onclick="App.setStage('יש לנו כיוון')"><div class="sn">יש לנו כיוון ראשוני</div><div class="sd">רוצים לחדד ולבחון אותו</div></button>
       </div>
 
@@ -285,10 +285,11 @@ const App=(()=>{
       <div class="prompt-box" id="promptBox">${esc(buildPrompt())}</div>
       <div class="pv-actions">
         <button class="btn btn-gem" onclick="App.toGemini()">העתק ופתח את Gemini</button>
+        <button class="btn btn-cop" onclick="App.toCopilot()">העתק ופתח Copilot</button>
         <button class="btn btn-ghost" onclick="App.copyPrompt()">העתקה בלבד</button>
       </div>
       <div class="flow3">
-        <div><b>1. מדביקים</b>ב-Gemini ושולחים</div>
+        <div><b>1. מדביקים</b>ב-Gemini או ב-Copilot ושולחים</div>
         <div><b>2. עונים לשאלות</b>ומתדיינים איתו</div>
         <div><b>3. חוזרים</b>ומעדכנים כאן</div>
       </div>
@@ -307,6 +308,7 @@ const App=(()=>{
   function paintModes(){const el=document.getElementById('modes');if(el)el.innerHTML=['אישי','צוות'].map(m=>`<button class="${data.mode===m?'on':''}" onclick="App.setMode('${m}')">${m==='אישי'?'אישי':'צוות'}</button>`).join('');}
   function copyPrompt(){const t=buildPrompt();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
   function toGemini(){copyPrompt();window.open('https://gemini.google.com/app','_blank','noopener');}
+  function toCopilot(){copyPrompt();window.open('https://m365.cloud.microsoft/chat','_blank','noopener');}
 
   function fmt(s){s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
   function paintPresets(){const el=document.getElementById('presets');if(el)el.innerHTML=PRESETS.map(m=>`<button class="${timer.total===m*60?'on':''}" onclick="App.preset(${m})">${m}</button>`).join('');}
@@ -323,10 +325,10 @@ const App=(()=>{
   function dictate(el,btn){if(!el)return;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('הכתבה קולית נתמכת ב-Chrome / Edge');return;}if(recog){recog.stop();return;}recog=new SR();recog.lang='he-IL';recog.interimResults=true;recog.continuous=false;const base=(el.value||'').trim();btn.classList.add('rec');recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k];if(r.isFinal)f+=r[0].transcript;else i+=r[0].transcript;}el.value=(base?base+' ':'')+(f+i).trim();el.dispatchEvent(new Event('input',{bubbles:true}));};recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();};recog.onerror=()=>{btn.classList.remove('rec');recog=null;};try{recog.start();toast('מקשיב…');}catch(e){btn.classList.remove('rec');recog=null;}}
 
   let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,setStage,setMode,copyPrompt,toGemini,preset,toggleTimer,resetTimer};
+  return {init,setStage,setMode,copyPrompt,toGemini,toCopilot,preset,toggleTimer,resetTimer};
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=26" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=27" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

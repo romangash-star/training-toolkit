@@ -6,7 +6,7 @@
 <title>בוחר הגרף וחמשת המשפטים — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=26">
+<link rel="stylesheet" href="../assets/dd.css?v=27">
 <style>
   .msgs{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
   .msgs button{border:1.5px solid var(--line);background:#FFFDF8;border-radius:13px;padding:12px;text-align:right;font-weight:700;font-size:14.5px;transition:.15s}
@@ -26,7 +26,7 @@
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=26">
+<link rel="stylesheet" href="../../assets/site.css?v=27">
 </head>
 <body>
   <header class="bar">
@@ -88,15 +88,15 @@
         <div class="callout info">שקופית 7 היא מגן: כשישאלו "ומה לגבי...", פותחים אותה. ואין שקופית "תודה". מחקו כל שקופית שבלעדיה ההמלצה עדיין עומדת. בדרך כלל נשארות ארבע.</div>
       </div>
       <div class="panel">
-        <h2>הפרומפט ל-Gemini Canvas<button type="button" class="help" aria-label="הסבר" data-help="טקסט מוכן שמדביקים ב-Gemini (בוחרים שם Canvas) כדי לקבל טיוטת מצגת. הוא נבנה מחמשת המשפטים שמילאתם. את המספרים בודקים ומדביקים בעצמכם.">?</button></h2>
+        <h2>הפרומפט ל-Gemini או ל-Copilot<button type="button" class="help" aria-label="הסבר" data-help="טקסט מוכן שמדביקים ב-Gemini (בוחרים שם Canvas) או ב-Copilot כדי לקבל טיוטת מצגת. הוא נבנה מחמשת המשפטים שמילאתם. את המספרים בודקים ומדביקים בעצמכם.">?</button></h2>
         <p class="lead">נבנה מחמשת המשפטים. איכות הפלט = איכות השלד. אחרי שהטיוטה חוזרת: את המספרים מדביקים ידנית, כי הכלי עלול להמציא.</p>
         <div class="prompt-out" id="prompt"></div>
         <div class="exportbar" style="grid-template-columns:1fr 1fr 1fr">
-          <button class="btn btn-brand" onclick="C.copyPrompt()">העתקת הפרומפט</button>
-          <a class="btn btn-dark" href="https://gemini.google.com" target="_blank" rel="noopener">↗ פתיחת Gemini</a>
+          <button class="btn btn-brand" onclick="C.toGemini()">העתק ופתח Gemini</button>
+          <button class="btn btn-cop" onclick="C.toCopilot()">העתק ופתח Copilot</button>
           <button class="btn btn-ghost" onclick="C.copyAll()">העתקת הכול</button>
         </div>
-        <div class="callout warn">Gemini הוא כלי ציבורי. אין נתון מזהה של תושב בשום שקופית: לא בגרף, לא בטבלה, לא בנספח.</div>
+        <div class="callout warn">Gemini הוא כלי ציבורי (ב-Copilot: רק בחשבון הארגוני). אין נתון מזהה של תושב בשום שקופית: לא בגרף, לא בטבלה, לא בנספח.</div>
       </div>
       <div class="panel">
         <h2>לפני שמציגים למנכ"ל</h2>
@@ -116,7 +116,7 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=26"></script>
+<script src="../assets/dd.js?v=27"></script>
 <script>
 const C=(()=>{
   'use strict';
@@ -221,7 +221,9 @@ ${title?`כותרת הגרף המרכזי: ${title}\n`:''}${data.scr.s||data.scr
   function pick(i){ data.pick=data.pick===i?-1:i; save(); renderChart(); paintDeck(); }
   function g(i){ data.g[i]=!data.g[i]; save(); renderChart(); }
   function fin(i){ data.final[i]=!data.final[i]; save(); paintDeck(); }
-  function copyPrompt(){ DD.copy(buildPrompt(),'הפרומפט הועתק ✓ הדביקו ב-Gemini ובחרו Canvas'); }
+  function copyPrompt(){ DD.copy(buildPrompt(),'הפרומפט הועתק ✓ הדביקו ב-Gemini (Canvas) או ב-Copilot'); }
+  function toGemini(){ DD.copy(buildPrompt(),'הועתק ✓ ב-Gemini: בחרו Canvas והדביקו עם Ctrl+V'); window.open('https://gemini.google.com/app','_blank','noopener'); }
+  function toCopilot(){ DD.copy(buildPrompt(),'הועתק ✓ ב-Copilot: הדביקו עם Ctrl+V'); window.open('https://m365.cloud.microsoft/chat','_blank','noopener'); }
   function copyAll(){
     const f=data.five, t=(data.pick>-1&&data.titles[data.pick])||'';
     DD.copy(['חמשת המשפטים'+(data.aud?' · מוצג ל'+data.aud:''),...FIVE.map((x,i)=>`${i+1}. ${x.l} ${f[x.k]||'—'}`),'',
@@ -234,9 +236,9 @@ ${title?`כותרת הגרף המרכזי: ${title}\n`:''}${data.scr.s||data.scr
   document.getElementById('aud').addEventListener('input',e=>{data.aud=e.target.value;save();paintDeck();});
   all();
   DD.tabs(document,'dd_chart_tab');
-  return {msg,pick,g,fin,copyPrompt,copyAll,saveJson,loadJson,reset};
+  return {msg,pick,g,fin,copyPrompt,copyAll,saveJson,loadJson,reset,toGemini,toCopilot};
 })();
 </script>
-<script src="../../assets/site.js?v=26" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=27" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

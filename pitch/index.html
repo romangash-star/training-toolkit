@@ -142,7 +142,7 @@
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../assets/site.css?v=26">
+<link rel="stylesheet" href="../assets/site.css?v=27">
 </head>
 <body>
   <header class="bar">
@@ -223,7 +223,7 @@ const App=(()=>{
     return `<div class="panel">
       <div class="eyebrow">שלב 1 · תוכן</div>
       <h2 class="title">מה ייכנס למצגת</h2>
-      <div class="why">התוכן שתמלאו כאן יהפוך לפרומפט שיבנה טיוטת מצגת ב-Gemini. <b>אין חובה למלא הכול.</b></div>
+      <div class="why">התוכן שתמלאו כאן יהפוך לפרומפט שיבנה טיוטת מצגת ב-Gemini או ב-Copilot. <b>אין חובה למלא הכול.</b></div>
       <div class="metarow" style="margin-top:14px"><input class="txt" data-m="title" placeholder="שם האתגר / הפרויקט" value="${attr(data.meta.title)}"><input class="txt" data-m="team" placeholder="שם הצוות" value="${attr(data.meta.team)}"></div>
       <div class="sub-h">קודם כול — מול מי הסיפור?</div>
       ${audBtns}
@@ -317,19 +317,20 @@ const App=(()=>{
     return `<div class="panel hero">
       <div class="eyebrow amber">★ הפלט של הכלי</div>
       <h2 class="title big">הפרומפט לטיוטת המצגת</h2>
-      <div class="why">נבנה אוטומטית ממה שמילאתם. מדביקים ב-<b>Gemini Canvas</b> ומקבלים <b>טיוטת מצגת</b> מוכנה לעריכה וללטש.</div>
+      <div class="why">נבנה אוטומטית ממה שמילאתם. מדביקים ב-<b>Gemini Canvas</b> או ב-<b>Copilot</b> ומקבלים <b>טיוטת מצגת</b> מוכנה לעריכה וללטש.</div>
       ${miss}
       <div class="prompt-box" id="promptBox">${esc(buildPrompt())}</div>
       <div class="pv-actions">
         <button class="btn btn-gem" onclick="App.toGemini()">העתק ופתח Gemini Canvas</button>
+        <button class="btn btn-cop" onclick="App.toCopilot()">העתק ופתח Copilot</button>
         <button class="btn btn-ghost" onclick="App.copyPrompt()">העתקה בלבד</button>
       </div>
-      <div class="flow3"><div><b>1. מדביקים</b>ב-Gemini Canvas</div><div><b>2. מקבלים</b>טיוטת מצגת חיה</div><div><b>3. מלטשים</b>בצ'אט עד שמרוצים</div></div>
+      <div class="flow3"><div><b>1. מדביקים</b>ב-Gemini Canvas או ב-Copilot</div><div><b>2. מקבלים</b>טיוטת מצגת חיה</div><div><b>3. מלטשים</b>בצ'אט עד שמרוצים</div></div>
       <div class="drive">
         <h3>סיימתם? העלו את המצגת</h3>
         <p>כשהמצגת מוכנה — מעלים אותה לתיקייה המשותפת בדרייב.</p>
         <ol class="steps">
-          <li>ב-Gemini Canvas: <b>ייצוא / הורדה</b> של המצגת (PDF או PowerPoint).</li>
+          <li>ב-Gemini Canvas או ב-Copilot: <b>ייצוא / הורדה</b> של המצגת (PDF או PowerPoint).</li>
           <li>לוחצים על הכפתור למטה — נפתחת התיקייה בדרייב.</li>
           <li><b>גוררים</b> את הקובץ לתוך התיקייה (או: חדש ← העלאת קובץ).</li>
           <li>שם הקובץ: <b>שם הצוות + שם האתגר</b>.</li>
@@ -362,8 +363,9 @@ const App=(()=>{
   function setAud(a){ data.story.audience=a; persist(); render(); }
   function setDesign(k,v){ data.design[k]=(data.design[k]===v?'':v); persist(); render(); }
   function importStory(){ const s=data.story,p=data.pitch; if(!p.hook)p.hook=s.situation; if(!p.problem)p.problem=(s.pain+(s.number?` (${s.number})`:'')).trim(); if(!p.solution)p.solution=[s.intervention,s.future].filter(Boolean).join(' '); persist(); render(); toast('יובא מהסיפור — ערכו וקצרו'); }
-  function copyPrompt(){ const t=buildPrompt(); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓ — הדביקו ב-Gemini / Base44')).catch(()=>prompt('העתיקו:',t)); }
+  function copyPrompt(){ const t=buildPrompt(); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓ הדביקו ב-Gemini, ב-Copilot או ב-Base44')).catch(()=>prompt('העתיקו:',t)); }
   function toGemini(){ copyPrompt(); window.open('https://gemini.google.com/app','_blank','noopener'); }
+  function toCopilot(){ copyPrompt(); window.open('https://m365.cloud.microsoft/chat','_blank','noopener'); }
   function toBase44(){ copyPrompt(); window.open('https://base44.com','_blank','noopener'); }
 
   /* timer */
@@ -421,10 +423,10 @@ const App=(()=>{
   }
 
   let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2600);}
-  return {init,tab,setAud,setDesign,importStory,copyPrompt,toGemini,toBase44,toggleTimer,resetTimer,exportPNG,copyText,saveFile};
+  return {init,tab,setAud,setDesign,importStory,copyPrompt,toGemini,toCopilot,toBase44,toggleTimer,resetTimer,exportPNG,copyText,saveFile};
 })();
 window.App=App; App.init();
 </script>
-<script src="../assets/site.js?v=26" data-crumbs='כל ההכשרות|../;מאיצים דיגיטליים|../maazim/'></script>
+<script src="../assets/site.js?v=27" data-crumbs='כל ההכשרות|../;מאיצים דיגיטליים|../maazim/'></script>
 </body>
 </html>
