@@ -226,7 +226,7 @@ const Q=(()=>{
     const stepper=PARTS.map((p,i)=>`<div class="sgroup${p.steps.includes(st)?' on':''}">${p.t?`<div class="sglabel">${p.t}</div>`:'<div class="sglabel">&nbsp;</div>'}<div class="srow">${p.steps.map((k,j)=>(j?arrow(k):'')+btn(k)).join('')}</div></div>`).join(`<span class="arrow part" aria-hidden="true">←</span>`);
     const nextLabel={whys:'סיימתי, לאתגר המוכן ←'}[key]||'הבא: '+STEP_NAMES[st+1]+' ←';
     document.getElementById('app').innerHTML=`
-      <div class="pagehead"><h1>בונה האתגר משולחן העבודה ${DBN}</h1></div>
+      <div class="pagehead"><div class="tooltag" style="text-align:center;margin:0 0 8px"><span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:#B4502F;background:#FFFDF8;border:2px solid #B4502F;border-radius:999px;padding:4px 16px 4px 5px"><span style="width:32px;height:32px;border-radius:50%;background:#B4502F;color:#FFFDF8;display:inline-grid;place-items:center;font-size:18px;line-height:1">2</span>יום 1 · כלי 2 מתוך 6</span></div><h1>בונה האתגר משולחן העבודה ${DBN}</h1></div>
       <nav class="stepper" aria-label="שלבים">${stepper}</nav>
       <div class="panel narrow">${SCREENS[key]()}</div>
       <div class="navrow narrow">

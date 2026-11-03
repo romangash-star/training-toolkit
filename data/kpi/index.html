@@ -95,7 +95,7 @@ const K=(()=>{
   function render(){
     const q=DD.businessQuestion();
     document.getElementById('app').innerHTML=`
-      <div class="pagehead"><h1>איתור מקורות מידע ומדדי הצלחה</h1></div>
+      <div class="pagehead"><div class="tooltag" style="text-align:center;margin:0 0 8px"><span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:#8A5A10;background:#FFFDF8;border:2px solid #8A5A10;border-radius:999px;padding:4px 16px 4px 5px"><span style="width:32px;height:32px;border-radius:50%;background:#8A5A10;color:#FFFDF8;display:inline-grid;place-items:center;font-size:18px;line-height:1">3</span>יום 1 · כלי 3 מתוך 6</span></div><h1>איתור מקורות מידע ומדדי הצלחה</h1></div>
       <div class="qbox ${q?'':'missing'}">${q
         ? `<div class="ql"><span>האתגר משולחן העבודה שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
         : `<div class="ql"><span>עדיין אין אתגר משולחן העבודה</span><a href="../question/">לבונה האתגר ←</a></div>אפשר להמשיך גם בלי, אבל קל יותר כשהאתגר מול העיניים.`}</div>
