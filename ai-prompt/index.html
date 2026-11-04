@@ -144,12 +144,22 @@ const App=(()=>{
   }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+  /* The copied prompt wraps what was typed in fuller instructions, so the AI gets a complete brief. */
   function build(){
+    const v=k=>(data[k]||'').trim();
+    if(!F.some(v)) return '';
     const parts=[];
-    if(data.role.trim()) parts.push(data.role.trim());
-    if(data.context.trim()) parts.push(data.context.trim());
-    if(data.task.trim()) parts.push('משימה: '+data.task.trim());
-    if(data.format.trim()) parts.push('פורמט: '+data.format.trim());
+    if(v('role')) parts.push('התפקיד שלך:\n'+v('role')+'\nענה מתוך הניסיון והידע של מי שממלא את התפקיד הזה. כתוב בשפה מקצועית אבל פשוטה, כמו לעמית ברשות מקומית.');
+    if(v('context')) parts.push('הרקע:\n'+v('context')+'\nהתבסס על הרקע הזה. אם חסר בו מידע שמשנה את התשובה, ציין מה חסר.');
+    if(v('task')) parts.push('המשימה:\n'+v('task')+'\nעבוד שלב אחר שלב, והסבר בקצרה איך הגעת לכל מסקנה.');
+    parts.push('פורמט התשובה:\n'+(v('format')||'תשובה מסודרת עם כותרות קצרות ונקודות.')+'\nשמור על תשובה ממוקדת, בלי הקדמות ובלי חזרות.');
+    parts.push('כללי עבודה:\n'+[
+      'ענה בעברית.',
+      'אל תמציא נתונים, מספרים או מקורות. אם אינך בטוח במשהו, כתוב זאת במפורש.',
+      'הפרד בין מה שעולה מהנתונים לבין הערכות והנחות שלך.',
+      'אם חסר מידע קריטי כדי לענות טוב, שאל עד 3 שאלות קצרות לפני שאתה עונה.',
+      'בסוף התשובה, הצע צעד הבא אחד מעשי.'
+    ].map(s=>'- '+s).join('\n'));
     return parts.join('\n\n');
   }
   function preview(){
