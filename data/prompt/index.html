@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>בונה הפרומפט — קבלת החלטות מבוססת נתונים</title>
+<title>הנוסחה לפרומפט טוב — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -63,6 +63,35 @@
   .pastehint{margin-top:10px;font-size:14px;line-height:1.6;background:var(--teal-tint,#dcedea);border-radius:10px;padding:9px 12px;color:var(--ink)}
   .pastehint kbd{font:700 12.5px var(--font-sans,Arial);background:#fffdf8;border:1px solid var(--line);border-radius:5px;padding:1px 6px}
   .toast{max-width:90vw}
+  /* slide "איך כותבים פרומפט טוב — הנוסחה": four coloured cards + a teal chat window */
+  .head{text-align:start;margin-bottom:16px}
+  .formula{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:14px 0 18px}
+  .formula>*{min-width:0}
+  .fcard{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--c);border-radius:16px;padding:14px 16px 16px;box-shadow:var(--shadow-sm)}
+  .fcard .lab{display:flex;align-items:center;gap:9px;font-size:22px;font-weight:700;color:var(--cd)}
+  .fcard .n{width:30px;height:30px;border-radius:50%;background:var(--c);color:var(--ink);font-size:14px;display:grid;place-items:center;flex:0 0 auto}
+  .fcard .sub{color:var(--ink-soft);font-size:14.5px;margin:4px 0 10px}
+  .fcard textarea{min-height:112px}
+  .fcard textarea:focus{border-color:var(--c);box-shadow:0 0 0 3px var(--cb)}
+  .c-role{--c:#F0B955;--cd:#94600A;--cb:rgba(240,185,85,.32)}
+  .c-context{--c:#7CC8B8;--cd:#1F5F5B;--cb:rgba(124,200,184,.32)}
+  .c-task{--c:#EE8A68;--cd:#A9461F;--cb:rgba(238,138,104,.32)}
+  .c-format{--c:#E8A6C4;--cd:#94446B;--cb:rgba(232,166,196,.32)}
+  .c-rules{--c:#CFDCD9;--cb:rgba(207,220,217,.2)}
+  .chat{background:#1F5F5B;border-radius:20px;padding:16px 18px 18px;box-shadow:var(--shadow)}
+  .chat-top{display:flex;align-items:center;gap:10px;color:#dce9e6;font-size:14px;font-weight:700;margin-bottom:12px}
+  .dots{display:flex;gap:5px}.dots i{width:9px;height:9px;border-radius:50%;background:#E8A6C4}.dots i:nth-child(2){background:#F0B955}.dots i:nth-child(3){background:#9CC9BF}
+  .chat .prompt-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:#eef5f3;border-radius:14px;padding:16px 18px;font-size:16.5px;line-height:1.9;min-height:120px}
+  .chat .prompt-box .ph{color:#a9c6c1}
+  .sec+.sec{margin-top:12px}
+  .chip{display:inline-block;font-size:13.5px;font-weight:700;line-height:1.6;padding:0 11px;border-radius:999px;color:#2A211B;background:var(--c);margin-inline-end:7px;white-space:nowrap}
+  .u{background:var(--cb);color:#fff;border-bottom:2px solid var(--c);padding:0 4px;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+  .add{display:block;color:#a9c6c1;font-size:14.5px;line-height:1.65}
+  .chat .pv-actions{margin-top:14px}
+  .chat .pastehint{background:rgba(255,255,255,.1);color:#eef5f3}
+  .chat .pastehint kbd{color:var(--ink)}
+  @media (max-width:900px){.formula{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.formula{grid-template-columns:1fr}.fcard .lab{font-size:20px}}
 </style>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
@@ -78,44 +107,43 @@
 
   <main class="wrap">
     <div class="head">
-      <h1>בונים פרומפט טוב לניתוח נתונים</h1>
-      <p>ככל שנותנים יותר הקשר — התשובה חדה, שימושית ופחות "המצאתית". מלאו את ארבעת החלקים, והעתיקו את הפרומפט ל‑Gemini או ל-Copilot.</p>
+      <h1>איך כותבים פרומפט טוב — הנוסחה</h1>
     </div>
 
-    <div class="grid">
-      <div class="panel">
-        <div class="examples" id="examples"></div>
-        <div class="field">
-          <div class="lab"><span class="n">1</span>תפקיד <span class="sub">מי ה‑AI אמור להיות</span></div>
-          <div class="in-wrap"><textarea id="role"></textarea><button class="mic" data-t="role"></button></div>
-        </div>
-        <div class="field">
-          <div class="lab"><span class="n">2</span>הקשר <span class="sub">הרקע והחומר שלכם</span></div>
-          <div class="in-wrap"><textarea id="context"></textarea><button class="mic" data-t="context"></button></div>
-        </div>
-        <div class="field">
-          <div class="lab"><span class="n">3</span>משימה <span class="sub">מה בדיוק לעשות</span></div>
-          <div class="in-wrap"><textarea id="task"></textarea><button class="mic" data-t="task"></button></div>
-        </div>
-        <div class="field">
-          <div class="lab"><span class="n">4</span>פורמט <span class="sub">איך שתחזור התשובה</span></div>
-          <div class="in-wrap"><textarea id="format"></textarea><button class="mic" data-t="format"></button></div>
-        </div>
+    <div class="examples" id="examples"></div>
+    <div class="formula">
+      <div class="fcard c-role">
+        <label class="lab" for="role"><span class="n">1</span>תפקיד</label>
+        <div class="sub">״התנהג כמו…״</div>
+        <div class="in-wrap"><textarea id="role"></textarea><button class="mic" data-t="role" aria-label="הכתבה קולית"></button></div>
       </div>
+      <div class="fcard c-context">
+        <label class="lab" for="context"><span class="n">2</span>הקשר</label>
+        <div class="sub">למי, למה, באיזה רקע</div>
+        <div class="in-wrap"><textarea id="context"></textarea><button class="mic" data-t="context" aria-label="הכתבה קולית"></button></div>
+      </div>
+      <div class="fcard c-task">
+        <label class="lab" for="task"><span class="n">3</span>משימה</label>
+        <div class="sub">מה בדיוק לעשות</div>
+        <div class="in-wrap"><textarea id="task"></textarea><button class="mic" data-t="task" aria-label="הכתבה קולית"></button></div>
+      </div>
+      <div class="fcard c-format">
+        <label class="lab" for="format"><span class="n">4</span>פורמט</label>
+        <div class="sub">אורך, סגנון, מבנה</div>
+        <div class="in-wrap"><textarea id="format"></textarea><button class="mic" data-t="format" aria-label="הכתבה קולית"></button></div>
+      </div>
+    </div>
 
-      <div class="preview">
-        <div class="panel">
-          <h3>הפרומפט המוכן</h3>
-          <div class="prompt-box" id="preview"></div>
-          <div class="pv-actions">
-            <button class="btn btn-brand" onclick="App.copy()">העתקת הפרומפט</button>
-            <button class="btn btn-dark" onclick="App.toGemini()">העתק ופתח Gemini</button>
-            <button class="btn btn-dark" onclick="App.toCopilot()">העתק ופתח Copilot</button>
-            <button class="btn btn-ghost" onclick="App.clear()">ניקוי</button>
-          </div>
-          <div class="pastehint"><b>אחרי הלחיצה:</b> נפתח חלון חדש. לוחצים שם בתיבת הכתיבה ומדביקים את הפרומפט עם <kbd>Ctrl</kbd>+<kbd>V</kbd> (בטלפון: לחיצה ארוכה ← הדבקה).</div>
-        </div>
+    <div class="chat">
+      <div class="chat-top"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>הפרומפט שלכם · כך זה נראה בצ׳אט</div>
+      <div class="prompt-box" id="preview"></div>
+      <div class="pv-actions">
+        <button class="btn btn-brand" onclick="App.toGemini()">העתק ופתח Gemini</button>
+        <button class="btn btn-brand" onclick="App.toCopilot()">העתק ופתח Copilot</button>
+        <button class="btn btn-ghost" onclick="App.copy()">העתקה</button>
+        <button class="btn btn-ghost" onclick="App.clear()">ניקוי</button>
       </div>
+      <div class="pastehint"><b>אחרי הלחיצה:</b> נפתח חלון חדש. לוחצים שם בתיבת הכתיבה ומדביקים עם <kbd>Ctrl</kbd>+<kbd>V</kbd> (בטלפון: לחיצה ארוכה ← הדבקה).</div>
     </div>
   </main>
 
@@ -128,6 +156,7 @@ const App=(()=>{
   const LS='dd_prompt_builder_v1';
   const F=['role','context','task','format'];
   const EX={
+    'הודעה לתושבים':{role:'התנהג כמו דובר עירייה.',context:'אני צריך להודיע לתושבים על שינוי בשעות פתיחת מוקד 106.',task:'נסח הודעה קצרה וברורה.',format:'באורך פסקה, בטון רשמי אך ידידותי.'},
     'לאתר מקורות':{role:'אתה חוקר נתונים ברשות מקומית.',context:'הבעיה: רחוב המסחר המרכזי ריק בערב ועסקים נסגרים.',task:'אילו מקורות נתונים ציבוריים בישראל יעזרו לתקף את הבעיה, ומה כדאי לנתח בכל אחד?',format:'רשימה: מקור + כיוון ניתוח לכל אחד.'},
     'לנתח טבלה':{role:'אתה אנליסט נתונים ברשות מקומית.',context:'מצורפת טבלת פניות מוקד 106 בנושא רישוי.',task:'זהה את שלושת הנושאים החוזרים ביותר.',format:'טבלה קצרה + משפט מסקנה אחד.'},
     'להעריך מהימנות':{role:'אתה מומחה לנתונים ציבוריים.',context:'יש לי כמה מקורות נתונים על סגירת עסקים ברחוב.',task:'על מי אפשר להסתמך, ומה החולשות של כל מקור?',format:'טבלה: מקור · מהימנות · חולשות.'},
@@ -145,26 +174,34 @@ const App=(()=>{
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   /* The copied prompt wraps what was typed in fuller instructions, so the AI gets a complete brief. */
-  function build(){
+  const META={
+    role:['תפקיד','התפקיד שלך','ענה מתוך הניסיון והידע של מי שממלא את התפקיד הזה. כתוב בשפה מקצועית אבל פשוטה, כמו לעמית ברשות מקומית.'],
+    context:['הקשר','הרקע','התבסס על הרקע הזה. אם חסר בו מידע שמשנה את התשובה, ציין מה חסר.'],
+    task:['משימה','המשימה','עבוד שלב אחר שלב, והסבר בקצרה איך הגעת לכל מסקנה.'],
+    format:['פורמט','פורמט התשובה','שמור על תשובה ממוקדת, בלי הקדמות ובלי חזרות.']
+  };
+  const DEF_FORMAT='תשובה מסודרת עם כותרות קצרות ונקודות.';
+  const RULES=[
+    'ענה בעברית.',
+    'אל תמציא נתונים, מספרים או מקורות. אם אינך בטוח במשהו, כתוב זאת במפורש.',
+    'הפרד בין מה שעולה מהנתונים לבין הערכות והנחות שלך.',
+    'אם חסר מידע קריטי כדי לענות טוב, שאל עד 3 שאלות קצרות לפני שאתה עונה.',
+    'בסוף התשובה, הצע צעד הבא אחד מעשי.'
+  ];
+  function sections(){
     const v=k=>(data[k]||'').trim();
-    if(!F.some(v)) return '';
-    const parts=[];
-    if(v('role')) parts.push('התפקיד שלך:\n'+v('role')+'\nענה מתוך הניסיון והידע של מי שממלא את התפקיד הזה. כתוב בשפה מקצועית אבל פשוטה, כמו לעמית ברשות מקומית.');
-    if(v('context')) parts.push('הרקע:\n'+v('context')+'\nהתבסס על הרקע הזה. אם חסר בו מידע שמשנה את התשובה, ציין מה חסר.');
-    if(v('task')) parts.push('המשימה:\n'+v('task')+'\nעבוד שלב אחר שלב, והסבר בקצרה איך הגעת לכל מסקנה.');
-    parts.push('פורמט התשובה:\n'+(v('format')||'תשובה מסודרת עם כותרות קצרות ונקודות.')+'\nשמור על תשובה ממוקדת, בלי הקדמות ובלי חזרות.');
-    parts.push('כללי עבודה:\n'+[
-      'ענה בעברית.',
-      'אל תמציא נתונים, מספרים או מקורות. אם אינך בטוח במשהו, כתוב זאת במפורש.',
-      'הפרד בין מה שעולה מהנתונים לבין הערכות והנחות שלך.',
-      'אם חסר מידע קריטי כדי לענות טוב, שאל עד 3 שאלות קצרות לפני שאתה עונה.',
-      'בסוף התשובה, הצע צעד הבא אחד מעשי.'
-    ].map(s=>'- '+s).join('\n'));
-    return parts.join('\n\n');
+    if(!F.some(v)) return [];
+    const out=[];
+    F.forEach(k=>{ const u=v(k)||(k==='format'?DEF_FORMAT:''); if(u) out.push({k,chip:META[k][0],head:META[k][1],user:u,extra:META[k][2]}); });
+    out.push({k:'rules',chip:'כללי עבודה',head:'כללי עבודה',user:'',extra:RULES.map(s=>'- '+s).join('\n')});
+    return out;
   }
+  function build(){ return sections().map(s=>s.head+':\n'+(s.user?s.user+'\n':'')+s.extra).join('\n\n'); }
+  /* on screen: what they typed is highlighted in its card's colour; what the site adds is muted */
   function preview(){
-    const t=build(); const el=document.getElementById('preview');
-    el.innerHTML = t? esc(t) : '<span class="ph">מלאו את השדות משמאל — והפרומפט ייבנה כאן אוטומטית…</span>';
+    const ss=sections(); const el=document.getElementById('preview');
+    el.innerHTML = ss.length ? ss.map(s=>`<div class="sec c-${s.k}"><span class="chip">${s.chip} ←</span>${s.user?`<mark class="u">${esc(s.user)}</mark>`:''}<span class="add">${esc(s.extra)}</span></div>`).join('')
+      : '<span class="ph">מלאו את ארבעת החלקים, והפרומפט ייבנה כאן</span>';
   }
   function fill(k){ const e=EX[k]; data={...e}; F.forEach(id=>document.getElementById(id).value=data[id]); persist(); preview(); toast('דוגמה נטענה — ערכו לפי האתגר שלכם'); }
   function clear(){ data={role:'',context:'',task:'',format:''}; F.forEach(id=>document.getElementById(id).value=''); persist(); preview(); }
