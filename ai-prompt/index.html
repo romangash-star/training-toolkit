@@ -78,16 +78,22 @@
   .c-task{--c:#EE8A68;--cd:#A9461F;--cb:rgba(238,138,104,.32)}
   .c-format{--c:#E8A6C4;--cd:#94446B;--cb:rgba(232,166,196,.32)}
   .c-rules{--c:#CFDCD9;--cb:rgba(207,220,217,.2)}
-  .chat{background:#1F5F5B;border-radius:20px;padding:16px 18px 18px;box-shadow:var(--shadow)}
+  .chat{background:#4A8079;border-radius:20px;padding:16px 18px 18px;box-shadow:var(--shadow)}
   .chat-top{display:flex;align-items:center;gap:10px;color:#dce9e6;font-size:14px;font-weight:700;margin-bottom:12px}
   .dots{display:flex;gap:5px}.dots i{width:9px;height:9px;border-radius:50%;background:#E8A6C4}.dots i:nth-child(2){background:#F0B955}.dots i:nth-child(3){background:#9CC9BF}
   .chat .prompt-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);color:#eef5f3;border-radius:14px;padding:16px 18px;font-size:16.5px;line-height:1.9;min-height:120px}
-  .chat .prompt-box .ph{color:#a9c6c1}
+  .chat .prompt-box .ph{color:#dcebe8}
   .sec+.sec{margin-top:12px}
   .chip{display:inline-block;font-size:13.5px;font-weight:700;line-height:1.6;padding:0 11px;border-radius:999px;color:#2A211B;background:var(--c);margin-inline-end:7px;white-space:nowrap}
   .u{background:var(--cb);color:#fff;border-bottom:2px solid var(--c);padding:0 4px;border-radius:3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-  .add{display:block;color:#a9c6c1;font-size:14.5px;line-height:1.65}
+  .add{display:block;color:#e2eeec;font-size:14.5px;line-height:1.65}
   .chat .pv-actions{margin-top:14px}
+  .pv-actions .btn-go{flex:1.6;font-size:15.5px;padding:12px 18px}
+  .btn-go.ready{outline:3px solid #F6C76B;outline-offset:3px;animation:goglow 2.2s ease-in-out infinite}
+  @keyframes goglow{0%,100%{outline-offset:3px;outline-color:#F6C76B}50%{outline-offset:6px;outline-color:rgba(246,199,107,.45)}}
+  .gohint{display:none;margin-top:14px;font-size:14.5px;font-weight:700;color:#FFFDF8}
+  .gohint.show{display:block}
+  @media (prefers-reduced-motion:reduce){.btn-go.ready{animation:none}}
   .chat .pastehint{background:rgba(255,255,255,.1);color:#eef5f3}
   .chat .pastehint kbd{color:var(--ink)}
   @media (max-width:900px){.formula{grid-template-columns:1fr 1fr}}
@@ -137,9 +143,10 @@
     <div class="chat">
       <div class="chat-top"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>הפרומפט שלכם · כך זה נראה בצ׳אט</div>
       <div class="prompt-box" id="preview"></div>
+      <div class="gohint" id="gohint">מילאתם את ארבעת החלקים ✓ הצעד הבא: הכפתור המסומן</div>
       <div class="pv-actions">
-        <button class="btn btn-brand" onclick="App.toGemini()">העתק ופתח Gemini</button>
-        <button class="btn btn-brand" onclick="App.toCopilot()">העתק ופתח Copilot</button>
+        <button class="btn btn-brand btn-go" id="goGemini" onclick="App.toGemini()">העתק ופתח Gemini</button>
+        <button class="btn btn-ghost" onclick="App.toCopilot()">העתק ופתח Copilot</button>
         <button class="btn btn-ghost" onclick="App.copy()">העתקה</button>
         <button class="btn btn-ghost" onclick="App.clear()">ניקוי</button>
       </div>
@@ -199,6 +206,9 @@ const App=(()=>{
   function build(){ return sections().map(s=>s.head+':\n'+(s.user?s.user+'\n':'')+s.extra).join('\n\n'); }
   /* on screen: what they typed is highlighted in its card's colour; what the site adds is muted */
   function preview(){
+    const ready=F.every(k=>(data[k]||'').trim());
+    document.getElementById('goGemini').classList.toggle('ready',ready);
+    document.getElementById('gohint').classList.toggle('show',ready);
     const ss=sections(); const el=document.getElementById('preview');
     el.innerHTML = ss.length ? ss.map(s=>`<div class="sec c-${s.k}"><span class="chip">${s.chip} ←</span>${s.user?`<mark class="u">${esc(s.user)}</mark>`:''}<span class="add">${esc(s.extra)}</span></div>`).join('')
       : '<span class="ph">מלאו את ארבעת החלקים, והפרומפט ייבנה כאן</span>';
