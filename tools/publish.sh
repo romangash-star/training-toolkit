@@ -5,6 +5,9 @@
 # The backup exists because some office firewalls block newly registered domains.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+# Both addresses must show main. On any other branch, the mirror would get that branch's files.
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" != "main" ]; then echo "not published: this folder is on branch '$branch', switch to main first" >&2; exit 1; fi
 git push -q origin main
 tmp=$(mktemp); trap 'rm -f "$tmp"' EXIT
 GIT_INDEX_FILE="$tmp" git read-tree HEAD
