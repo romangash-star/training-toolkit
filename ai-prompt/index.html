@@ -50,10 +50,6 @@
   .prompt-box .ph{color:#5f7b78}
   .pv-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
   .pv-actions .btn{flex:1}
-  .guard{background:#FFF6E9;border:1px solid #F0D9AE;color:#7A4A1E;border-radius:12px;padding:12px 14px;font-size:13px;margin-top:16px}
-  .guard b{color:#8a3f1e}
-  .sources{margin-top:16px}
-  .sources h4{font-size:14px;margin-bottom:8px}
   .src-list{display:flex;flex-wrap:wrap;gap:8px}
   .src-list a{font-size:12.5px;font-weight:700;color:var(--brand-deep);border:1px solid var(--line);background:#FFFDF8;padding:6px 11px;border-radius:9px;text-decoration:none}
   .src-list a:hover{border-color:var(--brand);background:#FBF1EA}
@@ -82,7 +78,6 @@
 
   <main class="wrap">
     <div class="head">
-      <div class="eyebrow">AI ככלי עבודה · אנטומיה של פרומפט</div>
       <h1>בונים פרומפט טוב לניתוח נתונים</h1>
       <p>ככל שנותנים יותר הקשר — התשובה חדה, שימושית ופחות "המצאתית". מלאו את ארבעת החלקים, והעתיקו את הפרומפט ל‑Gemini או ל-Copilot.</p>
     </div>
@@ -92,19 +87,19 @@
         <div class="examples" id="examples"></div>
         <div class="field">
           <div class="lab"><span class="n">1</span>תפקיד <span class="sub">מי ה‑AI אמור להיות</span></div>
-          <div class="in-wrap"><textarea id="role" placeholder="אתה אנליסט נתונים ברשות מקומית."></textarea><button class="mic" data-t="role"></button></div>
+          <div class="in-wrap"><textarea id="role"></textarea><button class="mic" data-t="role"></button></div>
         </div>
         <div class="field">
           <div class="lab"><span class="n">2</span>הקשר <span class="sub">הרקע והחומר שלכם</span></div>
-          <div class="in-wrap"><textarea id="context" placeholder="מצורפות פניות מוקד 106 בנושא רישוי עסקים."></textarea><button class="mic" data-t="context"></button></div>
+          <div class="in-wrap"><textarea id="context"></textarea><button class="mic" data-t="context"></button></div>
         </div>
         <div class="field">
           <div class="lab"><span class="n">3</span>משימה <span class="sub">מה בדיוק לעשות</span></div>
-          <div class="in-wrap"><textarea id="task" placeholder="זהה את שלושת הנושאים החוזרים ביותר."></textarea><button class="mic" data-t="task"></button></div>
+          <div class="in-wrap"><textarea id="task"></textarea><button class="mic" data-t="task"></button></div>
         </div>
         <div class="field">
           <div class="lab"><span class="n">4</span>פורמט <span class="sub">איך שתחזור התשובה</span></div>
-          <div class="in-wrap"><textarea id="format" placeholder="טבלה קצרה + משפט מסקנה אחד."></textarea><button class="mic" data-t="format"></button></div>
+          <div class="in-wrap"><textarea id="format"></textarea><button class="mic" data-t="format"></button></div>
         </div>
       </div>
 
@@ -119,11 +114,6 @@
             <button class="btn btn-ghost" onclick="App.clear()">ניקוי</button>
           </div>
           <div class="pastehint"><b>אחרי הלחיצה:</b> נפתח חלון חדש. לוחצים שם בתיבת הכתיבה ומדביקים את הפרומפט עם <kbd>Ctrl</kbd>+<kbd>V</kbd> (בטלפון: לחיצה ארוכה ← הדבקה).</div>
-          <div class="guard"><b>שני כללי ברזל:</b> ה‑AI יכול להמציא מספר או מקור — אמתו כל עובדה מול המקור. ואל תזינו מידע מזהה של תושבים (שמות, ת״ז, כתובות) — הכלילו או נקו קודם.</div>
-          <div class="sources">
-            <h4>מקורות לאיתור ולתיקוף נתונים</h4>
-            <div class="src-list" id="sources"></div>
-          </div>
         </div>
       </div>
     </div>
@@ -143,16 +133,11 @@ const App=(()=>{
     'להעריך מהימנות':{role:'אתה מומחה לנתונים ציבוריים.',context:'יש לי כמה מקורות נתונים על סגירת עסקים ברחוב.',task:'על מי אפשר להסתמך, ומה החולשות של כל מקור?',format:'טבלה: מקור · מהימנות · חולשות.'},
     'לקטלג פניות':{role:'אתה עוזר מחקר ברשות מקומית.',context:'להלן טקסט חופשי של פניות תושבים.',task:'מיין את הפניות לקטגוריות עקביות וספור כל קטגוריה.',format:'טבלה: קטגוריה · מספר פניות · דוגמה.'}
   };
-  const SOURCES=[
-    ['data.gov.il','https://data.gov.il/he'],['הלמ״ס','https://www.cbs.gov.il/he'],['GovMap','https://www.govmap.gov.il/'],
-    ['שקיפות בחינוך','https://shkifut.education.gov.il'],['תקציב פתוח','https://obudget.org'],['GIS תחבורה','https://geo.mot.gov.il/'],['אתר 265','https://govextra.gov.il/265/265/home/']
-  ];
   let data={role:'',context:'',task:'',format:''};
 
   function init(){
     try{const s=JSON.parse(localStorage.getItem(LS)); if(s)data=s;}catch(e){}
     document.getElementById('examples').innerHTML=Object.keys(EX).map(k=>`<button class="ex" onclick="App.fill('${k}')">${k}</button>`).join('');
-    document.getElementById('sources').innerHTML=SOURCES.map(s=>`<a href="${s[1]}" target="_blank" rel="noopener">↗ ${s[0]}</a>`).join('');
     F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; el.addEventListener('input',()=>{data[id]=el.value; persist(); preview();}); });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
     preview();
