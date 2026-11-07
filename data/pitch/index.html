@@ -52,6 +52,10 @@
   footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#FFFDF8;padding:12px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:var(--shadow);max-width:90vw}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .filebox{margin-top:10px}
+  .filebox[hidden]{display:none}
+  .filenote{margin-top:10px;font-size:14px;line-height:1.6;background:#FBF1E0;border:1px solid #EBD3A8;border-radius:10px;padding:9px 12px}
+  .filenote[hidden]{display:none}
   @media (max-width:820px){.grid{grid-template-columns:1fr}.preview{position:static}}
   @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
@@ -93,8 +97,15 @@
           <div class="lab"><span class="n">5</span>מה מבקשים ממנו?</div>
           <div class="in-wrap"><textarea id="ask" aria-label="מה מבקשים ממנו?"></textarea><button class="mic" data-t="ask" aria-label="הכתבה קולית"></button></div>
         </div>
+        <div class="field">
+          <div class="lab"><span class="n">6</span>יש קובץ נתונים, או קובץ אחר, שאפשר לצרף?</div>
+          <div class="chips" id="hasFile"></div>
+          <div class="filebox" id="filebox" hidden>
+            <div class="in-wrap"><textarea id="files" aria-label="מה יש בקובץ?"></textarea><button class="mic" data-t="files" aria-label="הכתבה קולית"></button></div>
+          </div>
+        </div>
         <div class="field" style="margin-bottom:0">
-          <div class="lab"><span class="n">6</span>כמה שקפים?</div>
+          <div class="lab"><span class="n">7</span>כמה שקפים?</div>
           <div class="chips" id="slides"></div>
         </div>
       </div>
@@ -108,6 +119,7 @@
             <button class="btn btn-ghost" onclick="App.copy()">העתקה</button>
           </div>
           <div class="pastehint">בחלון שנפתח: <kbd>Ctrl</kbd>+<kbd>V</kbd> ושליחה.</div>
+          <div class="filenote" id="filenote" hidden><b>לפני השליחה: מצרפים את הקובץ</b> בחלון הצ'אט (סימן + או אטב). יש בקובץ שמות, טלפונים או ת"ז? קודם <a href="../anonymize/">התממה</a>.</div>
           <div class="prompt-box" id="preview"></div>
           <div class="tip"><b>עובדים ב-PowerPoint עם Copilot?</b> הדביקו את הפרומפט בחלון השיחה של Copilot בצד המסך, והוא יבנה את השקפים לפי המבנה.</div>
         </div>
@@ -125,7 +137,7 @@ const App=(()=>{
   const F=['problem','proof','solution','audience','ask'];
   const SLIDES=['5-6','8-10','12-15'];
   const GAP={problem:'הבעיה ולמי היא כואבת',proof:'הנתונים שמוכיחים שיש בעיה',solution:'הפתרון המוצע',audience:'מול מי מציגים',ask:'מה מבקשים'};
-  let data={problem:'',proof:'',solution:'',audience:'',ask:'',slides:'8-10',edited:{}};
+  let data={problem:'',proof:'',solution:'',audience:'',ask:'',slides:'8-10',hasFile:'',files:'',edited:{}};
 
   /* three answers start from "מפתחים את הפתרון" (same browser), until they are edited here */
   function fromSolution(){
@@ -137,6 +149,7 @@ const App=(()=>{
     data.edited=data.edited||{};
     const sol=fromSolution(); Object.keys(sol).forEach(k=>{ if(!data.edited[k]) data[k]=sol[k]||''; });
     F.forEach(k=>{ const el=document.getElementById(k); el.value=data[k]||''; el.addEventListener('input',()=>{ data[k]=el.value; data.edited[k]=true; persist(); render(); }); });
+    const fl=document.getElementById('files'); fl.value=data.files||''; fl.addEventListener('input',()=>{ data.files=fl.value; persist(); render(); });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
     render();
   }
@@ -155,6 +168,7 @@ const App=(()=>{
 +'3. הפתרון המוצע: '+g('solution')+'\n'
 +'4. מול מי מציגים (מי מקבל את ההחלטה): '+g('audience')+'\n'
 +'5. מה מבקשים ממנו: '+g('ask'),
+filesPart(mark),
 'מבנה המצגת. חובה לשמור על ארבעת החלקים, בסדר הזה בדיוק:\n\n'
 +'חלק 1 – הגדרת הבעיה\n'
 +'- מה הבעיה, את מי היא פוגעת, ולמה חשוב לטפל בה עכשיו.\n'
@@ -204,12 +218,28 @@ const App=(()=>{
 'בסוף המצגת, הוסף:\n'
 +'- הצעה לפלטת צבעים ולגופנים אחידים למצגת.\n'
 +'- שלוש שאלות קשות שמקבל ההחלטה עשוי לשאול, ותשובה קצרה לכל אחת.'
-    ].join('\n\n');
+    ].filter(Boolean).join('\n\n');
+  }
+  /* the attached file is the basis of the deck: read it first, take the numbers from it, cite it */
+  function filesPart(mark){
+    if(data.hasFile==='no') return 'קבצים: לא צירפתי קבצים. השתמש רק במידע שכתוב בפרומפט הזה, ובכל מקום שחסר נתון כתוב [נתון להשלמה].';
+    if(data.hasFile!=='yes') return '';
+    const what=(data.files||'').trim() || (mark?'\u0001':'')+'[להשלים: מה יש בקובץ]'+(mark?'\u0002':'');
+    return 'קבצים מצורפים. צירפתי לשיחה הזו קובץ: '+what+'\n'
+      +'- המצגת צריכה להתבסס על הקובץ הזה. קרא אותו כולו לפני שאתה בונה את המצגת.\n'
+      +'- קח מהקובץ את הנתונים, המספרים, ההשוואות והגרפים, בעיקר לחלק ההוכחה ולמדד ההצלחה של הפתרון.\n'
+      +'- ציין בכל שקף שמשתמש בנתון מהקובץ מאיזה חלק בקובץ הוא נלקח (גיליון, עמודה או עמוד).\n'
+      +'- אם יש בקובץ נתון שסותר את מה שכתבתי, או נתון חשוב שלא הזכרתי, הצבע עליו.\n'
+      +'- אם הקובץ לא נפתח, חסר או לא ברור, אמור לי לפני שאתה ממשיך. אל תנחש מה כתוב בו.';
   }
   function render(){
+    document.getElementById('hasFile').innerHTML=[['yes','כן, יש קובץ'],['no','אין קובץ']].map(([k,t])=>`<button type="button" aria-pressed="${data.hasFile===k}" onclick="App.hasFile('${k}')">${t}</button>`).join('');
+    document.getElementById('filebox').hidden=data.hasFile!=='yes';
+    document.getElementById('filenote').hidden=data.hasFile!=='yes';
     document.getElementById('slides').innerHTML=SLIDES.map(n=>`<button type="button" aria-pressed="${n===data.slides}" onclick="App.slides('${n}')">${n}</button>`).join('');
     document.getElementById('preview').innerHTML=esc(build(true)).replace(/\u0001/g,'<span class="gap">').replace(/\u0002/g,'</span>');
   }
+  function hasFile(k){ data.hasFile=data.hasFile===k?'':k; persist(); render(); }
   function slides(n){ data.slides=n; persist(); render(); }
   function openWith(url,name){ copy('הועתק ✓ ב-'+name+': Ctrl+V ושליחה'); window.open(url,'_blank','noopener'); }
   function toGemini(){ openWith('https://gemini.google.com/app','Gemini'); }
@@ -220,7 +250,7 @@ const App=(()=>{
   function dictate(el,btn){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){toast('הכתבה קולית נתמכת ב‑Chrome / Edge');return;} if(recog){recog.stop();return;} recog=new SR(); recog.lang='he-IL'; recog.interimResults=true; recog.continuous=false; const base=(el.value||'').trim(); btn.classList.add('rec'); recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k]; if(r.isFinal)f+=r[0].transcript; else i+=r[0].transcript;} el.value=(base?base+' ':'')+(f+i).trim(); el.dispatchEvent(new Event('input',{bubbles:true}));}; recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();}; recog.onerror=()=>{btn.classList.remove('rec');recog=null;}; try{recog.start();toast('מקשיב… דברו בעברית');}catch(e){btn.classList.remove('rec');recog=null;} }
 
   let tt; function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,slides,copy,toGemini,toCopilot};
+  return {init,hasFile,slides,copy,toGemini,toCopilot};
 })();
 App.init();
 </script>
