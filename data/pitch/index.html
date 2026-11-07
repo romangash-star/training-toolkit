@@ -78,34 +78,38 @@
     <div class="grid">
       <div class="panel">
         <div class="field">
-          <div class="lab"><span class="n">1</span>מה הבעיה, ולמי היא כואבת? <a class="refill" href="../prototype/">למפתחים את הפתרון</a></div>
+          <div class="lab"><span class="n">1</span>מה שם הרשות המקומית?</div>
+          <div class="in-wrap"><textarea id="org" style="min-height:52px;padding-bottom:11px" aria-label="מה שם הרשות המקומית?"></textarea></div>
+        </div>
+        <div class="field">
+          <div class="lab"><span class="n">2</span>מה הבעיה, ולמי היא כואבת? <a class="refill" href="../prototype/">למפתחים את הפתרון</a></div>
           <div class="in-wrap"><textarea id="problem" aria-label="מה הבעיה, ולמי היא כואבת?"></textarea><button class="mic" data-t="problem" aria-label="הכתבה קולית"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">2</span>אילו נתונים מוכיחים שיש בעיה?</div>
+          <div class="lab"><span class="n">3</span>אילו נתונים מוכיחים שיש בעיה?</div>
           <div class="in-wrap"><textarea id="proof" aria-label="אילו נתונים מוכיחים שיש בעיה?"></textarea><button class="mic" data-t="proof" aria-label="הכתבה קולית"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">3</span>מה הפתרון שאתם מציעים?</div>
+          <div class="lab"><span class="n">4</span>מה הפתרון שאתם מציעים?</div>
           <div class="in-wrap"><textarea id="solution" aria-label="מה הפתרון שאתם מציעים?"></textarea><button class="mic" data-t="solution" aria-label="הכתבה קולית"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">4</span>מול מי מציגים? מי מקבל את ההחלטה</div>
+          <div class="lab"><span class="n">5</span>מול מי מציגים? מי מקבל את ההחלטה</div>
           <div class="in-wrap"><textarea id="audience" aria-label="מול מי מציגים? מי מקבל את ההחלטה"></textarea><button class="mic" data-t="audience" aria-label="הכתבה קולית"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">5</span>מה מבקשים ממנו?</div>
+          <div class="lab"><span class="n">6</span>מה מבקשים ממנו?</div>
           <div class="in-wrap"><textarea id="ask" aria-label="מה מבקשים ממנו?"></textarea><button class="mic" data-t="ask" aria-label="הכתבה קולית"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">6</span>יש קובץ נתונים, או קובץ אחר, שאפשר לצרף?</div>
+          <div class="lab"><span class="n">7</span>יש קובץ נתונים, או קובץ אחר, שאפשר לצרף?</div>
           <div class="chips" id="hasFile"></div>
           <div class="filebox" id="filebox" hidden>
             <div class="in-wrap"><textarea id="files" aria-label="מה יש בקובץ?"></textarea><button class="mic" data-t="files" aria-label="הכתבה קולית"></button></div>
           </div>
         </div>
         <div class="field" style="margin-bottom:0">
-          <div class="lab"><span class="n">7</span>כמה שקפים?</div>
+          <div class="lab"><span class="n">8</span>כמה שקפים?</div>
           <div class="chips" id="slides"></div>
         </div>
       </div>
@@ -134,10 +138,10 @@
 const App=(()=>{
   'use strict';
   const LS='dd_pitch_v4';
-  const F=['problem','proof','solution','audience','ask'];
+  const F=['org','problem','proof','solution','audience','ask'];
   const SLIDES=['5-6','8-10','12-15'];
-  const GAP={problem:'הבעיה ולמי היא כואבת',proof:'הנתונים שמוכיחים שיש בעיה',solution:'הפתרון המוצע',audience:'מול מי מציגים',ask:'מה מבקשים'};
-  let data={problem:'',proof:'',solution:'',audience:'',ask:'',slides:'8-10',hasFile:'',files:'',edited:{}};
+  const GAP={org:'שם הרשות המקומית',problem:'הבעיה ולמי היא כואבת',proof:'הנתונים שמוכיחים שיש בעיה',solution:'הפתרון המוצע',audience:'מול מי מציגים',ask:'מה מבקשים'};
+  let data={org:'',problem:'',proof:'',solution:'',audience:'',ask:'',slides:'8-10',hasFile:'',files:'',edited:{}};
 
   /* three answers start from "מפתחים את הפתרון" (same browser), until they are edited here */
   function fromSolution(){
@@ -147,6 +151,7 @@ const App=(()=>{
   function init(){
     try{ const s=JSON.parse(localStorage.getItem(LS)); if(s) data=Object.assign(data,s); }catch(e){}
     data.edited=data.edited||{};
+    if(!data.edited.org){ try{ data.org=(JSON.parse(localStorage.getItem('toolkit_identity')||'{}').org||'').trim(); }catch(e){} }
     const sol=fromSolution(); Object.keys(sol).forEach(k=>{ if(!data.edited[k]) data[k]=sol[k]||''; });
     F.forEach(k=>{ const el=document.getElementById(k); el.value=data[k]||''; el.addEventListener('input',()=>{ data[k]=el.value; data.edited[k]=true; persist(); render(); }); });
     const fl=document.getElementById('files'); fl.value=data.files||''; fl.addEventListener('input',()=>{ data.files=fl.value; persist(); render(); });
@@ -161,8 +166,9 @@ const App=(()=>{
     const g=k=> val(k) || (mark?'\u0001':'')+'[להשלים: '+GAP[k]+']'+(mark?'\u0002':'');
     return [
 'פעל כמומחה לאסטרטגיה ולתקשורת חזותית בשלטון המקומי בישראל. אתה בונה מצגות שמשכנעות מקבלי החלטות ברשויות מקומיות: ראשי רשויות, מנכ"לים, גזברים, מנהלי אגפים ומליאות.',
-'המשימה: בנה עבורי מצגת מלאה ומקצועית בת '+data.slides+' שקפים. המצגת תוצג ברשות מקומית, ומטרתה להביא להחלטה. היא מציגה בעיה, מוכיחה שהבעיה קיימת, מציגה את הפתרון המוצע, ומסתיימת בבקשה ברורה ממקבל ההחלטה.',
+'המשימה: בנה עבורי מצגת מלאה ומקצועית בת '+data.slides+' שקפים. המצגת תוצג ב'+g('org')+', ומטרתה להביא להחלטה. היא מציגה בעיה, מוכיחה שהבעיה קיימת, מציגה את הפתרון המוצע, ומסתיימת בבקשה ברורה ממקבל ההחלטה.',
 'המידע שלי:\n'
++'הרשות המקומית: '+g('org')+'\n'
 +'1. הבעיה, ולמי היא כואבת: '+g('problem')+'\n'
 +'2. הנתונים שמוכיחים שיש בעיה: '+g('proof')+'\n'
 +'3. הפתרון המוצע: '+g('solution')+'\n'
@@ -198,7 +204,12 @@ filesPart(mark),
 +'5. גרף או תרשים, אם מתאים: איזה סוג גרף, מה בכל ציר, ומה צריך לבלוט בו.\n'
 +'6. מה אומר המציג: 2 עד 3 משפטים שהמציג אומר בעל פה בזמן השקף.\n'
 +'7. סדר החשיפה בלחיצות: מה מופיע בפתיחת השקף, ומה נוסף בכל לחיצת עכבר (לחיצה 1, לחיצה 2 וכן הלאה), ואיזו אנימציה להפעיל.',
+'התאמה לרשות: '+g('org')+'\n'
++'- לפני שאתה בונה, חפש מידע ציבורי על הרשות: אופי היישוב (עיר, מועצה מקומית או מועצה אזורית), גודל האוכלוסייה, האזור בארץ, הנוף, השכונות והמקומות המוכרים בה.\n'
++'- השתמש במידע הזה כדי שהמצגת, הדוגמאות והאיורים ירגישו כמו הרשות הזו ולא כמו רשות כללית.\n'
++'- אם לא מצאת מידע אמין על הרשות, אמור זאת ואל תמציא פרטים עליה.',
 'הנחיות לאיורים:\n'
++'- האיורים מראים את הרשות הזו: הנוף, סוג הבנייה והרחובות שמתאימים לה (למשל עיר צפופה, יישוב קהילתי, מושב או קיבוץ, עיר עתיקה, יישוב בהר או במדבר).\n'
 +'- סגנון אחיד לכל המצגת: איור שטוח ונקי (flat illustration), בצבעים רכים, שמתאים למצגת של רשות מקומית.\n'
 +'- נוף ישראלי ורשות מקומית ישראלית: בניינים, רחובות, שילוט ואנשים שנראים כמו ביישוב בישראל.\n'
 +'- בלי טקסט בתוך התמונה, בלי לוגואים אמיתיים, ובלי אנשים אמיתיים שאפשר לזהות.\n'
