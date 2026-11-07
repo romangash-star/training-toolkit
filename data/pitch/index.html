@@ -118,14 +118,13 @@
         <div class="panel">
           <h3>הפרומפט</h3>
           <div class="pv-actions">
-            <button class="btn btn-brand" onclick="App.toCopilot()">העתק ופתח Copilot</button>
-            <button class="btn btn-ghost" onclick="App.toGemini()">העתק ופתח Gemini</button>
+            <button class="btn btn-brand" onclick="App.toPowerPoint()">העתק ופתח PowerPoint</button>
             <button class="btn btn-ghost" onclick="App.copy()">העתקה</button>
           </div>
-          <div class="pastehint">בחלון שנפתח: <kbd>Ctrl</kbd>+<kbd>V</kbd> ושליחה.</div>
-          <div class="filenote" id="filenote" hidden><b>לפני השליחה: מצרפים את הקובץ</b> בחלון הצ'אט (סימן + או אטב). יש בקובץ שמות, טלפונים או ת"ז? קודם <a href="../anonymize/">התממה</a>.</div>
+          <div class="pastehint">ב-PowerPoint שנפתח: לוחצים על <b>Copilot</b> בסרגל העליון, מדביקים עם <kbd>Ctrl</kbd>+<kbd>V</kbd> ושולחים.</div>
+          <div class="filenote" id="filenote" hidden><b>לפני השליחה: מצרפים את הקובץ</b> בחלון הצ'אט של Copilot (סימן + או אטב). יש בקובץ שמות, טלפונים או ת"ז? קודם <a href="../anonymize/">התממה</a>.</div>
           <div class="prompt-box" id="preview"></div>
-          <div class="tip"><b>עובדים ב-PowerPoint עם Copilot?</b> הדביקו את הפרומפט בחלון השיחה של Copilot בצד המסך, והוא יבנה את השקפים לפי המבנה.</div>
+          <div class="tip"><b>עובדים ב-PowerPoint שמותקן במחשב?</b> לוחצים "העתקה", פותחים מצגת חדשה, לוחצים על Copilot בסרגל העליון ומדביקים.</div>
         </div>
       </div>
     </div>
@@ -198,7 +197,7 @@ filesPart(mark),
 +'- השקף האחרון הוא הבקשה, לא שקף "תודה".',
 'לכל שקף, ספק:\n'
 +'1. מספר השקף, והחלק שהוא שייך אליו (בעיה / הוכחה / פתרון / בקשה).\n'
-+'2. כותרת: משפט מסר קצר, עד 8 מילים, שאומר את המסקנה ולא רק את הנושא.\n'
++'2. כותרת: משפט מסר קצר, עד 6 מילים, שאומר את המסקנה ולא רק את הנושא. מתחתיה משפט משנה קצר אחד.\n'
 +'3. תוכן השקף: 2 עד 4 נקודות קצרות. מעט מילים, מסר אחד לשקף.\n'
 +'4. איור או הדמיה: תיאור מפורט של תמונה שמתאימה לרשות מקומית בישראל, וכמה שיותר קרובה לנושא השקף. למשל: רחוב ביישוב או בעיר, בניין העירייה או המועצה, מוקד 106, פקח או עובד רשות בשטח, עובד מול מחשב במשרד, תושבים בשכונה, גן ציבורי, תחנת אוטובוס, פחי מחזור, מרכז מסחרי, מפת שכונות. כתוב את התיאור כך שאפשר להדביק אותו כמו שהוא בכלי ליצירת תמונות.\n'
 +'5. גרף או תרשים, אם מתאים: איזה סוג גרף, מה בכל ציר, ומה צריך לבלוט בו.\n'
@@ -214,6 +213,11 @@ filesPart(mark),
 +'- נוף ישראלי ורשות מקומית ישראלית: בניינים, רחובות, שילוט ואנשים שנראים כמו ביישוב בישראל.\n'
 +'- בלי טקסט בתוך התמונה, בלי לוגואים אמיתיים, ובלי אנשים אמיתיים שאפשר לזהות.\n'
 +'- כל איור קשור ישירות למסר של השקף שלו, לא תמונת אווירה כללית.',
+'עיצוב השקפים:\n'
++'- מינימליזם ויזואלי: לכל היותר 4 נקודות טקסט בשקף, ועד 6 מילים בכותרת. בלי פסקאות ארוכות.\n'
++'- היררכיה ורווח לבן: כותרת ברורה, משפט משנה קצר מתחתיה, והרבה מרחב ריק (White Space) כדי שהשקף לא ייראה צפוף.\n'
++'- טיפוגרפיה אחידה: פונט אברהם (Abraham) הוא הפונט הראשי לכותרות ולגוף הטקסט בכל השקפים. בולד לכותרות, רגיל לטקסט, בלי משקלים אחרים.\n'
++'- רשימות הופכות לוויזואל: בכל מקום שיש תהליך או השוואה, הפוך את הטקסט לתרשים זרימה, לטבלה נקייה או לקוביות ממוספרות (1-2-3), במקום בולטים רגילים.',
 'חשיפה הדרגתית בלחיצות. השקף לא מופיע כולו בבת אחת:\n'
 +'- בפתיחת השקף מופיעה רק הכותרת.\n'
 +'- כל לחיצת עכבר מוסיפה חלק אחד: נקודה, מספר, איור או חלק בגרף. כך הקהל מקשיב למה שהמציג אומר עכשיו, ולא קורא קדימה.\n'
@@ -227,7 +231,7 @@ filesPart(mark),
 +'- שמור על פרטיות: בלי שמות של תושבים ובלי פרטים מזהים.\n'
 +'- אם חסר מידע חשוב באחד מארבעת החלקים, שאל אותי עד 3 שאלות קצרות לפני שאתה בונה את המצגת.',
 'בסוף המצגת, הוסף:\n'
-+'- הצעה לפלטת צבעים ולגופנים אחידים למצגת.\n'
++'- הצעה לפלטת צבעים אחידה למצגת.\n'
 +'- שלוש שאלות קשות שמקבל ההחלטה עשוי לשאול, ותשובה קצרה לכל אחת.'
     ].filter(Boolean).join('\n\n');
   }
@@ -253,15 +257,14 @@ filesPart(mark),
   function hasFile(k){ data.hasFile=data.hasFile===k?'':k; persist(); render(); }
   function slides(n){ data.slides=n; persist(); render(); }
   function openWith(url,name){ copy('הועתק ✓ ב-'+name+': Ctrl+V ושליחה'); window.open(url,'_blank','noopener'); }
-  function toGemini(){ openWith('https://gemini.google.com/app','Gemini'); }
-  function toCopilot(){ openWith('https://m365.cloud.microsoft/chat','Copilot'); }
+  function toPowerPoint(){ copy('הועתק ✓ ב-PowerPoint: Copilot ← Ctrl+V ושליחה'); window.open('https://ppt.new','_blank','noopener'); }
   function copy(msg){ const t=build(false); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(typeof msg==='string'?msg:'הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו ידנית:',t)); }
 
   let recog=null;
   function dictate(el,btn){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){toast('הכתבה קולית נתמכת ב‑Chrome / Edge');return;} if(recog){recog.stop();return;} recog=new SR(); recog.lang='he-IL'; recog.interimResults=true; recog.continuous=false; const base=(el.value||'').trim(); btn.classList.add('rec'); recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k]; if(r.isFinal)f+=r[0].transcript; else i+=r[0].transcript;} el.value=(base?base+' ':'')+(f+i).trim(); el.dispatchEvent(new Event('input',{bubbles:true}));}; recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();}; recog.onerror=()=>{btn.classList.remove('rec');recog=null;}; try{recog.start();toast('מקשיב… דברו בעברית');}catch(e){btn.classList.remove('rec');recog=null;} }
 
   let tt; function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,hasFile,slides,copy,toGemini,toCopilot};
+  return {init,hasFile,slides,copy,toPowerPoint};
 })();
 App.init();
 </script>
