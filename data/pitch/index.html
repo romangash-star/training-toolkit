@@ -52,14 +52,6 @@
   footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#FFFDF8;padding:12px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:var(--shadow);max-width:90vw}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  /* "סיפור נכון — ב-5 דקות": the four parts every deck ends up with */
-  .story{max-width:760px;margin:0 auto 22px}
-  .story h2{font-size:22px;margin-bottom:10px}
-  .story ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-  .story li{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 16px;font-size:15px}
-  .story li .tm{font-weight:700;font-size:18px;color:var(--core-1);font-variant-numeric:tabular-nums;flex:0 0 46px}
-  .story li.proof{background:#F5DDD3;border-color:#E9B9A6}.story li.proof .tm{color:var(--brand-deep)}
-  .story li.ask{background:#DCEDEA;border-color:#B7D8D1}
   @media (max-width:820px){.grid{grid-template-columns:1fr}.preview{position:static}}
   @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
@@ -79,32 +71,30 @@
       <h1>בונים מצגת לפתרון</h1>
     </div>
 
-    <section class="story" aria-labelledby="storyH">
-      <h2 id="storyH">המבנה: סיפור נכון — ב-5 דקות</h2>
-      <ol>
-        <li><span class="tm">0:45</span><span><b>הבעיה</b> — מה כואב, ולמי. התושב הוא הגיבור.</span></li>
-        <li class="proof"><span class="tm">1:15</span><span><b>ההוכחה</b> — מספר מפתח אחד + ציטוט או תמונה.</span></li>
-        <li><span class="tm">2:00</span><span><b>הפתרון</b> — מה בונים — מראים, לא רק מספרים.</span></li>
-        <li class="ask"><span class="tm">1:00</span><span><b>הבקשה</b> — צעד אחד ברור: מי, מה ומתי.</span></li>
-      </ol>
-    </section>
-
     <div class="grid">
       <div class="panel">
         <div class="field">
-          <div class="lab"><span class="n">1</span>הנושא המרכזי <a class="refill" href="../prototype/">למפתחים את הפתרון</a></div>
-          <div class="in-wrap"><textarea id="topic" aria-label="הנושא המרכזי"></textarea><button class="mic" data-t="topic" aria-label="הכתבה קולית"></button></div>
+          <div class="lab"><span class="n">1</span>מה הבעיה, ולמי היא כואבת? <a class="refill" href="../prototype/">למפתחים את הפתרון</a></div>
+          <div class="in-wrap"><textarea id="problem" aria-label="מה הבעיה, ולמי היא כואבת?"></textarea><button class="mic" data-t="problem" aria-label="הכתבה קולית"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">2</span>קהל היעד</div>
-          <div class="in-wrap"><textarea id="audience" aria-label="קהל היעד"></textarea><button class="mic" data-t="audience" aria-label="הכתבה קולית"></button></div>
+          <div class="lab"><span class="n">2</span>אילו נתונים מוכיחים שיש בעיה?</div>
+          <div class="in-wrap"><textarea id="proof" aria-label="אילו נתונים מוכיחים שיש בעיה?"></textarea><button class="mic" data-t="proof" aria-label="הכתבה קולית"></button></div>
         </div>
         <div class="field">
-          <div class="lab"><span class="n">3</span>מטרת המצגת</div>
-          <div class="in-wrap"><textarea id="goal" aria-label="מטרת המצגת"></textarea><button class="mic" data-t="goal" aria-label="הכתבה קולית"></button></div>
+          <div class="lab"><span class="n">3</span>מה הפתרון שאתם מציעים?</div>
+          <div class="in-wrap"><textarea id="solution" aria-label="מה הפתרון שאתם מציעים?"></textarea><button class="mic" data-t="solution" aria-label="הכתבה קולית"></button></div>
+        </div>
+        <div class="field">
+          <div class="lab"><span class="n">4</span>מול מי מציגים? מי מקבל את ההחלטה</div>
+          <div class="in-wrap"><textarea id="audience" aria-label="מול מי מציגים? מי מקבל את ההחלטה"></textarea><button class="mic" data-t="audience" aria-label="הכתבה קולית"></button></div>
+        </div>
+        <div class="field">
+          <div class="lab"><span class="n">5</span>מה מבקשים ממנו?</div>
+          <div class="in-wrap"><textarea id="ask" aria-label="מה מבקשים ממנו?"></textarea><button class="mic" data-t="ask" aria-label="הכתבה קולית"></button></div>
         </div>
         <div class="field" style="margin-bottom:0">
-          <div class="lab"><span class="n">4</span>כמה שקפים?</div>
+          <div class="lab"><span class="n">6</span>כמה שקפים?</div>
           <div class="chips" id="slides"></div>
         </div>
       </div>
@@ -131,45 +121,83 @@
 <script>
 const App=(()=>{
   'use strict';
-  const LS='dd_pitch_v3';
-  const F=['topic','audience','goal'];
+  const LS='dd_pitch_v4';
+  const F=['problem','proof','solution','audience','ask'];
   const SLIDES=['5-6','8-10','12-15'];
-  const GAP={topic:'הנושא המרכזי',audience:'קהל היעד',goal:'מטרת המצגת'};
-  let data={topic:'',audience:'',goal:'',slides:'5-6',topicEdited:false};
+  const GAP={problem:'הבעיה ולמי היא כואבת',proof:'הנתונים שמוכיחים שיש בעיה',solution:'הפתרון המוצע',audience:'מול מי מציגים',ask:'מה מבקשים'};
+  let data={problem:'',proof:'',solution:'',audience:'',ask:'',slides:'8-10',edited:{}};
 
-  /* the topic starts from the solution written in "מפתחים את הפתרון" (same browser), until it is edited here */
+  /* three answers start from "מפתחים את הפתרון" (same browser), until they are edited here */
   function fromSolution(){
-    try{ const s=JSON.parse(localStorage.getItem('dd_solution_tool_v4')||'{}'); return ((s.direction||'').trim()||(s.problem||'').trim()); }catch(e){ return ''; }
+    try{ const s=JSON.parse(localStorage.getItem('dd_solution_tool_v4')||'{}'), t=v=>(v||'').trim();
+      return {problem:t(s.problem), proof:t(s.dataHave), solution:[t(s.direction),t(s.does)].filter(Boolean).join('\n')}; }catch(e){ return {}; }
   }
   function init(){
     try{ const s=JSON.parse(localStorage.getItem(LS)); if(s) data=Object.assign(data,s); }catch(e){}
-    if(!data.topicEdited) data.topic=fromSolution();
-    F.forEach(k=>{ const el=document.getElementById(k); el.value=data[k]||''; el.addEventListener('input',()=>{ data[k]=el.value; if(k==='topic') data.topicEdited=true; persist(); render(); }); });
+    data.edited=data.edited||{};
+    const sol=fromSolution(); Object.keys(sol).forEach(k=>{ if(!data.edited[k]) data[k]=sol[k]||''; });
+    F.forEach(k=>{ const el=document.getElementById(k); el.value=data[k]||''; el.addEventListener('input',()=>{ data[k]=el.value; data.edited[k]=true; persist(); render(); }); });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
     render();
   }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function val(k){ return (data[k]||'').trim().replace(/\.+$/,''); }
-  /* a missing part stays in the prompt as [להשלים: ...] so it is clear what is left */
+  function val(k){ return (data[k]||'').trim(); }
+  /* a missing answer stays in the prompt as [להשלים: ...] so it is clear what is left */
   function build(mark){
     const g=k=> val(k) || (mark?'\u0001':'')+'[להשלים: '+GAP[k]+']'+(mark?'\u0002':'');
-    return 'פעל כמומחה לאסטרטגיה עסקית ולתקשורת חזותית. צור עבורי מבנה מלא למצגת מקצועית בת '+data.slides+' שקפים.\n'
-      +'הנושא המרכזי: '+g('topic')+'.\n'
-      +'קהל היעד: '+g('audience')+'.\n'
-      +'מטרת המצגת: '+g('goal')+'.\n'
-      +'טון וסגנון: מקצועי, חד, ענייני, ממוקד ערך ותועלות (פחות מילים, יותר מסרים ברורים).\n\n'
-      +'מבנה המצגת: סיפור נכון של 5 דקות, בארבעה חלקים ובסדר הזה:\n'
-      +'א. הבעיה (0:45): מה כואב, ולמי. התושב הוא הגיבור.\n'
-      +'ב. ההוכחה (1:15): מספר מפתח אחד, ולצידו ציטוט או תמונה.\n'
-      +'ג. הפתרון (2:00): מה בונים. מראים, לא רק מספרים.\n'
-      +'ד. הבקשה (1:00): צעד אחד ברור: מי, מה ומתי.\n'
-      +'חלק את השקפים בין ארבעת החלקים לפי הזמן של כל חלק, וציין ליד כל שקף לאיזה חלק הוא שייך.\n\n'
-      +'עבור כל שקף במצגת, אנא ספק את המבנה הבא:\n'
-      +'1. כותרת השקף: כותרת קצרה וקולעת (עד 6 מילים).\n'
-      +'2. מסר מרכזי / תיאור קצר: מה השקף בא לחדש או להוכיח.\n'
-      +'3. נקודות מרכזיות בגוף השקף: 3 עד 4 נקודות תמציתיות (בפורמט בולטים).\n'
-      +'4. המלצה ויזואלית: הצעה לאלמנט ויזואלי בשקף (למשל: גרף עמודות, טבלת השוואה, תרשים זרימה של 3 שלבים, או תמונת אווירה).';
+    return [
+'פעל כמומחה לאסטרטגיה ולתקשורת חזותית בשלטון המקומי בישראל. אתה בונה מצגות שמשכנעות מקבלי החלטות ברשויות מקומיות: ראשי רשויות, מנכ"לים, גזברים, מנהלי אגפים ומליאות.',
+'המשימה: בנה עבורי מצגת מלאה ומקצועית בת '+data.slides+' שקפים. המצגת תוצג ברשות מקומית, ומטרתה להביא להחלטה. היא מציגה בעיה, מוכיחה שהבעיה קיימת, מציגה את הפתרון המוצע, ומסתיימת בבקשה ברורה ממקבל ההחלטה.',
+'המידע שלי:\n'
++'1. הבעיה, ולמי היא כואבת: '+g('problem')+'\n'
++'2. הנתונים שמוכיחים שיש בעיה: '+g('proof')+'\n'
++'3. הפתרון המוצע: '+g('solution')+'\n'
++'4. מול מי מציגים (מי מקבל את ההחלטה): '+g('audience')+'\n'
++'5. מה מבקשים ממנו: '+g('ask'),
+'מבנה המצגת. חובה לשמור על ארבעת החלקים, בסדר הזה בדיוק:\n\n'
++'חלק 1 – הגדרת הבעיה\n'
++'- מה הבעיה, את מי היא פוגעת, ולמה חשוב לטפל בה עכשיו.\n'
++'- הצג את הבעיה דרך עיני מי שחווה אותה: תושב, בעל עסק או עובד ברשות. האדם הוא הגיבור, לא הטבלה.\n'
++'- השקף הראשון מנסח את הבעיה במשפט אחד חד שכל מי שבחדר מבין.\n\n'
++'חלק 2 – ההוכחה שיש בעיה\n'
++'- הנתונים שמראים שהבעיה אמיתית, גדולה ומשמעותית לרשות.\n'
++'- מספר מפתח אחד בולט בכל שקף, וגרף פשוט שמבהיר אותו.\n'
++'- השוואה שנותנת לנתון משמעות: לאורך זמן, בין שכונות, או מול רשויות דומות.\n'
++'- אם מתאים: עדות קצרה של תושב או עובד, בלי שם ובלי פרטים מזהים.\n'
++'- השתמש רק בנתונים שנתתי. במקום שחסר נתון, כתוב [נתון להשלמה].\n\n'
++'חלק 3 – הפתרון המוצע\n'
++'- מה בדיוק מציעים, ואיך זה יעבוד בפועל ברשות: מי מפעיל, באיזה אגף, באילו כלים ובאיזה לוח זמנים.\n'
++'- מה ישתנה לתושב ולעובד הרשות. הצג "לפני" ו"אחרי".\n'
++'- הראה את הפתרון בהדמיה או בתרשים זרימה, לא רק במילים.\n'
++'- איך נדע שהפתרון הצליח: מדד הצלחה אחד, נקודת מוצא ויעד.\n'
++'- אם אפשר: הצעה לפיילוט קטן לפני הרחבה.\n\n'
++'חלק 4 – הבקשה\n'
++'- מול מי אנחנו עומדים, ומה בדיוק אנחנו מבקשים ממנו: החלטה, תקציב, אישור פיילוט, שותפים או זמן עבודה.\n'
++'- צעד אחד ברור: מי עושה, מה עושים, ועד מתי.\n'
++'- השקף האחרון הוא הבקשה, לא שקף "תודה".',
+'לכל שקף, ספק:\n'
++'1. מספר השקף, והחלק שהוא שייך אליו (בעיה / הוכחה / פתרון / בקשה).\n'
++'2. כותרת: משפט מסר קצר, עד 8 מילים, שאומר את המסקנה ולא רק את הנושא.\n'
++'3. תוכן השקף: 2 עד 4 נקודות קצרות. מעט מילים, מסר אחד לשקף.\n'
++'4. איור או הדמיה: תיאור מפורט של תמונה שמתאימה לרשות מקומית בישראל, וכמה שיותר קרובה לנושא השקף. למשל: רחוב ביישוב או בעיר, בניין העירייה או המועצה, מוקד 106, פקח או עובד רשות בשטח, עובד מול מחשב במשרד, תושבים בשכונה, גן ציבורי, תחנת אוטובוס, פחי מחזור, מרכז מסחרי, מפת שכונות. כתוב את התיאור כך שאפשר להדביק אותו כמו שהוא בכלי ליצירת תמונות.\n'
++'5. גרף או תרשים, אם מתאים: איזה סוג גרף, מה בכל ציר, ומה צריך לבלוט בו.\n'
++'6. מה אומר המציג: 2 עד 3 משפטים שהמציג אומר בעל פה בזמן השקף.',
+'הנחיות לאיורים:\n'
++'- סגנון אחיד לכל המצגת: איור שטוח ונקי (flat illustration), בצבעים רכים, שמתאים למצגת של רשות מקומית.\n'
++'- נוף ישראלי ורשות מקומית ישראלית: בניינים, רחובות, שילוט ואנשים שנראים כמו ביישוב בישראל.\n'
++'- בלי טקסט בתוך התמונה, בלי לוגואים אמיתיים, ובלי אנשים אמיתיים שאפשר לזהות.\n'
++'- כל איור קשור ישירות למסר של השקף שלו, לא תמונת אווירה כללית.',
+'כללים:\n'
++'- כתוב בעברית, בשפה פשוטה ומקצועית, שמתאימה לדרג הבכיר ברשות.\n'
++'- טון: חד, ענייני, ממוקד בערך לתושב ולרשות. פחות מילים, יותר מסרים ברורים.\n'
++'- אל תמציא נתונים, מספרים, שמות, ציטוטים או מחקרים. כל מה שחסר, סמן [להשלמה].\n'
++'- שמור על פרטיות: בלי שמות של תושבים ובלי פרטים מזהים.\n'
++'- אם חסר מידע חשוב באחד מארבעת החלקים, שאל אותי עד 3 שאלות קצרות לפני שאתה בונה את המצגת.',
+'בסוף המצגת, הוסף:\n'
++'- הצעה לפלטת צבעים ולגופנים אחידים למצגת.\n'
++'- שלוש שאלות קשות שמקבל ההחלטה עשוי לשאול, ותשובה קצרה לכל אחת.'
+    ].join('\n\n');
   }
   function render(){
     document.getElementById('slides').innerHTML=SLIDES.map(n=>`<button type="button" aria-pressed="${n===data.slides}" onclick="App.slides('${n}')">${n}</button>`).join('');
