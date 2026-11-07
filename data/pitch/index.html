@@ -52,6 +52,14 @@
   footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#FFFDF8;padding:12px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:var(--shadow);max-width:90vw}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* "סיפור נכון — ב-5 דקות": the four parts every deck ends up with */
+  .story{max-width:760px;margin:0 auto 22px}
+  .story h2{font-size:22px;margin-bottom:10px}
+  .story ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  .story li{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 16px;font-size:15px}
+  .story li .tm{font-weight:700;font-size:18px;color:var(--core-1);font-variant-numeric:tabular-nums;flex:0 0 46px}
+  .story li.proof{background:#F5DDD3;border-color:#E9B9A6}.story li.proof .tm{color:var(--brand-deep)}
+  .story li.ask{background:#DCEDEA;border-color:#B7D8D1}
   @media (max-width:820px){.grid{grid-template-columns:1fr}.preview{position:static}}
   @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
@@ -70,6 +78,16 @@
     <div class="head">
       <h1>בונים מצגת לפתרון</h1>
     </div>
+
+    <section class="story" aria-labelledby="storyH">
+      <h2 id="storyH">המבנה: סיפור נכון — ב-5 דקות</h2>
+      <ol>
+        <li><span class="tm">0:45</span><span><b>הבעיה</b> — מה כואב, ולמי. התושב הוא הגיבור.</span></li>
+        <li class="proof"><span class="tm">1:15</span><span><b>ההוכחה</b> — מספר מפתח אחד + ציטוט או תמונה.</span></li>
+        <li><span class="tm">2:00</span><span><b>הפתרון</b> — מה בונים — מראים, לא רק מספרים.</span></li>
+        <li class="ask"><span class="tm">1:00</span><span><b>הבקשה</b> — צעד אחד ברור: מי, מה ומתי.</span></li>
+      </ol>
+    </section>
 
     <div class="grid">
       <div class="panel">
@@ -117,7 +135,7 @@ const App=(()=>{
   const F=['topic','audience','goal'];
   const SLIDES=['5-6','8-10','12-15'];
   const GAP={topic:'הנושא המרכזי',audience:'קהל היעד',goal:'מטרת המצגת'};
-  let data={topic:'',audience:'',goal:'',slides:'8-10',topicEdited:false};
+  let data={topic:'',audience:'',goal:'',slides:'5-6',topicEdited:false};
 
   /* the topic starts from the solution written in "מפתחים את הפתרון" (same browser), until it is edited here */
   function fromSolution(){
@@ -141,6 +159,12 @@ const App=(()=>{
       +'קהל היעד: '+g('audience')+'.\n'
       +'מטרת המצגת: '+g('goal')+'.\n'
       +'טון וסגנון: מקצועי, חד, ענייני, ממוקד ערך ותועלות (פחות מילים, יותר מסרים ברורים).\n\n'
+      +'מבנה המצגת: סיפור נכון של 5 דקות, בארבעה חלקים ובסדר הזה:\n'
+      +'א. הבעיה (0:45): מה כואב, ולמי. התושב הוא הגיבור.\n'
+      +'ב. ההוכחה (1:15): מספר מפתח אחד, ולצידו ציטוט או תמונה.\n'
+      +'ג. הפתרון (2:00): מה בונים. מראים, לא רק מספרים.\n'
+      +'ד. הבקשה (1:00): צעד אחד ברור: מי, מה ומתי.\n'
+      +'חלק את השקפים בין ארבעת החלקים לפי הזמן של כל חלק, וציין ליד כל שקף לאיזה חלק הוא שייך.\n\n'
       +'עבור כל שקף במצגת, אנא ספק את המבנה הבא:\n'
       +'1. כותרת השקף: כותרת קצרה וקולעת (עד 6 מילים).\n'
       +'2. מסר מרכזי / תיאור קצר: מה השקף בא לחדש או להוכיח.\n'
