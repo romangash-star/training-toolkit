@@ -16,6 +16,11 @@
   body.hubd .day{margin-top:28px}
   body.hubd .day:first-of-type{margin-top:0}
   body.hubd .day-h{margin-bottom:10px;border-bottom:2px solid var(--line);padding-bottom:6px}
+  body.hubd .practice{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px;padding:12px 16px;border-radius:14px;background:#FFF3D6;border:2px solid #D99A2B;text-decoration:none;color:var(--ink)}
+  body.hubd .practice:hover{background:#FFEDC2}
+  body.hubd .practice .pt{font-weight:700;font-size:17px}
+  body.hubd .practice .pd{font-size:14px;color:var(--ink-soft)}
+  body.hubd .practice .pg{margin-inline-start:auto;font-weight:700;font-size:14px;color:#FFFDF8;background:#B4502F;border-radius:10px;padding:6px 14px}
   body.hubd .day-h h2{font-size:22px;line-height:30px;color:var(--teal)}
   body.hubd .cards{gap:10px}
   body.hubd .cards.c2,body.hubd .cards.c3{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
@@ -101,6 +106,7 @@
 
       <section class="day" id="day2">
         <div class="day-h"><h2>יום הכשרה 2</h2></div>
+        <a class="practice" href="practice-files/"><span class="pt">קבצים פיקטיביים לתרגול</span><span class="pd">10 קבצי Excel לפי נושאים, להורדה</span><span class="pg">לקבצים ←</span></a>
         <div class="cards c3">
           <a class="cardlink" href="analysis/">
             <span class="n">1</span>
@@ -133,7 +139,7 @@
           <a class="cardlink" href="pitch/">
             <span class="n">2</span>
             <h2>בונים מצגת לפתרון</h2>
-            <p>פרומפט שבונה מבנה מצגת ב-Copilot או ב-Gemini.</p>
+            <p>פרומפט שבונה את המצגת ב-PowerPoint עם Copilot.</p>
             <span class="go">פתיחה ←</span>
           </a>
         </div>
