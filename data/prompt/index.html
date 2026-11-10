@@ -96,6 +96,20 @@
   @media (prefers-reduced-motion:reduce){.btn-go.ready{animation:none}}
   .chat .pastehint{background:rgba(255,255,255,.1);color:#eef5f3}
   .chat .pastehint kbd{color:var(--ink)}
+  .opts{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin:0 0 18px;box-shadow:var(--shadow-sm)}
+  .opts h2{font-size:20px;color:var(--core-1)}
+  .opts .osub{color:var(--ink-soft);font-size:14.5px;margin:2px 0 6px}
+  .ogroup{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:start;padding:10px 0;border-top:1px dashed var(--line)}
+  .ogroup:first-of-type{border-top:none}
+  .ogroup .gt{font-size:15px;font-weight:700;padding-top:6px}
+  .ochips{display:flex;flex-wrap:wrap;gap:7px}
+  .ochips button{font-size:14px;font-weight:700;padding:6px 13px;border-radius:999px;border:1.5px solid var(--line);background:#FFFDF8;color:var(--ink)}
+  .ochips button:hover{border-color:var(--core-1)}
+  .ochips button[aria-pressed="true"]{background:#DCEDEA;border-color:var(--core-1);color:var(--core-1)}
+  .ochips button[aria-pressed="true"]::before{content:"✓ "}
+  .ochips .all{color:var(--ink-soft);border-style:dashed}
+  .c-opts{--c:#9CC9BF;--cb:rgba(156,201,191,.25)}
+  @media (max-width:640px){.ogroup{grid-template-columns:1fr;gap:6px}.ogroup .gt{padding-top:0}}
   @media (max-width:900px){.formula{grid-template-columns:1fr 1fr}}
   @media (max-width:560px){.formula{grid-template-columns:1fr}.fcard .lab{font-size:20px}}
 </style>
@@ -140,6 +154,12 @@
       </div>
     </div>
 
+    <section class="opts" aria-labelledby="optsT">
+      <h2 id="optsT">תוספות לניתוח נתונים</h2>
+      <div class="osub">לוחצים על מה שרוצים, וזה נכנס לפרומפט.</div>
+      <div id="optgroups"></div>
+    </section>
+
     <div class="chat">
       <div class="chat-top"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>הפרומפט שלכם · כך זה נראה בצ׳אט</div>
       <div class="prompt-box" id="preview"></div>
@@ -169,15 +189,47 @@ const App=(()=>{
     'להעריך מהימנות':{role:'אתה מומחה לנתונים ציבוריים.',context:'יש לי כמה מקורות נתונים על סגירת עסקים ברחוב.',task:'על מי אפשר להסתמך, ומה החולשות של כל מקור?',format:'טבלה: מקור · מהימנות · חולשות.'},
     'לקטלג פניות':{role:'אתה עוזר מחקר ברשות מקומית.',context:'להלן טקסט חופשי של פניות תושבים.',task:'מיין את הפניות לקטגוריות עקביות וספור כל קטגוריה.',format:'טבלה: קטגוריה · מספר פניות · דוגמה.'}
   };
-  let data={role:'',context:'',task:'',format:''};
+  /* ready-made analysis instructions, grouped; each chosen one becomes a line in the prompt */
+  const OPTS=[
+    {g:'קודם כל',items:[
+      ['file','יש קובץ מצורף','הנתונים בקובץ המצורף. קרא את כולו לפני שאתה עונה, ותאר בקצרה מה יש בו: כמה שורות, אילו עמודות, ואיזה טווח תאריכים.'],
+      ['clean','ניקוי ובדיקת איכות','בדוק את איכות הנתונים לפני הניתוח: תאים ריקים, שורות כפולות, כתיב לא אחיד של אותו ערך (למשל שם שכונה בשתי צורות), רווחים מיותרים ומספרים שנשמרו כטקסט. פרט מה מצאת ואיך טיפלת בזה.'],
+      ['cols','הסבר עמודות','הסבר במשפט אחד מה מייצגת כל עמודה, וציין עמודות שהמשמעות שלהן לא ברורה.']]},
+    {g:'מה לנתח',items:[
+      ['trend','מגמות לאורך זמן','בדוק איך הנתונים משתנים לאורך זמן (לפי חודש, רבעון או שנה), וציין עליות וירידות בולטות.'],
+      ['compare','השוואה בין קבוצות','השווה בין הקבוצות המרכזיות בנתונים (למשל שכונות, מחלקות או סוגי פנייה), והראה איפה ההבדלים הגדולים.'],
+      ['top','מה הכי נפוץ','דרג את הקטגוריות לפי שכיחות, והראה איזה חלק מהסך הכולל מרכזות 3 הקטגוריות המובילות.'],
+      ['outliers','חריגים','זהה ערכים חריגים או קיצוניים, ובדוק אם הם נראים כמו טעות הקלדה או כמו מקרה אמיתי שכדאי לבדוק.'],
+      ['pivot','טבלת ציר','הצע טבלת ציר אחת שעונה על השאלה, ופרט אילו עמודות נכנסות לשורות, לעמודות ולערכים.'],
+      ['relation','קשר בין עמודות','בדוק אם יש קשר בין שתי עמודות או יותר (למשל זמן טיפול וסוג פנייה). זכור שקשר אינו מוכיח סיבה.']]},
+    {g:'מה לקבל בסוף',items:[
+      ['table','טבלת סיכום','הצג את הממצאים העיקריים בטבלת סיכום קצרה.'],
+      ['chart','המלצה לגרף','המלץ על הגרף שמתאים ביותר להצגת הממצא המרכזי, והסבר במשפט למה דווקא הוא.'],
+      ['excel','איך לעשות את זה ב-Excel','כתוב שלב אחר שלב איך לשחזר את הניתוח ב-Excel בעצמי, כולל הנוסחאות או הגדרות טבלת הציר.'],
+      ['insight','תובנה אחת למנהל','סכם בתובנה אחת מרכזית, במשפט אחד שמנהל יכול להבין בלי לראות את הטבלה, והוסף המלצה לפעולה.'],
+      ['next','שאלות להמשך','הצע 3 שאלות המשך שכדאי לבדוק בנתונים, או נתונים נוספים שכדאי להשיג.']]},
+    {g:'בדיקות אמינות',items:[
+      ['n','לציין על כמה רשומות','בכל ממצא ציין על כמה רשומות הוא מבוסס. אם המספר קטן, אמור שהממצא חלש.'],
+      ['missing','מה חסר בנתונים','ציין מה חסר בנתונים כדי להגיע למסקנה בטוחה, ומה עלול להטות את התוצאה.'],
+      ['check','לבדוק את עצמך','בסוף, עבור שוב על המספרים שהצגת ובדוק שהם מסתכמים נכון ותואמים לקובץ.']]}
+  ];
+  const OPT_MAP={}; OPTS.forEach(g=>g.items.forEach(([k,t,txt])=>OPT_MAP[k]={t,txt}));
+  let data={role:'',context:'',task:'',format:'',opts:[]};
 
   function init(){
     try{const s=JSON.parse(localStorage.getItem(LS)); if(s)data=s;}catch(e){}
     document.getElementById('examples').innerHTML=Object.keys(EX).map(k=>`<button class="ex" onclick="App.fill('${k}')">${k}</button>`).join('');
+    if(!Array.isArray(data.opts)) data.opts=[];
+    renderOpts();
     F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; el.addEventListener('input',()=>{data[id]=el.value; persist(); preview();}); });
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.getElementById(b.dataset.t),b)));
     preview();
   }
+  function renderOpts(){
+    document.getElementById('optgroups').innerHTML=OPTS.map((g,gi)=>`<div class="ogroup"><div class="gt">${g.g}</div><div class="ochips">${g.items.map(([k,t])=>`<button type="button" aria-pressed="${data.opts.includes(k)}" onclick="App.opt('${k}')">${t}</button>`).join('')}<button type="button" class="all" onclick="App.optAll(${gi})">${g.items.every(([k])=>data.opts.includes(k))?'ניקוי הקבוצה':'הכל'}</button></div></div>`).join('');
+  }
+  function opt(k){ const i=data.opts.indexOf(k); if(i<0) data.opts.push(k); else data.opts.splice(i,1); persist(); renderOpts(); preview(); }
+  function optAll(gi){ const ks=OPTS[gi].items.map(i=>i[0]); const on=ks.every(k=>data.opts.includes(k)); data.opts=data.opts.filter(k=>!ks.includes(k)); if(!on) data.opts.push(...ks); persist(); renderOpts(); preview(); }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   /* The copied prompt wraps what was typed in fuller instructions, so the AI gets a complete brief. */
@@ -197,9 +249,11 @@ const App=(()=>{
   ];
   function sections(){
     const v=k=>(data[k]||'').trim();
-    if(!F.some(v)) return [];
+    const chosen=[]; OPTS.forEach(g=>g.items.forEach(([k])=>{ if(data.opts.includes(k)) chosen.push(k); }));
+    if(!F.some(v) && !chosen.length) return [];
     const out=[];
     F.forEach(k=>{ const u=v(k)||(k==='format'?DEF_FORMAT:''); if(u) out.push({k,chip:META[k][0],head:META[k][1],user:u,extra:META[k][2]}); });
+    if(chosen.length) out.push({k:'opts',chip:'ניתוח הנתונים',head:'הנחיות לניתוח הנתונים',user:'',extra:chosen.map(k=>'- '+OPT_MAP[k].txt).join('\n')});
     out.push({k:'rules',chip:'כללי עבודה',head:'כללי עבודה',user:'',extra:RULES.map(s=>'- '+s).join('\n')});
     return out;
   }
@@ -211,10 +265,10 @@ const App=(()=>{
     document.getElementById('gohint').classList.toggle('show',ready);
     const ss=sections(); const el=document.getElementById('preview');
     el.innerHTML = ss.length ? ss.map(s=>`<div class="sec c-${s.k}"><span class="chip">${s.chip} ←</span>${s.user?`<mark class="u">${esc(s.user)}</mark>`:''}<span class="add">${esc(s.extra)}</span></div>`).join('')
-      : '<span class="ph">מלאו את ארבעת החלקים, והפרומפט ייבנה כאן</span>';
+      : '<span class="ph">מלאו את ארבעת החלקים ובחרו תוספות, והפרומפט ייבנה כאן</span>';
   }
-  function fill(k){ const e=EX[k]; data={...e}; F.forEach(id=>document.getElementById(id).value=data[id]); persist(); preview(); toast('דוגמה נטענה — ערכו לפי האתגר שלכם'); }
-  function clear(){ data={role:'',context:'',task:'',format:''}; F.forEach(id=>document.getElementById(id).value=''); persist(); preview(); }
+  function fill(k){ const e=EX[k]; data={...e,opts:data.opts||[]}; F.forEach(id=>document.getElementById(id).value=data[id]); persist(); preview(); toast('דוגמה נטענה — ערכו לפי האתגר שלכם'); }
+  function clear(){ data={role:'',context:'',task:'',format:'',opts:[]}; F.forEach(id=>document.getElementById(id).value=''); persist(); renderOpts(); preview(); }
   function openWith(url,name){ if(!build()){ toast('אין עדיין פרומפט'); return; } copy('הועתק ✓ ב-'+name+': לחצו בתיבה והדביקו עם Ctrl+V'); window.open(url,'_blank','noopener'); }
   function toGemini(){ openWith('https://gemini.google.com/app','Gemini'); }
   function toCopilot(){ openWith('https://m365.cloud.microsoft/chat','Copilot'); }
@@ -224,7 +278,7 @@ const App=(()=>{
   function dictate(el,btn){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){toast('הכתבה קולית נתמכת ב‑Chrome / Edge');return;} if(recog){recog.stop();return;} recog=new SR(); recog.lang='he-IL'; recog.interimResults=true; recog.continuous=false; const base=(el.value||'').trim(); btn.classList.add('rec'); recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k]; if(r.isFinal)f+=r[0].transcript; else i+=r[0].transcript;} el.value=(base?base+' ':'')+(f+i).trim(); el.dispatchEvent(new Event('input',{bubbles:true}));}; recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();}; recog.onerror=()=>{btn.classList.remove('rec');recog=null;}; try{recog.start();toast('מקשיב… דברו בעברית');}catch(e){btn.classList.remove('rec');recog=null;} }
 
   let tt; function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,fill,clear,copy,toGemini,toCopilot};
+  return {init,fill,clear,copy,toGemini,toCopilot,opt,optAll};
 })();
 window.App=App; App.init();
 </script>
