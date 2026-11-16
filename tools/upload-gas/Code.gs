@@ -27,6 +27,7 @@ function doPost(e) {
   try {
     var b = JSON.parse(e.postData.contents);
     if (b.website) return json_({ ok: true }); // honeypot: bots fill hidden fields
+    if (b.ping) return json_({ ok: true, pong: true }); // connection check from /check/ and the upload page
     var name = clean_(b.name, 80), org = clean_(b.org, 80), dept = clean_(b.dept, 80), note = clean_(b.note, 500);
     var fileName = clean_(b.fileName, 150);
     var ext = (fileName.split('.').pop() || '').toLowerCase();

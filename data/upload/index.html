@@ -62,6 +62,12 @@
   .done h2{font-size:28px;color:var(--teal)}
   .done p{color:var(--ink-soft);font-size:16px;margin:8px 0 16px}
   .again{font-weight:700;font-size:15px;color:var(--teal);border:1.5px solid var(--teal);border-radius:11px;padding:9px 18px}
+  .blocked{display:none;margin-bottom:16px;background:#FDECEA;border:2px solid #D9826F;border-radius:14px;padding:14px 16px;font-size:15.5px;line-height:1.6}
+  .blocked.show{display:block}
+  .blocked b.h{display:block;font-size:18px;margin-bottom:4px}
+  .blocked ol{margin:6px 0 8px;padding-inline-start:22px}
+  .blocked a{color:var(--brand-deep);font-weight:700}
+  .blocked .re{font-weight:700;font-size:14.5px;color:var(--teal);border:1.5px solid var(--teal);border-radius:10px;padding:6px 14px;background:#fff}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .hp{position:absolute;left:-9999px}
   footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:12px 22px;font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line)}
@@ -85,6 +91,16 @@
   <main class="wrap">
     <h1>מעלים את המצגת</h1>
     <p class="lead">גוררים את המצגת לכאן, והיא נשלחת לרומן.</p>
+
+    <div class="blocked" id="blocked" role="alert">
+      <b class="h">נראה שהרשת כאן חוסמת את שליחת המצגות</b>
+      מה אפשר לעשות:
+      <ol>
+        <li>מחברים את המחשב לנקודה חמה מהטלפון, ולוחצים "בדיקה חוזרת".</li>
+        <li>מצגת קטנה מ-10MB: שולחים במייל ל-<a id="mailAlt" href="mailto:romangash@gmail.com">romangash@gmail.com</a>, עם שם הרשות בנושא.</li>
+      </ol>
+      <button type="button" class="re" id="recheck">בדיקה חוזרת</button> · <a href="../../check/">בדיקת חיבור מלאה</a>
+    </div>
 
     <div class="panel">
       <div id="formArea">
@@ -154,6 +170,23 @@
   function say(html,kind){ var m=$('msg'); m.className='msg show '+kind; m.innerHTML=html; }
   function hush(){ $('msg').className='msg'; }
   function ready(){ $('send').disabled=busy||!file||!$('name').value.trim()||!$('org').value.trim(); }
+
+  /* same check as /check/: read and send a tiny "ping"; a filter that blocks Google fails here */
+  function netCheck(){
+    var t=new Promise(function(_,no){ setTimeout(function(){ no(new Error('timeout')); },12000); });
+    return Promise.race([t, fetch(ENDPOINT).then(function(r){ return r.json(); }).then(function(j){
+      if(!j.ok) throw 0;
+      return fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({ping:true})});
+    }).then(function(r){ return r.json(); }).then(function(j){ if(!j.ok||!j.pong) throw 0; })]);
+  }
+  function runCheck(){
+    $('recheck').disabled=true; $('recheck').textContent='בודקים…';
+    netCheck().then(function(){ $('blocked').classList.remove('show'); },function(){ $('blocked').classList.add('show'); })
+      .then(function(){ $('recheck').disabled=false; $('recheck').textContent='בדיקה חוזרת'; });
+  }
+  $('mailAlt').href='mailto:romangash@gmail.com?subject='+encodeURIComponent('מצגת - קבלת החלטות מבוססת נתונים');
+  $('recheck').addEventListener('click',runCheck);
+  runCheck();
 
   function choose(f){
     hush();

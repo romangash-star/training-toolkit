@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>בדיקת חיבור — RomanAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--canvas:#FAF5EC;--paper:#F2EADC;--card:#FFFDF8;--ink:#2A211B;--ink-soft:#6B5D52;--line:#E3D8C6;--brand:#B4502F;--brand-deep:#8F3D22;--teal:#1F5F5B;--ok:#2E7D4F;--bad:#B3392B;--sans:'Alef','Segoe UI',Arial,sans-serif;--shadow-sm:0 3px 12px rgba(42,33,27,.08)}
+  *{box-sizing:border-box} html,body{margin:0;min-height:100%}
+  body{font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;background:var(--canvas);display:flex;flex-direction:column;min-height:100vh}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  h1,h2{font-weight:700;line-height:1.15;margin:0}
+  .wrap{flex:1;width:100%;max-width:680px;margin:0 auto;padding:26px 20px 56px}
+  h1{font-size:clamp(30px,5vw,40px);letter-spacing:-1px;text-align:center}
+  .lead{text-align:center;color:var(--ink-soft);font-size:16px;margin:8px 0 18px}
+  .verdict{border-radius:16px;padding:16px 18px;margin-bottom:16px;font-size:16.5px;line-height:1.6;background:var(--paper);border:2px solid var(--line)}
+  .verdict b{font-size:19px;display:block;margin-bottom:2px}
+  .verdict.ok{background:#E5F2EA;border-color:var(--ok)}
+  .verdict.warn{background:#FFF3D6;border-color:#D99A2B}
+  .verdict.bad{background:#FDECEA;border-color:var(--bad)}
+  .group{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+  .group h2{font-size:15px;color:var(--teal);padding:10px 0 4px}
+  .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #F0E8DA}
+  .group h2+.row{border-top:none}
+  .st{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:16px;flex:0 0 auto;background:var(--paper);color:var(--ink-soft)}
+  .st.ok{background:var(--ok);color:#fff}
+  .st.bad{background:var(--bad);color:#fff}
+  .st.wait{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.4}}
+  .nm{flex:1;min-width:0}
+  .nm b{display:block;font-size:16px}
+  .nm span{font-size:13.5px;color:var(--ink-soft)}
+  .res{font-size:14px;font-weight:700;white-space:nowrap}
+  .res.ok{color:var(--ok)} .res.bad{color:var(--bad)}
+  .meta{text-align:center;font-size:13px;color:var(--ink-soft);margin-top:14px}
+  .again{display:block;margin:14px auto 0;font-weight:700;font-size:15px;color:var(--teal);border:1.5px solid var(--teal);border-radius:11px;padding:9px 20px;background:#fff}
+  .how{font-size:14.5px;color:var(--ink-soft);text-align:center;margin-top:8px}
+  footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:12px 22px;font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line)}
+  footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover}
+  footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
+  @media (prefers-reduced-motion:reduce){.st.wait{animation:none}}
+</style>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/site.css?v=27">
+</head>
+<body>
+  <main class="wrap">
+    <h1>בדיקת חיבור</h1>
+    <p class="lead">בודקים מה פתוח מהמחשב הזה, לפני ההכשרה. לוקח כמה שניות.</p>
+    <div class="verdict" id="verdict"><b>בודקים…</b></div>
+    <div id="groups"></div>
+    <div class="meta" id="meta"></div>
+    <p class="how">בסיום: מצלמים את המסך ושולחים לרומן.</p>
+    <button type="button" class="again" id="again">בדיקה חוזרת</button>
+  </main>
+
+  <footer class="credit"><img class="credit-ava" src="../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+
+<script>
+(function(){
+  'use strict';
+  var UPLOAD='https://script.google.com/macros/s/AKfycbxbL96r8kwtEZ3CORszdOB8qE_4j1Cpc7RQSi0y6Ld2Qk98I0QjCTcL6enjhJU3YXLScA/exec';
+  /* img: the address must return a real image (a filter's block page is HTML, so it fails).
+     open: the address answers at all (good enough where no image is available).
+     upload: the presentation upload service answers properly, both reading and sending. */
+  var GROUPS=[
+    {t:'האתר',items:[
+      {id:'site',n:'האתר romanai.net',d:'הכתובת הראשית של כלי ההכשרה',k:'img',u:'https://www.romanai.net/assets/favicon-32.png'},
+      {id:'mirror',n:'כתובת הגיבוי',d:'romangash-star.github.io, אם הכתובת הראשית חסומה',k:'img',u:'https://romangash-star.github.io/toolkit/assets/favicon-32.png'}]},
+    {t:'העלאת מצגות',items:[
+      {id:'upload',n:'העלאת מצגות מהאתר',d:'השירות של גוגל ששולח את המצגות לרומן',k:'upload'}]},
+    {t:'דרכים חלופיות',items:[
+      {id:'onedrive',n:'OneDrive',d:'העלאה חלופית דרך מיקרוסופט',k:'img',u:'https://www.onedrive.com/favicon.ico',also:'https://onedrive.live.com/'},
+      {id:'gdrive',n:'Google Drive',d:'פתיחת קבצים שרומן משתף',k:'img',u:'https://drive.google.com/favicon.ico'},
+      {id:'gmail',n:'Gmail',d:'',k:'open',u:'https://mail.google.com/mail/'}]},
+    {t:'כלי AI',items:[
+      {id:'gemini',n:'Gemini',d:'',k:'open',u:'https://gemini.google.com/'},
+      {id:'copilot',n:'Copilot',d:'',k:'img',u:'https://copilot.microsoft.com/favicon.ico'},
+      {id:'chatgpt',n:'ChatGPT',d:'',k:'open',u:'https://chatgpt.com/'},
+      {id:'claude',n:'Claude',d:'',k:'img',u:'https://claude.ai/favicon.ico'}]}
+  ];
+  var $=function(id){return document.getElementById(id);};
+  var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');};
+  var bust=function(u){return u+(u.indexOf('?')<0?'?':'&')+'t='+Date.now();};
+
+  function timeout(p,ms){ return Promise.race([p,new Promise(function(_,no){ setTimeout(function(){ no(new Error('timeout')); },ms); })]); }
+  function img(u){ return timeout(new Promise(function(ok,no){ var i=new Image(); i.onload=function(){ ok(); }; i.onerror=function(){ no(new Error('img')); }; i.src=bust(u); }),8000); }
+  function open(u){ return timeout(fetch(bust(u),{mode:'no-cors',cache:'no-store'}),8000); }
+  function upload(){
+    return timeout(fetch(UPLOAD).then(function(r){ return r.json(); }).then(function(j){
+      if(!j.ok) throw new Error('get');
+      return fetch(UPLOAD,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({ping:true})});
+    }).then(function(r){ return r.json(); }).then(function(j){ if(!j.ok||!j.pong) throw new Error('post'); }),12000);
+  }
+  function probe(it){
+    if(it.k==='upload') return upload();
+    if(it.k==='open') return open(it.u);
+    return it.also ? Promise.all([img(it.u),open(it.also)]) : img(it.u);
+  }
+
+  function run(){
+    $('groups').innerHTML=GROUPS.map(function(g){ return '<div class="group"><h2>'+g.t+'</h2>'+g.items.map(function(it){
+      return '<div class="row"><span class="st wait" id="s-'+it.id+'">…</span><div class="nm"><b>'+esc(it.n)+'</b>'+(it.d?'<span>'+esc(it.d)+'</span>':'')+'</div><span class="res" id="r-'+it.id+'"></span></div>'; }).join('')+'</div>'; }).join('');
+    $('verdict').className='verdict'; $('verdict').innerHTML='<b>בודקים…</b>';
+    var res={}, all=[];
+    GROUPS.forEach(function(g){ g.items.forEach(function(it){
+      all.push(probe(it).then(function(){ return true; },function(){ return false; }).then(function(ok){
+        res[it.id]=ok;
+        var s=$('s-'+it.id); s.className='st '+(ok?'ok':'bad'); s.textContent=ok?'✓':'✗';
+        var r=$('r-'+it.id); r.className='res '+(ok?'ok':'bad'); r.textContent=ok?'פתוח':'חסום';
+      }));
+    }); });
+    Promise.all(all).then(function(){ verdict(res); });
+  }
+
+  function verdict(r){
+    var v=$('verdict'), siteOk=r.site||r.mirror;
+    if(!siteOk){ v.className='verdict bad'; v.innerHTML='<b>✗ האתר חסום מהמחשב הזה</b>צריך לבקש ממחלקת המחשוב לפתוח את romanai.net ואת romangash-star.github.io.'; }
+    else if(r.upload){ v.className='verdict ok'; v.innerHTML='<b>✓ הכל מוכן להכשרה</b>אפשר להשתמש בכלים ולהעלות מצגות מהמחשב הזה.'+(r.site?'':' (דרך כתובת הגיבוי)'); }
+    else if(r.onedrive){ v.className='verdict warn'; v.innerHTML='<b>⚠ העלאת המצגות דרך האתר חסומה</b>יש דרך חלופית דרך OneDrive, או חיבור לנקודה חמה מהטלפון.'; }
+    else { v.className='verdict bad'; v.innerHTML='<b>✗ העלאת המצגות חסומה</b>ביום ההכשרה יעלו את המצגות דרך נקודה חמה מהטלפון, או שצריך לבקש ממחלקת המחשוב לפתוח את script.google.com.'; }
+    var d=new Date();
+    $('meta').textContent='נבדק ב-'+d.toLocaleDateString('he-IL')+' '+d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})+' · '+location.host+' · '+browser();
+  }
+  function browser(){ var u=navigator.userAgent; return /Edg\//.test(u)?'Edge':/Chrome\//.test(u)?'Chrome':/Firefox\//.test(u)?'Firefox':/Safari\//.test(u)?'Safari':'דפדפן אחר'; }
+
+  $('again').addEventListener('click',run);
+  run();
+})();
+</script>
+<script src="../assets/site.js?v=27" data-crumbs='כל ההכשרות|../'></script>
+</body>
+</html>
