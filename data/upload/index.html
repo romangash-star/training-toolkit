@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מעלים את המצגת — קבלת החלטות מבוססת נתונים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{--canvas:#FAF5EC;--paper:#F2EADC;--card:#FFFDF8;--ink:#2A211B;--ink-soft:#6B5D52;--line:#E3D8C6;--brand:#B4502F;--brand-deep:#8F3D22;--teal:#1F5F5B;--amber:#D99A2B;--sans:'Alef','Segoe UI',Arial,sans-serif;--shadow:0 10px 30px rgba(42,33,27,.12);--shadow-sm:0 3px 12px rgba(42,33,27,.08)}
+  *{box-sizing:border-box} html,body{margin:0;min-height:100%}
+  body{font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;background:var(--canvas);display:flex;flex-direction:column;min-height:100vh}
+  button,input{font-family:inherit} button{cursor:pointer;border:none;background:none;color:inherit}
+  h1,h2{font-weight:700;line-height:1.15;margin:0}
+  header.bar{display:flex;align-items:center;gap:16px;padding:12px 22px;background:rgba(250,245,236,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+  .brand{font-weight:700;font-size:19px}
+  .daytag{font-size:12px;font-weight:700;color:#FFFDF8;background:var(--teal);padding:3px 10px;border-radius:999px}
+  .hublink{margin-inline-start:auto;font-size:14px;font-weight:700;color:var(--ink-soft);text-decoration:none;border:1px solid var(--line);background:#FFFDF8;padding:8px 14px;border-radius:10px}
+  .wrap{flex:1;width:100%;max-width:720px;margin:0 auto;padding:26px 20px 56px}
+  h1{font-size:clamp(30px,5vw,42px);letter-spacing:-1px;text-align:center}
+  .lead{text-align:center;color:var(--ink-soft);font-size:16.5px;margin:8px 0 20px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow-sm)}
+  .who{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .who label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:700}
+  .who label .req{color:var(--brand)}
+  .who input{border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;font-size:15px;background:#fff;color:var(--ink);min-width:0}
+  .who input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(31,95,91,.14)}
+  .drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;min-height:210px;border:2.5px dashed #C9B89E;border-radius:16px;background:#FBF7F0;padding:22px;cursor:pointer;transition:border-color .15s,background .15s}
+  .drop:hover,.drop:focus-visible{border-color:var(--teal);background:#F2F8F6;outline:none}
+  .drop.over{border-color:var(--teal);border-style:solid;background:#E4F1EE}
+  .drop svg{width:52px;height:52px;color:var(--teal)}
+  .drop .big{font-size:21px;font-weight:700}
+  .drop .small{font-size:14.5px;color:var(--ink-soft)}
+  .drop .pick{font-weight:700;color:var(--brand-deep);text-decoration:underline}
+  .chosen{display:none;align-items:center;gap:12px;margin-top:12px;background:#fff;border:1.5px solid var(--teal);border-radius:13px;padding:11px 14px}
+  .chosen.show{display:flex}
+  .chosen .ic{width:38px;height:38px;border-radius:10px;background:var(--brand);color:#FFFDF8;font-weight:700;font-size:12px;display:grid;place-items:center;flex:0 0 auto;text-transform:uppercase}
+  .chosen .nm{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chosen .sz{font-size:13.5px;color:var(--ink-soft);white-space:nowrap}
+  .chosen .x{font-size:14px;font-weight:700;color:var(--ink-soft);border:1px solid var(--line);border-radius:9px;padding:5px 10px}
+  .privacy{margin-top:14px;font-size:14.5px;line-height:1.6;background:#FFF3D6;border:1.5px solid #EBCB8B;border-radius:12px;padding:10px 14px}
+  .privacy a{color:var(--brand-deep);font-weight:700}
+  .send{width:100%;margin-top:16px;padding:14px 18px;border-radius:13px;font-weight:700;font-size:17px;color:#FFFDF8;background:linear-gradient(135deg,var(--brand),var(--brand-deep));box-shadow:0 4px 14px rgba(180,80,47,.28)}
+  .send:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  .progress{display:none;margin-top:14px}
+  .progress.show{display:block}
+  .bar-o{height:12px;border-radius:999px;background:var(--paper);overflow:hidden}
+  .bar-i{height:100%;width:0;background:var(--teal);border-radius:999px;transition:width .2s}
+  .progress .pt{margin-top:6px;font-size:14.5px;color:var(--ink-soft);text-align:center}
+  .msg{display:none;margin-top:14px;border-radius:13px;padding:13px 16px;font-size:15.5px;line-height:1.6}
+  .msg.show{display:block}
+  .msg.ok{background:#E4F1EE;border:1.5px solid var(--teal)}
+  .msg.err{background:#FDECEA;border:1.5px solid #E2A79E}
+  .msg a{color:var(--brand-deep);font-weight:700}
+  .done{display:none;text-align:center;padding:26px 10px}
+  .done.show{display:block}
+  .done .check{width:72px;height:72px;border-radius:50%;background:var(--teal);color:#FFFDF8;display:grid;place-items:center;margin:0 auto 12px;font-size:38px}
+  .done h2{font-size:28px;color:var(--teal)}
+  .done p{color:var(--ink-soft);font-size:16px;margin:8px 0 16px}
+  .again{font-weight:700;font-size:15px;color:var(--teal);border:1.5px solid var(--teal);border-radius:11px;padding:9px 18px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .hp{position:absolute;left:-9999px}
+  footer.credit{display:flex;align-items:center;justify-content:center;gap:11px;padding:12px 22px;font-size:13px;color:var(--ink-soft);border-top:1px solid var(--line)}
+  footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover}
+  footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
+  @media (max-width:620px){.who{grid-template-columns:1fr}.drop{min-height:170px}}
+  @media (prefers-reduced-motion:reduce){.bar-i{transition:none}}
+</style>
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/site.css?v=27">
+</head>
+<body>
+  <header class="bar">
+    <div class="brand">מעלים את המצגת</div>
+    <span class="daytag">יום 3</span>
+    <a class='hublink' href='../'>‹ כל הכלים</a>
+  </header>
+
+  <main class="wrap">
+    <h1>מעלים את המצגת</h1>
+    <p class="lead">גוררים את המצגת לכאן, והיא נשלחת לרומן.</p>
+
+    <div class="panel">
+      <div id="formArea">
+        <div class="who">
+          <label>שם מלא <span class="sr">(חובה)</span><input id="name" autocomplete="name" required></label>
+          <label>רשות<input id="org" autocomplete="organization"></label>
+          <label>מחלקה<input id="dept"></label>
+        </div>
+        <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="בחירת קובץ מצגת">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <div class="big">גוררים את המצגת לכאן</div>
+          <div class="small">או <span class="pick">בוחרים קובץ מהמחשב</span> · PowerPoint או PDF, עד 35MB</div>
+        </div>
+        <input type="file" id="file" class="sr" accept=".pptx,.ppt,.pdf,.odp,.key,.potx,.ppsx" tabindex="-1">
+
+        <div class="chosen" id="chosen">
+          <span class="ic" id="cIc"></span><span class="nm" id="cName"></span><span class="sz" id="cSize"></span>
+          <button type="button" class="x" id="cRemove">החלפה</button>
+        </div>
+
+        <div class="privacy"><b>לפני ששולחים:</b> יש במצגת שמות של תושבים, טלפונים או ת"ז? מוחקים אותם קודם, או מעבירים את הנתונים דרך <a href="../anonymize/">התממה</a>.</div>
+
+        <button type="button" class="send" id="send" disabled>שליחת המצגת</button>
+        <div class="progress" id="progress"><div class="bar-o"><div class="bar-i" id="barI"></div></div><div class="pt" id="pText"></div></div>
+        <div class="msg" id="msg" role="alert"></div>
+      </div>
+
+      <div class="done" id="done" aria-live="polite">
+        <div class="check">✓</div>
+        <h2>המצגת נשלחה</h2>
+        <p id="doneText"></p>
+        <button type="button" class="again" id="again">שליחת קובץ נוסף</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
+
+<script>
+(function(){
+  'use strict';
+  /* Google Apps Script web app in Roman's account: saves the file to his Drive and emails him a link (source: tools/upload-gas/) */
+  var ENDPOINT='https://script.google.com/macros/s/AKfycbxbL96r8kwtEZ3CORszdOB8qE_4j1Cpc7RQSi0y6Ld2Qk98I0QjCTcL6enjhJU3YXLScA/exec';
+  var MAX=35*1024*1024, OK_EXT=['pptx','ppt','pdf','odp','key','potx','ppsx'];
+  var $=function(id){return document.getElementById(id);};
+  var file=null, busy=false;
+
+  /* name / authority / department start from the "מי אתם?" bar on the hub */
+  try{ var me=JSON.parse(localStorage.getItem('toolkit_identity')||'{}'); $('name').value=me.name||''; $('org').value=me.org||''; $('dept').value=me.dept||''; }catch(e){}
+
+  function ext(n){ return (n.split('.').pop()||'').toLowerCase(); }
+  function mb(b){ return (b/1048576).toFixed(1)+'MB'; }
+  function say(html,kind){ var m=$('msg'); m.className='msg show '+kind; m.innerHTML=html; }
+  function hush(){ $('msg').className='msg'; }
+  function ready(){ $('send').disabled=busy||!file||!$('name').value.trim(); }
+
+  function choose(f){
+    hush();
+    if(!f) return;
+    if(OK_EXT.indexOf(ext(f.name))<0){ say('אפשר להעלות רק מצגת: PowerPoint (pptx) או PDF.','err'); return; }
+    if(f.size>MAX){ say('הקובץ גדול מדי ('+mb(f.size)+'). המגבלה היא 35MB. ב-PowerPoint: קובץ ← דחיסת תמונות, או שמירה כ-PDF, ואז מנסים שוב.','err'); return; }
+    file=f;
+    $('cIc').textContent=ext(f.name); $('cName').textContent=f.name; $('cSize').textContent=mb(f.size);
+    $('chosen').classList.add('show');
+    ready();
+    if(!$('name').value.trim()) $('name').focus();
+  }
+
+  var drop=$('drop'), input=$('file');
+  drop.addEventListener('click',function(){ input.click(); });
+  drop.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); input.click(); } });
+  input.addEventListener('change',function(){ choose(input.files[0]); input.value=''; });
+  ['dragenter','dragover'].forEach(function(t){ drop.addEventListener(t,function(e){ e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave','drop'].forEach(function(t){ drop.addEventListener(t,function(e){ e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop',function(e){ choose(e.dataTransfer.files[0]); });
+  /* a file dropped next to the box should not open in the browser and leave the page */
+  window.addEventListener('dragover',function(e){ e.preventDefault(); });
+  window.addEventListener('drop',function(e){ e.preventDefault(); });
+  $('cRemove').addEventListener('click',function(){ file=null; $('chosen').classList.remove('show'); ready(); input.click(); });
+  $('name').addEventListener('input',ready);
+
+  function progress(p,text){ $('progress').classList.add('show'); $('barI').style.width=p+'%'; $('pText').textContent=text; }
+  function fail(code){
+    busy=false; ready(); $('progress').classList.remove('show');
+    var why={type:'סוג הקובץ לא נתמך.',size:'הקובץ גדול מדי.',missing:'חסר שם או קובץ.'}[code]||'השליחה לא הצליחה.';
+    say(why+' נסו שוב. אם זה לא עובד (למשל בגלל חסימה ברשת של הרשות), שלחו את המצגת במייל: <a href="mailto:romangash@gmail.com?subject='+encodeURIComponent('מצגת - קבלת החלטות מבוססת נתונים')+'">romangash@gmail.com</a>','err');
+  }
+
+  $('send').addEventListener('click',function(){
+    if(busy||!file) return;
+    var name=$('name').value.trim(); if(!name){ $('name').focus(); return; }
+    busy=true; ready(); hush(); progress(3,'מכינים את הקובץ…');
+    var r=new FileReader();
+    r.onerror=function(){ fail(); };
+    r.onload=function(){
+      var b64=String(r.result).split(',')[1]||'';
+      var body=JSON.stringify({name:name,org:$('org').value.trim(),dept:$('dept').value.trim(),website:$('website').value,fileName:file.name,mimeType:file.type,data:b64});
+      var x=new XMLHttpRequest();
+      x.open('POST',ENDPOINT);
+      x.setRequestHeader('Content-Type','text/plain;charset=utf-8'); /* a "simple" request: no CORS preflight to Google */
+      x.upload.onprogress=function(e){ if(e.lengthComputable){ var p=Math.round(e.loaded/e.total*90); progress(Math.max(5,p),p<90?'שולחים… '+Math.round(e.loaded/e.total*100)+'%':'שומרים אצל רומן…'); } };
+      x.onload=function(){
+        var res={}; try{ res=JSON.parse(x.responseText); }catch(e){}
+        if(x.status===200&&res.ok){ progress(100,''); success(name); } else fail(res.error);
+      };
+      x.onerror=function(){ fail(); };
+      x.timeout=300000; x.ontimeout=function(){ fail(); };
+      x.send(body);
+    };
+    r.readAsDataURL(file);
+  });
+
+  function success(name){
+    busy=false;
+    $('doneText').textContent='תודה '+name+'. הקובץ "'+file.name+'" הגיע לרומן.';
+    $('formArea').hidden=true; $('done').classList.add('show');
+  }
+  $('again').addEventListener('click',function(){
+    file=null; $('chosen').classList.remove('show'); $('progress').classList.remove('show'); hush();
+    $('done').classList.remove('show'); $('formArea').hidden=false; ready();
+  });
+})();
+</script>
+<script src="../../assets/site.js?v=27" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+</body>
+</html>
