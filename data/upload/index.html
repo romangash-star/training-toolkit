@@ -46,6 +46,10 @@
   .progress.show{display:block}
   .bar-o{height:12px;border-radius:999px;background:var(--paper);overflow:hidden}
   .bar-i{height:100%;width:0;background:var(--teal);border-radius:999px;transition:width .2s}
+  .bar-i.run{width:35%!important;animation:slide 1.3s ease-in-out infinite}
+  @keyframes slide{0%{margin-inline-start:-35%}100%{margin-inline-start:100%}}
+  .who .hint{font-weight:400;font-size:12.5px;color:var(--ink-soft)}
+  .who input.bad{border-color:#D9826F}
   .progress .pt{margin-top:6px;font-size:14.5px;color:var(--ink-soft);text-align:center}
   .msg{display:none;margin-top:14px;border-radius:13px;padding:13px 16px;font-size:15.5px;line-height:1.6}
   .msg.show{display:block}
@@ -64,7 +68,7 @@
   footer.credit .credit-ava{width:34px;height:34px;border-radius:50%;object-fit:cover}
   footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
   @media (max-width:620px){.who{grid-template-columns:1fr}.drop{min-height:170px}}
-  @media (prefers-reduced-motion:reduce){.bar-i{transition:none}}
+  @media (prefers-reduced-motion:reduce){.bar-i{transition:none}.bar-i.run{animation:none;width:100%!important;opacity:.6}}
 </style>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
@@ -86,7 +90,8 @@
       <div id="formArea">
         <div class="who">
           <label>שם מלא <span class="sr">(חובה)</span><input id="name" autocomplete="name" required></label>
-          <label>רשות<input id="org" autocomplete="organization"></label>
+          <label>רשות <span class="sr">(חובה)</span><input id="org" list="orgs" autocomplete="off" required><span class="hint">מקלידים ובוחרים מהרשימה</span></label>
+          <datalist id="orgs"></datalist>
           <label>מחלקה<input id="dept"></label>
         </div>
         <input class="hp" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -128,16 +133,27 @@
   var ENDPOINT='https://script.google.com/macros/s/AKfycbxbL96r8kwtEZ3CORszdOB8qE_4j1Cpc7RQSi0y6Ld2Qk98I0QjCTcL6enjhJU3YXLScA/exec';
   var MAX=35*1024*1024, OK_EXT=['pptx','ppt','pdf','odp','key','potx','ppsx'];
   var $=function(id){return document.getElementById(id);};
+  var ORGS=["אבו גוש", "אבו סנאן", "אבן יהודה", "אום אל-פחם", "אופקים", "אור יהודה", "אור עקיבא", "אורנית", "אזור", "אילת", "אכסאל", "אל-בטוף", "אלונה", "אליכין", "אלפי מנשה", "אלקנה", "אעבלין", "אפרתה", "אריאל", "אשדוד", "אשכול", "אשקלון", "באר טוביה", "באר יעקב", "באר שבע", "בוסתאן אל-מרג'", "בועיינה-נוג'ידאת", "בוקעאתא", "ביר אל-מכסור", "בית אל", "בית אריה", "בית ג'ן", "בית דגן", "בית שמש", "ביתר עילית", "בני ברק", "בני עי\"ש", "בני שמעון", "בנימינה-גבעת עדה", "בסמ\"ה", "בסמת טבעון", "בענה", "ברנר", "בת ים", "ג'דיידה-מכר", "ג'וליס", "ג'לג'וליה", "ג'סר א-זרקא", "ג'ש (גוש חלב)", "ג'ת", "גבעת זאב", "גבעת שמואל", "גבעתיים", "גדרה", "גדרות", "גולן", "גוש עציון", "גזר", "גן יבנה", "גן רווה", "גני תקווה", "דאלית אל-כרמל", "דבוריה", "דימונה", "דיר אל-אסד", "דיר חנא", "הגלבוע", "הגליל העליון", "הגליל התחתון", "הוד השרון", "הערבה התיכונה", "הר אדר", "הר חברון", "הרצליה", "זבולון", "זכרון יעקב", "זמר", "זרזיר", "חבל אילות", "חבל יבנה", "חבל מודיעין", "חברון וע. מוניציפלית", "חדרה", "חולון", "חוף אשקלון", "חוף הכרמל", "חוף השרון", "חורה", "חורפיש", "חיפה", "חצור הגלילית", "חריש", "טבריה", "טובא-זנגריה", "טורעאן", "טירה", "טירת כרמל", "יאנוח-ג'ת", "יבנאל", "יבנה", "יהוד-מונוסון", "יואב", "יסוד המעלה", "יקנעם עילית", "ירוחם", "ירושלים", "ירכא", "כאבול", "כאוכב אבו אל-היג'א", "כוכב יאיר צור יגאל", "כסיפה", "כסרא-סמיע", "כעביה-טבאש-חג'אג'רה", "כפר ברא", "כפר ורדים", "כפר יאסיף", "כפר יונה", "כפר כמא", "כפר כנא", "כפר מנדא", "כפר סבא", "כפר קאסם", "כפר קרע", "כפר שמריהו", "כפר תבור", "כרמיאל", "לב השרון", "להבים", "לוד", "לכיש", "לקיה", "מבואות החרמון", "מבשרת ציון", "מג'ד אל-כרום", "מג'דל שמס", "מגאר", "מגדל", "מגדל העמק", "מגדל תפן", "מגידו", "מגילות ים המלח", "מודיעין עילית", "מודיעין-מכבים-רעות", "מזכרת בתיה", "מזרעה", "מטה אשר", "מטה בנימין", "מטה יהודה", "מטולה", "מיתר", "מנשה", "מסעדה", "מעיליא", "מעלה אדומים", "מעלה אפרים", "מעלה יוסף", "מעלה עירון", "מעלות-תרשיחא", "מצפה רמון", "מרום הגליל", "מרחבים", "משגב", "משהד", "נאות חובב", "נהריה", "נווה מדבר", "נוף הגליל", "נחל שורק", "נחף", "נס ציונה", "נשר", "נתיבות", "נתניה", "סאג'ור", "סביון", "סח'נין", "ע'ג'ר", "עומר", "עיילבון", "עילוט", "עין מאהל", "עין קנייא", "עכו", "עמנואל", "עמק הירדן", "עמק המעיינות", "עמק חפר", "עמק יזרעאל", "עספיא", "עפולה", "עראבה", "ערבות הירדן", "ערד", "ערערה", "ערערה-בנגב", "פוריידיס", "פסוטה", "פקיעין (בוקייעה)", "פרדס חנה-כרכור", "פרדסיה", "פתח תקווה", "צפת", "קדומים", "קדימה-צורן", "קלנסווה", "קצרין", "קרית אונו", "קרית ארבע", "קרית אתא", "קרית ביאליק", "קרית גת", "קרית טבעון", "קרית ים", "קרית יערים", "קרית מוצקין", "קרית מלאכי", "קרית עקרון", "קרית שמונה", "קרני שומרון", "ראמה", "ראש העין", "ראש פינה", "ראשון לציון", "רהט", "רחובות", "ריינה", "רכסים", "רמלה", "רמת גן", "רמת השרון", "רמת ישי", "רמת נגב", "רעננה", "שבלי-אום אל ג'נם", "שגב-שלום", "שדות דן", "שדות נגב", "שדרות", "שוהם", "שומרון", "שלומי", "שעב", "שער הנגב", "שפיר", "שפרעם", "תל אביב-יפו", "תל מונד", "תל שבע", "תמר"];
   var file=null, busy=false;
 
   /* name / authority / department start from the "מי אתם?" bar on the hub */
-  try{ var me=JSON.parse(localStorage.getItem('toolkit_identity')||'{}'); $('name').value=me.name||''; $('org').value=me.org||''; $('dept').value=me.dept||''; }catch(e){}
+  $('orgs').innerHTML=ORGS.map(function(o){ return '<option value="'+o.replace(/"/g,'&quot;')+'">'; }).join('');
+  /* "עיריית רמת גן" or "מועצה אזורית גולן" from the hub bar becomes the list name, so the folder matches */
+  function matchOrg(v){
+    v=(v||'').trim(); if(!v) return '';
+    var bare=v.replace(/^(עיריית|עירית|עיריה|עירייה|מועצה מקומית|מועצה אזורית|המועצה המקומית|המועצה האזורית|מ\.מ\.|מ\.א\.|מ"מ|מ"א)\s*/,'').trim();
+    var norm=function(s){ return s.replace(/[\s\-–־'"״׳]/g,''); };
+    for(var i=0;i<ORGS.length;i++){ if(norm(ORGS[i])===norm(bare)) return ORGS[i]; }
+    return v;
+  }
+  function knownOrg(v){ return ORGS.indexOf((v||'').trim())>=0; }
+  try{ var me=JSON.parse(localStorage.getItem('toolkit_identity')||'{}'); $('name').value=me.name||''; $('org').value=matchOrg(me.org); $('dept').value=me.dept||''; }catch(e){}
 
   function ext(n){ return (n.split('.').pop()||'').toLowerCase(); }
   function mb(b){ return (b/1048576).toFixed(1)+'MB'; }
   function say(html,kind){ var m=$('msg'); m.className='msg show '+kind; m.innerHTML=html; }
   function hush(){ $('msg').className='msg'; }
-  function ready(){ $('send').disabled=busy||!file||!$('name').value.trim(); }
+  function ready(){ $('send').disabled=busy||!file||!$('name').value.trim()||!$('org').value.trim(); }
 
   function choose(f){
     hush();
@@ -163,6 +179,7 @@
   window.addEventListener('drop',function(e){ e.preventDefault(); });
   $('cRemove').addEventListener('click',function(){ file=null; $('chosen').classList.remove('show'); ready(); input.click(); });
   $('name').addEventListener('input',ready);
+  $('org').addEventListener('input',function(){ $('org').classList.remove('bad'); delete $('org').dataset.ok; hush(); ready(); });
 
   function progress(p,text){ $('progress').classList.add('show'); $('barI').style.width=p+'%'; $('pText').textContent=text; }
   function fail(code){
@@ -174,23 +191,22 @@
   $('send').addEventListener('click',function(){
     if(busy||!file) return;
     var name=$('name').value.trim(); if(!name){ $('name').focus(); return; }
+    var org=matchOrg($('org').value); $('org').value=org;
+    if(!knownOrg(org) && !$('org').dataset.ok){ $('org').classList.add('bad'); $('org').dataset.ok='1'; say('"'+org.replace(/</g,'&lt;')+'" לא נמצאת ברשימת הרשויות. כדאי לבחור את השם מהרשימה, כדי שהמצגת תגיע לתיקייה הנכונה. אם השם נכון, לוחצים שוב על "שליחת המצגת".','err'); $('org').focus(); return; }
     busy=true; ready(); hush(); progress(3,'מכינים את הקובץ…');
     var r=new FileReader();
     r.onerror=function(){ fail(); };
     r.onload=function(){
       var b64=String(r.result).split(',')[1]||'';
-      var body=JSON.stringify({name:name,org:$('org').value.trim(),dept:$('dept').value.trim(),website:$('website').value,fileName:file.name,mimeType:file.type,data:b64});
-      var x=new XMLHttpRequest();
-      x.open('POST',ENDPOINT);
-      x.setRequestHeader('Content-Type','text/plain;charset=utf-8'); /* a "simple" request: no CORS preflight to Google */
-      x.upload.onprogress=function(e){ if(e.lengthComputable){ var p=Math.round(e.loaded/e.total*90); progress(Math.max(5,p),p<90?'שולחים… '+Math.round(e.loaded/e.total*100)+'%':'שומרים אצל רומן…'); } };
-      x.onload=function(){
-        var res={}; try{ res=JSON.parse(x.responseText); }catch(e){}
-        if(x.status===200&&res.ok){ progress(100,''); success(name); } else fail(res.error);
-      };
-      x.onerror=function(){ fail(); };
-      x.timeout=300000; x.ontimeout=function(){ fail(); };
-      x.send(body);
+      var body=JSON.stringify({name:name,org:org,dept:$('dept').value.trim(),website:$('website').value,fileName:file.name,mimeType:file.type,data:b64});
+      /* text/plain keeps it a "simple" request: Google's script does not answer CORS preflights,
+         so no upload-progress events either (they would force one) — the bar just runs */
+      $('barI').classList.add('run'); progress(0,'שולחים את המצגת… בקובץ גדול זה יכול לקחת דקה.');
+      var ctl=new AbortController(), t=setTimeout(function(){ ctl.abort(); },300000);
+      fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:body,signal:ctl.signal})
+        .then(function(r){ return r.json(); })
+        .then(function(res){ clearTimeout(t); $('barI').classList.remove('run'); if(res&&res.ok){ progress(100,''); success(name); } else fail(res&&res.error); })
+        .catch(function(){ clearTimeout(t); $('barI').classList.remove('run'); fail(); });
     };
     r.readAsDataURL(file);
   });

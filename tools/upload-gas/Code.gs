@@ -1,6 +1,6 @@
 /**
  * Receives presentations from romanai.net/data/upload/ (day 3 of "קבלת החלטות מבוססת נתונים"),
- * saves each one to a Drive folder of the owner, and emails the owner a link.
+ * saves each one to the owner's Drive in a sub-folder per local authority, and emails the owner a link.
  * Runs as the owner; anyone can post (participants have no Google sign-in).
  */
 var FOLDER_NAME = 'מצגות משתתפים - קבלת החלטות מבוססת נתונים';
@@ -38,7 +38,8 @@ function doPost(e) {
     var stamp = Utilities.formatDate(new Date(), 'Asia/Jerusalem', 'yyyy-MM-dd HH-mm');
     var saveAs = [stamp, org, name].filter(String).join(' - ') + '.' + ext;
     var blob = Utilities.newBlob(bytes, b.mimeType || 'application/octet-stream', saveAs);
-    var file = getFolder_().createFile(blob);
+    var orgFolder = getOrgFolder_(org || 'ללא רשות');
+    var file = orgFolder.createFile(blob);
     file.setDescription('הועלה מהאתר. שם: ' + name + ' | רשות: ' + org + ' | מחלקה: ' + dept + (note ? ' | הערה: ' + note : ''));
 
     var mb = (bytes.length / 1048576).toFixed(1);
@@ -53,7 +54,8 @@ function doPost(e) {
         (note ? 'הערה: ' + esc_(note) + '<br>' : '') +
         'קובץ: ' + esc_(fileName) + ' (' + mb + 'MB)<br><br>' +
         '<a href="' + file.getUrl() + '">פתיחת המצגת ב-Drive</a> · ' +
-        '<a href="' + getFolder_().getUrl() + '">כל המצגות</a></div>'
+        '<a href="' + orgFolder.getUrl() + '">התיקייה של ' + esc_(org || 'ללא רשות') + '</a> · ' +
+        '<a href="' + getFolder_().getUrl() + '">כל הרשויות</a></div>'
     });
     return json_({ ok: true });
   } catch (err) {
@@ -71,6 +73,19 @@ function getFolder_() {
   var folder = DriveApp.createFolder(FOLDER_NAME);
   props.setProperty('FOLDER_ID', folder.getId());
   return folder;
+}
+/** One folder per authority inside the main folder. A lock keeps two uploads from the same
+    authority, arriving together, from creating the folder twice. */
+function getOrgFolder_(org) {
+  var main = getFolder_();
+  var lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    var it = main.getFoldersByName(org);
+    return it.hasNext() ? it.next() : main.createFolder(org);
+  } finally {
+    lock.releaseLock();
+  }
 }
 function ownerEmail_() { return Session.getEffectiveUser().getEmail(); }
 function clean_(s, n) { return String(s || '').replace(/[\\\/:*?"<>|\r\n]+/g, ' ').trim().slice(0, n); }
