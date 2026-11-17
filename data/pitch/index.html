@@ -42,6 +42,12 @@
   .pv-actions{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 10px}
   .pv-actions .btn{flex:1}
   .pv-actions .btn-brand{flex:1.6;font-size:15px}
+  .tools{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 9px}
+  .tools .btn{flex-direction:column;gap:1px;white-space:normal;text-align:center;padding:10px 12px;font-size:15px;line-height:1.25}
+  .tools .btn small{font-weight:400;font-size:12.5px;opacity:.85}
+  .tools .btn.on{border-color:var(--brand);color:var(--brand-deep);background:#FBF1EA}
+  .copyonly{width:100%;margin-bottom:10px}
+  @media (max-width:420px){.tools{grid-template-columns:1fr}}
   .pastehint{font-size:14px;line-height:1.6;background:#dcedea;border-radius:10px;padding:9px 12px}
   .pastehint kbd{font:700 12.5px Arial;background:#fffdf8;border:1px solid var(--line);border-radius:5px;padding:1px 6px}
   .prompt-box{background:#1C1512;color:#dce9e6;border-radius:14px;padding:18px;font-size:14.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:460px;overflow:auto;margin-top:12px}
@@ -117,14 +123,17 @@
       <div class="preview">
         <div class="panel">
           <h3>הפרומפט</h3>
-          <div class="pv-actions">
-            <button class="btn btn-brand" onclick="App.toPowerPoint()">העתק ופתח PowerPoint</button>
-            <button class="btn btn-ghost" onclick="App.copy()">העתקה</button>
+          <div class="tools">
+            <button class="btn btn-brand" data-tool="ppt" onclick="App.go('ppt')">העתק ופתח PowerPoint<small>למי שיש מנוי ל-Copilot</small></button>
+            <button class="btn btn-ghost" data-tool="gemini" onclick="App.go('gemini')">העתק ופתח Gemini<small>מצגת עם Canvas</small></button>
+            <button class="btn btn-ghost" data-tool="gamma" onclick="App.go('gamma')">העתק ופתח Gamma<small>מצגת מעוצבת מהפרומפט</small></button>
+            <button class="btn btn-ghost" data-tool="notebooklm" onclick="App.go('notebooklm')">העתק ופתח NotebookLM<small>מצגת מתוך קובץ הנתונים</small></button>
           </div>
-          <div class="pastehint">ב-PowerPoint שנפתח: לוחצים על <b>Copilot</b> בסרגל העליון, מדביקים עם <kbd>Ctrl</kbd>+<kbd>V</kbd> ושולחים.</div>
-          <div class="filenote" id="filenote" hidden><b>לפני השליחה: מצרפים את הקובץ</b> בחלון הצ'אט של Copilot (סימן + או אטב). יש בקובץ שמות, טלפונים או ת"ז? קודם <a href="../anonymize/">התממה</a>.</div>
+          <button class="btn btn-ghost copyonly" onclick="App.copy()">העתקה בלבד</button>
+          <div class="pastehint" id="pastehint">לוחצים על אחד הכלים: הפרומפט מועתק, והכלי נפתח בחלון חדש.</div>
+          <div class="filenote" id="filenote" hidden><b>לפני השליחה: מצרפים את הקובץ</b> בכלי שנפתח (סימן + או אטב; ב-NotebookLM: הוספת מקור). יש בקובץ שמות, טלפונים או ת"ז? קודם <a href="../anonymize/">התממה</a>.</div>
           <div class="prompt-box" id="preview"></div>
-          <div class="tip"><b>עובדים ב-PowerPoint שמותקן במחשב?</b> לוחצים "העתקה", פותחים מצגת חדשה, לוחצים על Copilot בסרגל העליון ומדביקים.</div>
+          <div class="tip"><b>עובדים ב-PowerPoint שמותקן במחשב?</b> לוחצים "העתקה בלבד", פותחים מצגת חדשה, לוחצים על Copilot בסרגל העליון ומדביקים.</div>
         </div>
       </div>
     </div>
@@ -257,14 +266,27 @@ filesPart(mark),
   function hasFile(k){ data.hasFile=data.hasFile===k?'':k; persist(); render(); }
   function slides(n){ data.slides=n; persist(); render(); }
   function openWith(url,name){ copy('הועתק ✓ ב-'+name+': Ctrl+V ושליחה'); window.open(url,'_blank','noopener'); }
-  function toPowerPoint(){ copy('הועתק ✓ ב-PowerPoint: Copilot ← Ctrl+V ושליחה'); window.open('https://ppt.new','_blank','noopener'); }
+  const KBD='<kbd>Ctrl</kbd>+<kbd>V</kbd>';
+  const TOOLS={
+    ppt:{name:'PowerPoint',url:'https://ppt.new',hint:'ב-PowerPoint שנפתח: לוחצים על <b>Copilot</b> בסרגל העליון, מדביקים עם '+KBD+' ושולחים. דורש מנוי ל-Copilot.'},
+    gemini:{name:'Gemini',url:'https://gemini.google.com/app',hint:'ב-Gemini: בתיבת הכתיבה בוחרים <b>Canvas</b>, מדביקים עם '+KBD+' ושולחים. בסוף אפשר לייצא את המצגת ל-Google Slides.'},
+    gamma:{name:'Gamma',url:'https://gamma.app/create/generate',hint:'ב-Gamma: מתחברים (יש חשבון חינמי), מדביקים את הפרומפט בתיבה עם '+KBD+', בוחרים עברית ואת מספר השקפים, ולוחצים "יצירה".'},
+    notebooklm:{name:'NotebookLM',url:'https://notebooklm.google.com/',hint:'ב-NotebookLM: יוצרים מחברת חדשה ומוסיפים את קובץ הנתונים כמקור. אחר כך בחלונית <b>Studio</b> בוחרים "מצגת" ומדביקים את הפרומפט בהנחיות, או מדביקים אותו בצ\'אט.'}
+  };
+  function go(k){
+    const t=TOOLS[k];
+    copy('הועתק ✓ ב-'+t.name+': Ctrl+V');
+    window.open(t.url,'_blank','noopener');
+    document.getElementById('pastehint').innerHTML=t.hint;
+    document.querySelectorAll('.tools .btn').forEach(b=>b.classList.toggle('on',b.dataset.tool===k&&k!=='ppt'));
+  }
   function copy(msg){ const t=build(false); (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast(typeof msg==='string'?msg:'הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו ידנית:',t)); }
 
   let recog=null;
   function dictate(el,btn){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){toast('הכתבה קולית נתמכת ב‑Chrome / Edge');return;} if(recog){recog.stop();return;} recog=new SR(); recog.lang='he-IL'; recog.interimResults=true; recog.continuous=false; const base=(el.value||'').trim(); btn.classList.add('rec'); recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k]; if(r.isFinal)f+=r[0].transcript; else i+=r[0].transcript;} el.value=(base?base+' ':'')+(f+i).trim(); el.dispatchEvent(new Event('input',{bubbles:true}));}; recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();}; recog.onerror=()=>{btn.classList.remove('rec');recog=null;}; try{recog.start();toast('מקשיב… דברו בעברית');}catch(e){btn.classList.remove('rec');recog=null;} }
 
   let tt; function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,hasFile,slides,copy,toPowerPoint};
+  return {init,hasFile,slides,copy,go};
 })();
 App.init();
 </script>
