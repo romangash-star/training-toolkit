@@ -111,6 +111,12 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   @media (max-width:760px){.paths,.check,.stage,.flow3{grid-template-columns:1fr}.timer .clock{font-size:29px;min-width:80px}}
   @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}.toast{transition:none}}
+  .vtabs{display:flex;gap:6px;margin:12px 0 0;flex-wrap:wrap}
+  .vtabs button{font-weight:700;font-size:14px;padding:7px 14px;border-radius:10px 10px 0 0;border:1.5px solid var(--line);border-bottom:none;background:#F2EADC;color:var(--ink-soft)}
+  .vtabs button[aria-selected="true"]{background:#1C1512;color:#fff;border-color:#1C1512}
+  .vtabs+.prompt-box{margin-top:0;border-top-right-radius:0}
+  .plen{font-size:13.5px;color:var(--ink-soft);margin-top:6px;min-height:1px}
+  .plen.warn{color:#A8362D;font-weight:700}
 </style>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
@@ -158,7 +164,7 @@ const App=(()=>{
   let data=fresh();
   let timer={total:2700,remain:2700,running:false,id:null};
 
-  function fresh(){ return {meta:{title:'',team:''}, mode:'צוות', stage:'', problem:'', who:'', tried:'', ideas:'', barriers:'', direction:'', does:'', dataHave:'', dataHelp:''}; }
+  function fresh(){ return {meta:{title:'',team:''}, mode:'צוות', tool:'gemini', stage:'', problem:'', who:'', tried:'', ideas:'', barriers:'', direction:'', does:'', dataHave:'', dataHelp:''}; }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function attr(s){return esc(s).replace(/"/g,'&quot;');}
@@ -223,57 +229,73 @@ const App=(()=>{
     </div>`;
   }
 
-  function buildPrompt(){
+  /* What we know, shared by both versions of the prompt */
+  function facts(){
     const noSol = data.stage!=='יש לנו כיוון';
-    let t='';
-    t+=`אתה יועץ בכיר לעיצוב שירותים ולחדשנות ברשויות מקומיות בישראל. אני רוצה לחשוב איתך יחד על פתרון לאתגר שלנו. אל תבנה מצגת ואל תכתוב קוד — המטרה בשלב הזה היא לחשוב, לפתוח כיוונים ולחדד.\n\n`;
-    t+=`== הרקע ==\n`;
-    if(data.meta.title) t+=`האתגר: ${data.meta.title}\n`;
-    t+=`עבודה: ${data.mode==='אישי'?'אישית':'בצוות'}\n`;
-    t+=`הבעיה שאימתנו: ${data.problem||'—'}\n`;
-    if(data.who) t+=`מי מרגיש את הכאב: ${data.who}\n`;
-    if(data.tried) t+=`מה כבר ניסו: ${data.tried}\n`;
-    if(data.dataHave||data.dataHelp){
-      t+=`\n== הנתונים שיש לנו ==\n`;
-      if(data.dataHave) t+=`מה אספנו ומצאנו: ${data.dataHave}\n`;
-      if(data.dataHelp) t+=`איך זה עוזר לנו להחליט, ומה חסר: ${data.dataHelp}\n`;
-    }
-    if(data.ideas) t+=`רעיונות גולמיים שעלו: ${data.ideas}\n`;
-    if(!noSol){
-      t+=`\n== הכיוון שגיבשנו ==\n`;
-      t+=`הכיוון: ${data.direction||'—'}\n`;
-      if(data.does) t+=`מה הוא עושה: ${data.does}\n`;
-    }
-    if(data.barriers) t+=`\n== חסמים שאנחנו רואים ==\n${data.barriers}\n`;
+    const L=[];
+    if(data.meta.title) L.push('האתגר: '+data.meta.title);
+    L.push('הבעיה: '+(data.problem||'[לא מולא]'));
+    if(data.who) L.push('מי מרגיש את הכאב: '+data.who);
+    if(data.dataHave) L.push('הנתונים שיש לנו: '+data.dataHave);
+    if(data.dataHelp) L.push('מה הנתונים מראים, ומה חסר: '+data.dataHelp);
+    if(data.tried) L.push('מה כבר ניסו: '+data.tried);
+    if(data.ideas) L.push('רעיונות גולמיים שעלו: '+data.ideas);
+    if(!noSol){ L.push('הכיוון שגיבשנו: '+(data.direction||'[לא מולא]')); if(data.does) L.push('מה הוא עושה בפועל: '+data.does); }
+    if(data.barriers) L.push('חסמים: '+data.barriers);
+    return L.join('\n');
+  }
 
-    t+=`\n== מה אני מבקש ממך ==\n`;
+  /* The prompt leads to a solution: options first, questions only after, and every answer moves forward.
+     Gemini gets the full version; Copilot a compact one, because some Microsoft 365 licences cap a prompt at 2,000-4,000 characters. */
+  function buildPrompt(tool){
+    const noSol = data.stage!=='יש לנו כיוון';
+    const team = data.mode==='אישי' ? 'אני עובד/ת על' : 'הצוות שלנו עובד על';
+    if((tool||data.tool)==='copilot') return buildCopilot(noSol,team);
+    let t='';
+    t+='אתה יועץ בכיר לחדשנות ולעיצוב שירותים ברשויות מקומיות בישראל. '+team+' אתגר אמיתי ברשות. המטרה שלך: להוביל אותנו בשיחה הזו לפתרון ברור שאפשר להתחיל לבדוק בפיילוט קטן. לא רק לשאול, אלא להציע, לבחור ולבנות איתנו.\n\n';
+    t+='== מה שאנחנו יודעים ==\n'+facts()+'\n\n';
+    t+='== איך השיחה תתנהל ==\n';
+    t+='שלב 1 (בתשובה הראשונה, מיד, בלי לחכות לתשובות שלי):\n';
+    t+='- נסח את האתגר מחדש במשפט אחד בצורת "איך נוכל…", ממוקד באדם שמרגיש את הכאב.\n';
     if(noSol){
-      t+=`עדיין אין לנו פתרון. עזור לנו להגיע לכיוונים:\n`;
-      t+=`1. מה עוד לא ברור לך אצלנו? שאל אותי 3 שאלות פתוחות שיעזרו לך להבין את האתגר לעומק — ואל תמשיך עד שאענה.\n`;
-      t+=`2. אילו זוויות של הבעיה אנחנו אולי לא רואים?\n`;
-      t+=`3. הצע 5 כיווני פתרון שונים באופיים — מהקל והזול ועד השאפתני. לכל אחד: מה הוא עושה, למי, ומה הצעד הראשון.\n`;
-      t+=`4. מה הנתונים שלנו מלמדים על הכיוונים האלה: איזה כיוון הם תומכים בו, ואיזה נתון חסר כדי להחליט?\n`;
-      t+=`5. איך רשויות אחרות בישראל או בעולם התמודדו עם אתגר דומה?\n`;
-      t+=`6. איזה כיוון היית ממליץ להתחיל ממנו — ולמה דווקא הוא?\n`;
-      t+=`7. איך אפשר לעקוף את החסמים שציינו, או להתחיל בקטן למרות שהם קיימים?\n`;
-      t+=`8. מה הדבר הראשון שכדאי לבדוק מול משתמש אמיתי — ואיזו שאלה פתוחה לשאול אותו?\n`;
+      t+='- הצע 3 כיווני פתרון, מסומנים באותיות א, ב, ג, ושונים זה מזה באופיים: אחד שמשנה תהליך או נוהל, אחד שנשען על כלי דיגיטלי או על נתונים, ואחד שנשען על אנשים (ליווי, שיתוף פעולה בין אגפים או עם הקהילה).\n';
+      t+='- לכל כיוון 5 שורות קצרות, שורה לכל סעיף: מה עושים בפועל, איך זה מקטין את הכאב שתיארנו, איזה נתון שלנו תומך בו, הצעד הראשון, ורמת מאמץ (נמוכה, בינונית או גבוהה). אל תוותר על הנתון התומך כדי לקצר.\n';
     } else {
-      t+=`יש לנו כיוון ראשוני. עזור לנו לחדד ולבחון אותו:\n`;
-      t+=`1. מה עוד לא ברור לך? שאל אותי 3 שאלות פתוחות לפני שתענה — ואל תמשיך עד שאענה.\n`;
-      t+=`2. נסח מחדש את הפתרון שלנו במשפט אחד חד, כפי שהיית מציג אותו למקבל החלטות.\n`;
-      t+=`3. מה החוזק המרכזי כאן — ומה 3 נקודות התורפה הקונקרטיות?\n`;
-      t+=`4. האם הפתרון באמת מקל על הכאב שתיארנו, או פותר משהו אחר? הסבר.\n`;
-      t+=`5. האם הנתונים שלנו תומכים בכיוון הזה? איזה נתון היה משנה את דעתנו, ומה חסר כדי להחליט?\n`;
-      t+=`6. הצע 3 כיוונים חלופיים או וריאציות שלא חשבנו עליהם.\n`;
-      t+=`7. איך אפשר לעקוף את החסמים שציינו, או להתחיל בקטן למרות שהם קיימים?\n`;
-      t+=`8. איך להפוך את הרעיון לפיילוט קטן שאפשר להתחיל בו מיד?\n`;
-      t+=`9. מה הדבר הראשון שכדאי לבדוק מול משתמש אמיתי — ואיזו שאלה פתוחה לשאול אותו?\n`;
+      t+='- נסח את הכיוון שלנו מחדש במשפט אחד חד: מה משנים, למי, ואיזה כאב זה מוריד.\n';
+      t+='- בדוק אותו: האם הוא באמת פותר את הכאב שתיארנו? מה 3 נקודות התורפה שלו, ומה התיקון לכל אחת?\n';
+      t+='- הצע 2 וריאציות או חלופות שכדאי לשקול לצידו, מסומנות באותיות א, ב, בקצרה.\n';
     }
-    t+=`\n== איך לענות ==\n`;
-    t+=`• בעברית, ענייני וקצר — משפט או שניים לכל סעיף.\n`;
-    t+=`• קונקרטי ומעשי לרשות מקומית בישראל — לא כללי ולא תיאורטי.\n`;
-    t+=`• התחל מהשאלות הפתוחות אליי, ורק אחר כך המשך.\n`;
-    t+=`• אחרי שאענה — המשך לשאול אותי שאלות שיחדדו את החשיבה שלנו.\n`;
+    t+='- המלץ על כיוון אחד להתחיל ממנו, והסבר למה במשפט או שניים, על סמך הנתונים והחסמים שציינו.\n';
+    t+='- רק בסוף: אם חסר מידע שישנה את ההמלצה, שאל עד 2 שאלות קצרות. לכל שאלה כתוב גם "אם לא תענו, אניח ש…".\n\n';
+    t+='שלב 2 (אחרי שאבחר כיוון, או אענה "לא בטוחים", "לא יודע" או "מה אתה ממליץ" — וזה אישור לכיוון שהמלצת): בנה מיד תוכנית פיילוט ל-30 יום, בלי לשאול שוב איזה כיוון:\n';
+    t+='- מה בדיוק עושים, איפה, ועם מי (קבוצה קטנה ומוגדרת).\n';
+    t+='- מי אחראי: תפקיד של אדם אחד (למשל "ראש מחלקת רישוי עסקים"), לא שם של מחלקה. ואילו אגפים או שותפים צריך לגייס.\n';
+    t+='- מדד הצלחה אחד. מצב היום רק מתוך הנתונים שנתתי; אם אין מספר מדויק, כתוב "לבדוק בקובץ". יעד מספרי מותר רק כשהוא מסומן "הנחה לבדיקה".\n';
+    t+='- לכל חסם שציינו שורה נפרדת: החסם ← מה עושים, או איך מתחילים בקטן למרות שהוא קיים.\n';
+    t+='- הצעד הראשון שאפשר לעשות כבר מחר בבוקר.\n\n';
+    t+='שלב 3 (בתשובה שאחרי תוכנית הפיילוט, או כשאבקש): סכם את הפתרון בפסקה אחת שאפשר להציג למקבל החלטות: הבעיה, ההוכחה מהנתונים, הפתרון, והבקשה. בבקשה: מה צריך ממקבל ההחלטות (אישור, שותף, זמן עובדים), בלי כמויות שלא הופיעו קודם, אלא אם הן מסומנות "הנחה לבדיקה".\n\n';
+    t+='== כללים ==\n';
+    t+='- כל תשובה שלך חייבת לקדם אותנו לפתרון. לעולם אל תענה רק בשאלות.\n';
+    t+='- לא יותר מ-2 שאלות בתשובה אחת. אם עניתי "לא יודע", הנח הנחה סבירה, כתוב אותה, והמשך.\n';
+    t+='- סיים כל תשובה ב-2–3 צעדים הבאים ממוספרים 1, 2, 3 (למשל: "1. נבנה תוכנית פיילוט  2. נבחן כיוון אחר  3. נתכונן להתנגדויות"), כדי שאוכל פשוט לבחור מספר. אל תוסיף אחריהם שאלה כמו "רוצים ש…?" או "איזה מספר תבחרו?".\n';
+    t+='- קונקרטי ומעשי לרשות מקומית בישראל: תקציב מוגבל, נהלים, כמה אגפים. בלי סיסמאות כלליות.\n';
+    t+='- השתמש רק בנתונים שנתתי. אל תמציא מספרים (ימים, אחוזים, שעות, גודל קבוצה, יעדים). אם חייבים מספר כזה, סמן אותו "הנחה לבדיקה". כל הנחה אחרת מסמנים "הנחה".\n';
+    t+='- אם אתה מביא דוגמה מרשות אחרת בישראל או בעולם, ציין מאיפה היא. אם אינך בטוח שהיא אמיתית, אל תביא אותה.\n';
+    t+='- עברית פשוטה, נקודות קצרות, בלי הקדמות, בלי טבלאות ובלי אימוג\'י. התשובה הראשונה עד כ-350 מילים.';
+    return t;
+  }
+  function buildCopilot(noSol,team){
+    let t='אתה יועץ לחדשנות ברשויות מקומיות בישראל. '+team+' אתגר. המטרה: להוביל אותנו לפתרון שאפשר לבדוק בפיילוט קטן, לא רק לשאול שאלות.\n\n';
+    t+='מה שאנחנו יודעים:\n'+facts()+'\n\n';
+    t+='בתשובה הראשונה, מיד:\n';
+    t+='1. נסח את האתגר במשפט "איך נוכל…".\n';
+    t+= noSol
+      ? '2. הצע 3 כיווני פתרון, מסומנים א, ב, ג, שונים זה מזה (שינוי תהליך, כלי דיגיטלי או נתונים, אנשים ושיתופי פעולה). לכל אחד שורה לכל סעיף: מה עושים, איך זה מקטין את הכאב, נתון שתומך בו (אל תוותר עליו), צעד ראשון, ורמת מאמץ.\n'
+      : '2. חדד את הכיוון שלנו במשפט אחד, ציין 3 חולשות ותיקון לכל אחת, והצע 2 חלופות קצרות מסומנות א, ב.\n';
+    t+='3. המלץ על כיוון אחד ולמה.\n';
+    t+='4. רק בסוף: עד 2 שאלות, ולכל אחת "אם לא תענו, אניח ש…".\n\n';
+    t+='אחרי שאבחר כיוון, או אענה "לא בטוחים" / "מה אתה ממליץ" (= אישור לכיוון שהמלצת): מיד תוכנית פיילוט ל-30 יום, בלי לשאול שוב: מה ועם מי; מי אחראי (תפקיד של אדם אחד, לא מחלקה); מדד הצלחה (מצב היום רק מהנתונים שלי, אחרת "לבדוק בקובץ"; יעד רק כ"הנחה לבדיקה"); לכל חסם שורה: החסם ← מה עושים; צעד ראשון למחר. בתשובה שאחריה: פסקה למקבל החלטות (בעיה, הוכחה, פתרון, בקשה; בבקשה בלי כמויות חדשות, אלא אם מסומנות "הנחה לבדיקה").\n\n';
+    t+='כללים: כל תשובה מקדמת לפתרון, אף פעם לא רק שאלות. "לא יודע" = הנח הנחה, סמן "הנחה" והמשך. סיים כל תשובה ב-2–3 צעדים הבאים ממוספרים 1, 2, 3. השורה האחרונה היא הצעד האחרון, שום מילה אחריו (בלי "רוצים ש…?"). בלי מספרים מומצאים (גם לא שעות, ימים או יעדים), אלא אם מסומנים "הנחה לבדיקה". דוגמה מרשות אחרת רק עם מקור. עברית, נקודות קצרות, בלי טבלאות, תשובה ראשונה עד כ-350 מילים.';
     return t;
   }
 
@@ -281,34 +303,47 @@ const App=(()=>{
     return `<div class="panel hero" id="promptSection">
       <div class="eyebrow amber">★ הפלט של העמוד</div>
       <h2 class="title big">הפרומפט שנוצר עבורכם</h2>
-      <div class="why">נבנה אוטומטית ממה שמילאתם למעלה, ומתעדכן בזמן שאתם כותבים. <b>זה לא פרומפט למצגת</b> — זה שותף חשיבה שיפתח איתכם דיון ויעזור להגיע לכיווני פתרון.</div>
+      <div class="why">נבנה אוטומטית ממה שמילאתם למעלה, ומתעדכן בזמן שאתם כותבים. <b>זה שותף חשיבה שמוביל לפתרון:</b> כבר בתשובה הראשונה הוא מציע כיוונים וממליץ על אחד, ואחר כך בונה איתכם תוכנית פיילוט.</div>
+      <div class="vtabs" role="tablist" aria-label="גרסה">${['gemini','copilot'].map(k=>`<button role="tab" aria-selected="${data.tool===k}" onclick="App.setTool('${k}')">${k==='gemini'?'גרסה ל-Gemini':'גרסה ל-Copilot (קצרה)'}</button>`).join('')}</div>
       <div class="prompt-box" id="promptBox">${esc(buildPrompt())}</div>
+      <div class="plen" id="plen"></div>
       <div class="pv-actions">
         <button class="btn btn-gem" onclick="App.toGemini()">העתק ופתח את Gemini</button>
         <button class="btn btn-cop" onclick="App.toCopilot()">העתק ופתח Copilot</button>
         <button class="btn btn-ghost" onclick="App.copyPrompt()">העתקה בלבד</button>
       </div>
       <div class="flow3">
-        <div><b>1. מדביקים</b>ב-Gemini או ב-Copilot ושולחים</div>
-        <div><b>2. עונים לשאלות</b>ומתדיינים איתו</div>
-        <div><b>3. חוזרים</b>ומעדכנים כאן</div>
+        <div><b>1. מדביקים ושולחים</b>ומקבלים 3 כיווני פתרון והמלצה</div>
+        <div><b>2. בוחרים כיוון</b>עונים במספר, או בכמה מילים</div>
+        <div><b>3. מקבלים תוכנית פיילוט</b>ופסקה מוכנה למצגת</div>
       </div>
       <div class="nextnote"><b>השלב הבא:</b> כשהפתרון מספיק ברור, עוברים ל<a href="../pitch/"><b>בונים מצגת לפתרון</b></a>.</div>
     </div>`;
   }
 
   function wire(){
-    const live=()=>{ const box=document.getElementById('promptBox'); if(box) box.textContent=buildPrompt(); };
+    const live=()=>{ const box=document.getElementById('promptBox'); if(box) box.textContent=buildPrompt(); paintLen(); };
+    paintLen();
     document.querySelectorAll('[data-f]').forEach(el=>el.addEventListener('input',()=>{data[el.dataset.f]=el.value;persist();live();}));
     document.querySelectorAll('[data-m]').forEach(el=>el.addEventListener('input',()=>{data.meta[el.dataset.m]=el.value;persist();live();}));
     document.querySelectorAll('.mic').forEach(b=>b.addEventListener('click',()=>dictate(document.querySelector(`[data-f="${b.dataset.t}"]`),b)));
   }
+  /* Copilot: some licences cap a prompt at 2,000-4,000 characters, so say when it is long */
+  function paintLen(){
+    const el=document.getElementById('plen'); if(!el) return;
+    const n=buildPrompt('copilot').length;
+    el.className='plen'+(n>4000?' warn':'');
+    el.textContent= data.tool==='copilot'
+      ? (n>4000 ? 'אורך: '+n.toLocaleString('he-IL')+' תווים. ייתכן ש-Copilot יחתוך פרומפט כזה. קצרו את התשובות למעלה, או השתמשו ב-Gemini.' : 'אורך: '+n.toLocaleString('he-IL')+' תווים.')
+      : '';
+  }
+  function setTool(k){data.tool=k;persist();render();}
   function setStage(s){data.stage=(data.stage===s?'':s);persist();render();}
   function setMode(m){data.mode=m;persist();paintModes();render();}
   function paintModes(){const el=document.getElementById('modes');if(el)el.innerHTML=['אישי','צוות'].map(m=>`<button class="${data.mode===m?'on':''}" onclick="App.setMode('${m}')">${m==='אישי'?'אישי':'צוות'}</button>`).join('');}
-  function copyPrompt(){const t=buildPrompt();(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
-  function toGemini(){copyPrompt();window.open('https://gemini.google.com/app','_blank','noopener');}
-  function toCopilot(){copyPrompt();window.open('https://m365.cloud.microsoft/chat','_blank','noopener');}
+  function copyPrompt(tool){const t=buildPrompt(typeof tool==='string'?tool:undefined);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('הפרומפט הועתק ✓')).catch(()=>prompt('העתיקו:',t));}
+  function toGemini(){data.tool='gemini';persist();render();copyPrompt('gemini');window.open('https://gemini.google.com/app','_blank','noopener');}
+  function toCopilot(){data.tool='copilot';persist();render();copyPrompt('copilot');window.open('https://m365.cloud.microsoft/chat','_blank','noopener');}
 
   function fmt(s){s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
   function paintPresets(){const el=document.getElementById('presets');if(el)el.innerHTML=PRESETS.map(m=>`<button class="${timer.total===m*60?'on':''}" onclick="App.preset(${m})">${m}</button>`).join('');}
@@ -325,7 +360,7 @@ const App=(()=>{
   function dictate(el,btn){if(!el)return;const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('הכתבה קולית נתמכת ב-Chrome / Edge');return;}if(recog){recog.stop();return;}recog=new SR();recog.lang='he-IL';recog.interimResults=true;recog.continuous=false;const base=(el.value||'').trim();btn.classList.add('rec');recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k];if(r.isFinal)f+=r[0].transcript;else i+=r[0].transcript;}el.value=(base?base+' ':'')+(f+i).trim();el.dispatchEvent(new Event('input',{bubbles:true}));};recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();};recog.onerror=()=>{btn.classList.remove('rec');recog=null;};try{recog.start();toast('מקשיב…');}catch(e){btn.classList.remove('rec');recog=null;}}
 
   let tt;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,setStage,setMode,copyPrompt,toGemini,toCopilot,preset,toggleTimer,resetTimer};
+  return {init,setTool,setStage,setMode,copyPrompt,toGemini,toCopilot,preset,toggleTimer,resetTimer};
 })();
 window.App=App; App.init();
 </script>
