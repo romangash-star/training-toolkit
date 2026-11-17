@@ -62,7 +62,15 @@
   .filebox[hidden]{display:none}
   .filenote{margin-top:10px;font-size:14px;line-height:1.6;background:#FBF1E0;border:1px solid #EBD3A8;border-radius:10px;padding:9px 12px}
   .filenote[hidden]{display:none}
-  @media (max-width:820px){.grid{grid-template-columns:1fr}.preview{position:static}}
+  .grid:not(.open){grid-template-columns:minmax(0,680px);justify-content:center}
+  .grid:not(.open) .preview{display:none}
+  .grid.open .preview{animation:slidein .45s cubic-bezier(.2,.7,.2,1)}
+  @keyframes slidein{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .toprompt{width:100%;margin-top:20px;padding:14px 18px;font-size:17px}
+  .grid.open .toprompt{display:none}
+  .filewhy{font-size:14px;line-height:1.55;color:var(--brand-deep);background:#FBF1E0;border:1px solid #EBD3A8;border-radius:10px;padding:7px 11px;margin:0 0 8px}
+  @media (max-width:820px){.grid,.grid:not(.open){grid-template-columns:1fr}.preview{position:static}}
+  @media (prefers-reduced-motion:reduce){.grid.open .preview{animation:none}}
   @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 </style>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
@@ -109,6 +117,7 @@
         </div>
         <div class="field">
           <div class="lab"><span class="n">7</span>יש קובץ נתונים, או קובץ אחר, שאפשר לצרף?</div>
+          <div class="filewhy">אם יש קובץ, כדאי מאוד לצרף אותו: המצגת תהיה מדויקת ומפורטת הרבה יותר.</div>
           <div class="chips" id="hasFile"></div>
           <div class="filebox" id="filebox" hidden>
             <div class="in-wrap"><textarea id="files" aria-label="מה יש בקובץ?"></textarea><button class="mic" data-t="files" aria-label="הכתבה קולית"></button></div>
@@ -118,6 +127,7 @@
           <div class="lab"><span class="n">8</span>כמה שקפים?</div>
           <div class="chips" id="slides"></div>
         </div>
+        <button type="button" class="btn btn-brand toprompt" id="toPrompt" onclick="App.showPrompt()">בואו נעבור לפרומפט ←</button>
       </div>
 
       <div class="preview">
@@ -273,6 +283,12 @@ filesPart(mark),
     gamma:{name:'Gamma',url:'https://gamma.app/create/generate',hint:'ב-Gamma: מתחברים (יש חשבון חינמי), מדביקים את הפרומפט בתיבה עם '+KBD+', בוחרים עברית ואת מספר השקפים, ולוחצים "יצירה".'},
     notebooklm:{name:'NotebookLM',url:'https://notebooklm.google.com/',hint:'ב-NotebookLM: יוצרים מחברת חדשה ומוסיפים את קובץ הנתונים כמקור. אחר כך בחלונית <b>Studio</b> בוחרים "מצגת" ומדביקים את הפרומפט בהנחיות, או מדביקים אותו בצ\'אט.'}
   };
+  function showPrompt(){
+    const g=document.querySelector('.grid'); g.classList.add('open');
+    const pv=document.querySelector('.preview');
+    if(window.matchMedia('(max-width:820px)').matches) pv.scrollIntoView({behavior:'smooth',block:'start'});
+    else window.scrollTo({top:0,behavior:'smooth'});
+  }
   function go(k){
     const t=TOOLS[k];
     copy('הועתק ✓ ב-'+t.name+': Ctrl+V');
@@ -286,7 +302,7 @@ filesPart(mark),
   function dictate(el,btn){const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR){toast('הכתבה קולית נתמכת ב‑Chrome / Edge');return;} if(recog){recog.stop();return;} recog=new SR(); recog.lang='he-IL'; recog.interimResults=true; recog.continuous=false; const base=(el.value||'').trim(); btn.classList.add('rec'); recog.onresult=(e)=>{let f='',i='';for(let k=0;k<e.results.length;k++){const r=e.results[k]; if(r.isFinal)f+=r[0].transcript; else i+=r[0].transcript;} el.value=(base?base+' ':'')+(f+i).trim(); el.dispatchEvent(new Event('input',{bubbles:true}));}; recog.onend=()=>{btn.classList.remove('rec');recog=null;el.focus();}; recog.onerror=()=>{btn.classList.remove('rec');recog=null;}; try{recog.start();toast('מקשיב… דברו בעברית');}catch(e){btn.classList.remove('rec');recog=null;} }
 
   let tt; function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2400);}
-  return {init,hasFile,slides,copy,go};
+  return {init,hasFile,slides,copy,go,showPrompt};
 })();
 App.init();
 </script>
