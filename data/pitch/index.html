@@ -62,6 +62,9 @@
   .filebox[hidden]{display:none}
   .filenote{margin-top:10px;font-size:14px;line-height:1.6;background:#FBF1E0;border:1px solid #EBD3A8;border-radius:10px;padding:9px 12px}
   .filenote[hidden]{display:none}
+  .filenudge{margin:0 0 12px;font-size:14.5px;line-height:1.55;color:var(--brand-deep);background:#FBF1E0;border:1px solid #EBD3A8;border-radius:10px;padding:9px 12px}
+  .filenudge[hidden]{display:none}
+  .filenudge button{font:inherit;color:inherit;text-decoration:underline;background:none;border:0;padding:0;cursor:pointer}
   .grid:not(.open){grid-template-columns:minmax(0,680px);justify-content:center}
   .grid:not(.open) .preview{display:none}
   .grid.open .preview{animation:slidein .45s cubic-bezier(.2,.7,.2,1)}
@@ -133,6 +136,7 @@
       <div class="preview">
         <div class="panel">
           <h3>הפרומפט</h3>
+          <div class="filenudge" id="filenudge" hidden><b>תזכורת:</b> כדאי לצרף קובץ נתונים, או כל קובץ רלוונטי אחר, כדי להעשיר את המצגת. <button type="button" onclick="App.hasFile('yes')">יש לי קובץ</button></div>
           <div class="tools">
             <button class="btn btn-brand" data-tool="ppt" onclick="App.go('ppt')">העתק ופתח PowerPoint<small>למי שיש מנוי ל-Copilot</small></button>
             <button class="btn btn-ghost" data-tool="gemini" onclick="App.go('gemini')">העתק ופתח Gemini<small>מצגת עם Canvas</small></button>
@@ -270,6 +274,7 @@ filesPart(mark),
     document.getElementById('hasFile').innerHTML=[['yes','כן, יש קובץ'],['no','אין קובץ']].map(([k,t])=>`<button type="button" aria-pressed="${data.hasFile===k}" onclick="App.hasFile('${k}')">${t}</button>`).join('');
     document.getElementById('filebox').hidden=data.hasFile!=='yes';
     document.getElementById('filenote').hidden=data.hasFile!=='yes';
+    document.getElementById('filenudge').hidden=data.hasFile==='yes';
     document.getElementById('slides').innerHTML=SLIDES.map(n=>`<button type="button" aria-pressed="${n===data.slides}" onclick="App.slides('${n}')">${n}</button>`).join('');
     document.getElementById('preview').innerHTML=esc(build(true)).replace(/\u0001/g,'<span class="gap">').replace(/\u0002/g,'</span>');
   }
