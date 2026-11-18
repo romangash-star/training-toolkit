@@ -52,6 +52,7 @@ section{padding:72px 0;position:relative}
 .route{position:absolute;inset-block:0;inset-inline-start:max(7px,calc(50% - 596px));width:4px;border-radius:4px;background:rgba(180,80,47,.18);z-index:3;pointer-events:none}
 .route i{position:absolute;inset:0 0 auto 0;height:calc(100%*var(--p,0));background:var(--brand);border-radius:4px}
 .route b{position:absolute;top:calc(100%*var(--p,0));left:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--brand);border:3px solid var(--ink);animation:pulse 2.4s ease-in-out infinite}
+.kick.kt{color:var(--teal)}
 .duo{text-align:center;margin-bottom:34px}
 .duo p{color:var(--mut);font-size:18px;margin-top:10px}
 .doors{position:relative}
@@ -252,16 +253,14 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 </header>
 
 <main id="main"><div class="route" id="route" aria-hidden="true"><i></i><b></b></div>
-<section id="doors" style="padding-top:56px"><div class="wrap">
-  <div class="duo rv"><h2 class="mid">שני שירותים. אדם אחד.</h2><p>אפשר להזמין הכשרה, אפשר להזמין אתר או מערכת. בשניהם עובדים ישירות איתי.</p></div>
+<section id="doors" style="padding-top:40px"><div class="wrap">
   <div class="doors">
-    <div class="who"><img src="../assets/roman.jpg" alt="רומן גרינשטיין" width="180" height="180"></div>
+
     <a class="door t rv" href="#train">
       <svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMinYMin slice" aria-hidden="true">
         <g fill="#f0b95a"><rect class="bar" style="--b:0s" x="34" y="40" width="26" height="120" rx="6"/><rect class="bar" style="--b:.08s" x="70" y="70" width="26" height="90" rx="6"/><rect class="bar" style="--b:.16s" x="106" y="20" width="26" height="140" rx="6"/><rect class="bar" style="--b:.24s" x="142" y="90" width="26" height="70" rx="6"/></g>
         <path d="M26 162H178" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
       </svg>
-      <span class="num">שירות 1</span>
       <h2>הכשרות לרשויות מקומיות</h2>
       <p>החלטות מבוססות נתונים, Copilot וכלי AI. מעשי, על אתגרים אמיתיים.</p>
       <span class="go">לתכנים <i>←</i></span>
@@ -270,7 +269,6 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
       <svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMinYMin slice" aria-hidden="true">
         <g fill="#fff"><rect class="blk2" style="--b:0s" x="34" y="30" width="150" height="16" rx="5"/><rect class="blk2" style="--b:.08s" x="34" y="56" width="150" height="56" rx="8" fill="#f0b95a"/><rect class="blk2" style="--b:.16s" x="34" y="122" width="70" height="40" rx="8"/><rect class="blk2" style="--b:.24s" x="114" y="122" width="70" height="40" rx="8"/></g>
       </svg>
-      <span class="num">שירות 2</span>
       <h2>אתרים, מערכות וכלים</h2>
       <p>אתם מתארים, אני בונה, וזה עולה לאוויר. מהר, יציב ובעלות נמוכה.</p>
       <span class="go">לעבודות <i>←</i></span>
@@ -288,7 +286,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 </div></section>
 
 <section id="train"><div class="wrap">
-  <div class="kick rv">שירות 1 · הכשרות</div>
+  <div class="kick kt rv">הכשרות</div>
   <h2 class="big rv">לא הרצאה על AI.<br>יום עבודה עם AI.</h2>
   <p class="lead rv">הכשרות מעשיות לעובדי רשויות מקומיות. כל משתתף עובד על אתגר אמיתי מהמחלקה שלו, ויוצא עם תוצר ביד.</p>
   <div class="syl">
@@ -330,7 +328,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 </div></section>
 
 <section class="field" style="padding-top:0"><div class="wrap">
-  <div class="kick rv">שירות 1 · מהשטח</div>
+  <div class="kick kt rv">הכשרות · מהשטח</div>
   <h2 class="big rv">מה אמרו המשתתפים.</h2>
   <div class="vids">
     <video class="rv" muted loop playsinline preload="none" poster="../assets/field/t1.jpg?v=2" src="../assets/field/t1.mp4?v=2" aria-label="הודעות תודה של משתתפים בהכשרה"></video>
@@ -345,7 +343,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 <section id="build" class="build"><div class="wrap">
   <div class="two">
     <div>
-      <div class="kick rv">שירות 2 · פיתוח ובנייה</div>
+      <div class="kick rv">פיתוח ובנייה</div>
       <h2 class="big rv">אתם מתארים.<br>אני בונה.<br>זה עולה לאוויר.</h2>
       <p class="lead rv">אני מפתח בווייב קודינג: הבינה המלאכותית כותבת את הקוד, ואני מתכנן, מכוון ובודק.</p>
     </div>
@@ -361,7 +359,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 </div></section>
 
 <section id="works"><div class="wrap">
-  <div class="kick rv">שירות 2 · עבודות</div>
+  <div class="kick rv">פיתוח ובנייה · עבודות</div>
   <h2 class="big rv">דברים שבניתי.</h2>
   <div class="kinds rv"><span>אתרים</span><span>מערכות</span><span>דשבורדים</span><span>מפות</span><span>כלים</span><span>משחקים</span></div>
 </div>
@@ -383,7 +381,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 
 <section class="cta"><div class="wrap">
   <h2 class="rv">הכשרה או אתר?<br>בואו נדבר.</h2>
-  <p class="rv">שני שירותים, כתובת אחת. הודעה אחת ומתחילים.</p>
+  <p class="rv">הודעה אחת ומתחילים.</p>
   <a class="btn rv" data-wa href="#"><svg class="wa-i" style="width:26px;height:26px"><use href="#wa"/></svg>שלחו לי וואטסאפ</a>
   <small class="rv">או במייל: <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></small>
 </div></section>
