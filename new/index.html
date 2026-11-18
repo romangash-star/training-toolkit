@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RomanAI · הכשרות AI לרשויות מקומיות, ובניית אתרים ומערכות</title>
-<meta name="description" content="רומן גרינשטיין, מתכנן ערים: הכשרות לרשויות מקומיות בקבלת החלטות מבוססת נתונים ובעבודה עם Copilot, ובניית אתרים, מערכות ודשבורדים בעזרת בינה מלאכותית.">
+<meta name="description" content="רומן גרינשטיין, מומחה נתונים: הכשרות לרשויות מקומיות בקבלת החלטות מבוססת נתונים ובעבודה עם Copilot, ובניית אתרים, מערכות ודשבורדים בעזרת בינה מלאכותית.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&family=Rubik:wght@500;800;900&display=swap" rel="stylesheet">
@@ -29,8 +29,9 @@ section{padding:96px 0;position:relative}
 .btn{display:inline-flex;align-items:center;gap:9px;font-family:Rubik,sans-serif;font-weight:800;font-size:17px;text-decoration:none;padding:14px 22px;border-radius:999px;border:2px solid transparent;cursor:pointer;transition:transform .2s,background .2s,box-shadow .2s}
 .btn:hover{transform:translateY(-2px)}
 .btn:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
-.b-wa{background:var(--wa);color:#fff}
-.b-wa:hover{box-shadow:0 10px 24px -10px var(--wa)}
+.b-wa{background:var(--card);color:var(--ink);border-color:var(--line)}
+.b-wa .wa-i{color:var(--wa)}
+.b-wa:hover{border-color:var(--wa)}
 .b-ink{background:var(--ink);color:var(--bg)}
 .b-line{border-color:var(--ink);color:var(--ink)}
 .b-sm{padding:9px 16px;font-size:15px}
@@ -64,7 +65,7 @@ section{padding:96px 0;position:relative}
 @keyframes up{to{transform:none}}
 .hero .lead{background:rgba(250,245,236,.84);border-radius:14px;padding:6px 10px;margin-inline-start:-10px;opacity:0;animation:fade .8s .6s forwards}
 .hero .acts{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px;opacity:0;animation:fade .8s .8s forwards}
-.hero .b-line{background:var(--bg)}
+.hero .b-line{background:var(--ink);color:var(--bg)}
 @keyframes fade{to{opacity:1}}
 .down{position:absolute;inset:auto 0 22px 0;text-align:center;z-index:1;font-size:20px;color:var(--mut);animation:bob 2s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(7px)}}
@@ -143,65 +144,59 @@ section{padding:96px 0;position:relative}
 .asm .a{grid-column:1/-1;height:26px}.asm .b{grid-column:1/-1;height:96px;--k:var(--brand)}.asm .c{height:74px;--k:var(--teal)}.asm .c2{height:74px;--k:var(--amber)}.asm .c3{height:74px;--k:var(--ink)}.asm .e{grid-column:1/3;height:22px}
 @keyframes asm{0%{opacity:0;transform:translateY(20px) scale(.96);background:var(--line)}12%,30%{opacity:1;transform:none;background:var(--line)}42%,80%{opacity:1;transform:none;background:var(--k,var(--line))}92%,100%{opacity:0;transform:none;background:var(--k,var(--line))}}
 
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:44px}
-.w{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:opacity .8s,transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .35s;transition-delay:var(--t,0s),0s,0s}
-.w.rv.in:hover{transform:translateY(-8px) rotate(-.6deg);box-shadow:0 30px 50px -30px rgba(42,33,27,.6)}
-.w .bar3{display:flex;gap:5px;padding:8px 12px;background:#efe6d6;direction:ltr}
-.w .bar3 i{width:8px;height:8px;border-radius:50%;background:#d6c8b1}
-.w .shot{overflow:hidden;aspect-ratio:16/10;background:var(--bg2)}
-.w img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
-.w:hover img{transform:scale(1.08)}
-.w .t{padding:16px 18px 20px}
-.w .tag{font-family:Rubik,sans-serif;font-weight:800;font-size:13px;color:var(--brand)}
-.w h3{font-size:21px;font-weight:800;line-height:1.2;margin-top:4px}
-.w .go{display:inline-block;margin-top:10px;font-weight:700;font-size:15px;color:var(--teal)}
-.soon{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--mut);font-weight:700}
+.strip{direction:ltr;overflow:hidden;margin-top:40px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.strip+.strip{margin-top:18px}
+.strip .tr{display:flex;gap:18px;width:max-content;animation:roll 60s linear infinite}
+.strip.rev .tr{animation-direction:reverse;animation-duration:72s}
+.strip:hover .tr{animation-play-state:paused}
+@keyframes roll{to{transform:translateX(calc(-50% - 9px))}}
+.strip figure{margin:0;width:min(74vw,400px);flex:none;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.strip .bar3{display:flex;gap:5px;padding:8px 12px;background:#efe6d6}
+.strip .bar3 i{width:8px;height:8px;border-radius:50%;background:#d6c8b1}
+.strip img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover}
+.kinds{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.kinds span{font-family:Rubik,sans-serif;font-weight:800;font-size:15px;border:2px solid var(--ink);border-radius:999px;padding:5px 14px}
+.soon{margin-top:30px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--mut);font-weight:700}
 .soon span{border:1.5px dashed var(--mut);border-radius:999px;padding:6px 14px;font-size:15px}
 
+.field .ph2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+.field .ph2 img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;border-radius:22px}
+.field .vids{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px auto 0;max-width:760px}
+.field video{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:top;border-radius:22px;border:1px solid var(--line);background:var(--bg2)}
 .about{background:var(--bg2)}
-.about .wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:54px;align-items:start}
-.me{position:sticky;top:96px}
-.me .ph{width:190px;height:190px;border-radius:50%;overflow:hidden;border:6px solid var(--card);box-shadow:0 0 0 3px var(--brand);margin-bottom:24px}
+.about .wrap{display:flex;gap:40px;align-items:center}
+.me .ph{width:170px;height:170px;border-radius:50%;overflow:hidden;border:6px solid var(--card);box-shadow:0 0 0 3px var(--brand);flex:none}
 .me .ph img{width:100%;height:100%;object-fit:cover;display:block}
-.tl{position:relative;padding-inline-start:38px}
-.tl::before{content:"";position:absolute;inset-block:8px;inset-inline-start:9px;width:3px;border-radius:3px;background:var(--line)}
-.tl i.fill{position:absolute;inset-block-start:8px;inset-inline-start:9px;width:3px;border-radius:3px;background:var(--brand);height:calc((100% - 16px)*var(--p,0))}
-.st{position:relative;padding:0 0 38px}
-.st::before{content:"";position:absolute;inset-inline-start:-38px;top:5px;width:21px;height:21px;border-radius:50%;background:var(--bg);border:4px solid var(--line);transition:border-color .5s .3s,background .5s .3s}
-.st.in::before{border-color:var(--brand);background:var(--gold)}
-.st h3{font-size:25px;font-weight:800;line-height:1.2}
-.st p{color:var(--mut);margin-top:4px}
+.about .lead{max-width:30em}
 
 .cta{background:var(--brand);color:#fff;text-align:center;min-height:84svh;display:flex;align-items:center;overflow:hidden}
 .cta .wrap{width:100%}
 .cta h2{font-size:clamp(40px,7.4vw,104px)}
 .cta p{font-size:21px;opacity:.94;margin:18px auto 34px;max-width:26em}
 .cta .btn{background:#fff;color:#14694a;font-size:21px;padding:18px 32px;position:relative}
-.cta .btn::before{content:"";position:absolute;inset:-2px;border-radius:999px;border:3px solid #fff;animation:ring 2.2s ease-out infinite}
-@keyframes ring{from{opacity:.8;transform:scale(1)}to{opacity:0;transform:scale(1.3,1.7)}}
 .cta small{display:block;margin-top:26px;font-size:16px}
 .cta small a{color:#fff}
 footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
-.fab{position:fixed;inset:auto auto 20px 20px;z-index:60;width:60px;height:60px;border-radius:50%;background:var(--wa);color:#fff;display:grid;place-items:center;box-shadow:0 12px 26px -10px rgba(0,0,0,.5);transform:scale(0);transition:transform .4s cubic-bezier(.3,1.5,.5,1)}
+.fab{position:fixed;inset:auto auto 18px 18px;z-index:60;width:50px;height:50px;border-radius:50%;background:var(--card);color:var(--wa);border:1.5px solid var(--line);display:grid;place-items:center;box-shadow:0 10px 22px -14px rgba(42,33,27,.6);transform:scale(0);transition:transform .4s cubic-bezier(.3,1.5,.5,1)}
 .fab.on{transform:none}
-.fab svg{width:32px;height:32px}
+.fab svg{width:26px;height:26px}
 
 @media(max-width:900px){
   section{padding:68px 0}
   .nav ul{display:none}
   .nav .wrap{gap:10px;height:60px}
-  .doors,.two,.about .wrap{grid-template-columns:1fr}
+  .doors,.two{grid-template-columns:1fr}
   .door{min-height:0;padding:170px 26px 26px}
   .door svg.art{width:210px;height:158px}
-  .syl,.grid{grid-template-columns:1fr}
+  .syl{grid-template-columns:1fr}
   .words{grid-template-columns:1fr;gap:26px}
   .data .wrap{grid-template-columns:1fr;gap:0}
   .viz{height:44svh;top:60px;z-index:2;background:var(--ink);order:-1;padding:8px 0}
   #dots{height:100%;width:auto;max-width:100%}
   .data .steps>div{min-height:56svh;justify-content:flex-start;padding-top:26px}
-  .me{position:static;display:flex;gap:18px;align-items:center}
-  .me .ph{width:104px;height:104px;flex:none;margin:0}
-  .about .wrap{gap:34px}
+  .about .wrap{flex-direction:column;align-items:flex-start;gap:22px}
+  .me .ph{width:120px;height:120px}
+  .field .ph2{grid-template-columns:1fr}
 }
 @media(max-width:430px){.nav .hide-s{display:none}}
 @media(prefers-reduced-motion:reduce){
@@ -211,6 +206,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
   .hero h1 .l>span{transform:none}.rv{opacity:1;transform:none}
   .door .bar,.door .blk2{opacity:1;transform:none}
   .asm div{opacity:1;background:var(--k,var(--line))}
+  .strip{overflow-x:auto}
   .chat tr{opacity:1;transform:none}.chat .m{width:var(--w)}.data .steps>div{opacity:1}
 }
 </style>
@@ -234,8 +230,8 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 <header class="hero" id="top">
   <svg id="city" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
   <div class="wrap">
-    <h1><span class="l"><span>מלמד רשויות לעבוד עם AI.</span></span><span class="l"><span>ובונה איתה.</span></span></h1>
-    <p class="lead">מתכנן ערים שמעביר הכשרות ברשויות מקומיות בכל הארץ, ובונה אתרים, מערכות ודשבורדים בעזרת בינה מלאכותית.</p>
+    <h1><span class="l"><span>מלמד רשויות לעבוד</span></span><span class="l"><span>עם נתונים ו-AI.</span></span></h1>
+    <p class="lead">מומחה נתונים שמעביר הכשרות ברשויות מקומיות בכל הארץ, ובונה אתרים, מערכות ודשבורדים בעזרת בינה מלאכותית.</p>
     <div class="acts">
       <a class="btn b-wa" data-wa href="#"><svg class="wa-i"><use href="#wa"/></svg>דברו איתי בוואטסאפ</a>
       <a class="btn b-line" href="#doors">מה אני עושה</a>
@@ -277,7 +273,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 
 <section id="train"><div class="wrap">
   <div class="kick rv">הכשרות</div>
-  <h2 class="big rv">לא הרצאה על AI.<br>יום עבודה איתה.</h2>
+  <h2 class="big rv">לא הרצאה על AI.<br>יום עבודה עם AI.</h2>
   <p class="lead rv">הכשרות מעשיות לעובדי רשויות מקומיות. כל משתתף עובד על אתגר אמיתי מהמחלקה שלו, ויוצא עם תוצר ביד.</p>
   <div class="syl">
     <article class="card rv" style="--c:var(--teal)">
@@ -317,6 +313,19 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
   </div>
 </div></section>
 
+<section class="field" style="padding-top:0"><div class="wrap">
+  <div class="kick rv">מהשטח</div>
+  <h2 class="big rv">מה אמרו המשתתפים.</h2>
+  <div class="vids">
+    <video class="rv" muted loop playsinline preload="none" poster="../assets/field/t1.jpg" src="../assets/field/t1.mp4" aria-label="הודעות תודה של משתתפים בהכשרה"></video>
+    <video class="rv" style="--t:.1s" muted loop playsinline preload="none" poster="../assets/field/t2.jpg" src="../assets/field/t2.mp4" aria-label="הודעות תודה של משתתפים בהכשרה"></video>
+  </div>
+  <div class="ph2">
+    <img class="rv" src="../assets/field/f1.jpg" alt="משתתפי הכשרה עם תעודות סיום" loading="lazy" width="1200" height="608">
+    <img class="rv" style="--t:.1s" src="../assets/field/f2.jpg" alt="משתתפי הכשרה עם תעודות סיום" loading="lazy" width="1200" height="564">
+  </div>
+</div></section>
+
 <section id="build" class="build"><div class="wrap">
   <div class="two">
     <div>
@@ -338,29 +347,19 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 <section id="works"><div class="wrap">
   <div class="kick rv">עבודות</div>
   <h2 class="big rv">דברים שבניתי.</h2>
-  <div class="grid">
-    <a class="w rv" href="../dashboards/rashuyot/"><div class="bar3"><i></i><i></i><i></i></div><div class="shot"><img src="../assets/works/lamas.jpg" alt="" loading="lazy" width="800" height="500"></div><div class="t"><span class="tag">דשבורד</span><h3>מצפה הרשויות: 257 רשויות, 38 מדדים</h3><span class="go">לדשבורד החי ←</span></div></a>
-    <div class="w rv" style="--t:.08s"><div class="bar3"><i></i><i></i><i></i></div><div class="shot"><img src="../assets/works/migdalor.jpg" alt="" loading="lazy" width="800" height="500"></div><div class="t"><span class="tag">אתר</span><h3>תפריט כלים ותוכניות לרשויות מקומיות</h3></div></div>
-    <a class="w rv" style="--t:.16s" href="https://nerotrivia.com/" target="_blank" rel="noopener"><div class="bar3"><i></i><i></i><i></i></div><div class="shot"><img src="../assets/works/nerotrivia.jpg" alt="" loading="lazy" width="800" height="500"></div><div class="t"><span class="tag">אתר</span><h3>בית נופש: שתי שפות ויומן תפוסה חי</h3><span class="go">לאתר ←</span></div></a>
-    <div class="w rv"><div class="bar3"><i></i><i></i><i></i></div><div class="shot"><img src="../assets/works/hac121.jpg" alt="" loading="lazy" width="800" height="500"></div><div class="t"><span class="tag">אתר ומשחק</span><h3>משחק לצעירים לקראת הבחירות</h3></div></div>
-    <div class="w rv" style="--t:.08s"><div class="bar3"><i></i><i></i><i></i></div><div class="shot"><img src="../assets/works/shifts.jpg" alt="" loading="lazy" width="800" height="500"></div><div class="t"><span class="tag">מערכת</span><h3>שיבוץ עובדים ומשמרות, מהטלפון</h3></div></div>
-    <a class="w rv" style="--t:.16s" href="https://romangash-star.github.io/social-report/" target="_blank" rel="noopener"><div class="bar3"><i></i><i></i><i></i></div><div class="shot"><img src="../assets/works/social.jpg" alt="" loading="lazy" width="800" height="500"></div><div class="t"><span class="tag">כלי</span><h3>מחולל דו"ח חברתי להתחדשות עירונית</h3><span class="go">לכלי ←</span></div></a>
-  </div>
-  <div class="soon rv">בקרוב: <span>דשבורד עסקאות נדל"ן</span><span>דשבורד ארנונה</span></div>
-</div></section>
+  <div class="kinds rv"><span>אתרים</span><span>מערכות</span><span>דשבורדים</span><span>מפות</span><span>כלים</span><span>משחקים</span></div>
+</div>
+  <div class="strip rv" aria-hidden="true"><div class="tr"><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g1.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g6.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g5.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g3.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g9.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g1.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g6.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g5.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g3.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g9.jpg" alt="" loading="lazy" width="640" height="400"></figure></div></div>
+  <div class="strip rev rv" aria-hidden="true"><div class="tr"><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g7.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g2.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g8.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g4.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g7.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g2.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g8.jpg" alt="" loading="lazy" width="640" height="400"></figure><figure><div class="bar3"><i></i><i></i><i></i></div><img src="../assets/works/g4.jpg" alt="" loading="lazy" width="640" height="400"></figure></div></div>
+<div class="wrap"><div class="soon rv">בקרוב: <span>דשבורד עסקאות נדל"ן</span><span>דשבורד ארנונה</span></div></div>
+</section>
 
 <section id="about" class="about"><div class="wrap">
-  <div class="me rv">
-    <div class="ph"><img src="../assets/roman.jpg" alt="רומן גרינשטיין" width="180" height="180"></div>
-    <div><div class="kick">עליי · רומן גרינשטיין</div>
-    <h2 class="mid">מתכנן ערים שעבר לבנות בדיגיטל.</h2></div>
-  </div>
-  <div class="tl" id="tl"><i class="fill"></i>
-    <div class="st rv"><h3>גיאוגרפיה ולימודי אפריקה</h3><p>תואר ראשון.</p></div>
-    <div class="st rv"><h3>תכנון עירוני</h3><p>תואר שני.</p></div>
-    <div class="st rv"><h3>עירוניות, התחדשות עירונית ושיתוף ציבור</h3><p>שנים של עבודה בשטח, עם תושבים ועם רשויות.</p></div>
-    <div class="st rv"><h3>סיביקס, מטעם קרן בלומברג</h3><p>עבודה עם רשויות רבות בישראל. היכרות מבפנים עם עיריות ומועצות אזוריות.</p></div>
-    <div class="st rv" style="padding-bottom:0"><h3>היום</h3><p>עובד עם מערך הדיגיטל הלאומי, מעביר הכשרות ברשויות ברחבי הארץ, ובונה אתרים ומערכות.</p></div>
+  <div class="me rv"><div class="ph"><img src="../assets/roman.jpg" alt="רומן גרינשטיין" width="180" height="180"></div></div>
+  <div class="rv">
+    <div class="kick">עליי · רומן גרינשטיין</div>
+    <h2 class="mid">מומחה נתונים שמכיר רשויות מבפנים.</h2>
+    <p class="lead">מתכנן ערים בהשכלתו, עם שנים של עבודה מול עיריות ומועצות אזוריות, בין השאר בסיביקס מטעם קרן בלומברג. היום עובד עם מערך הדיגיטל הלאומי ומעביר הכשרות ברשויות ברחבי הארץ.</p>
   </div>
 </div></section>
 
@@ -401,14 +400,17 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
     el('circle',{cx:s[0],cy:s[1],r:k==3?13:9,fill:k==3?'#b4502f':'#f0b95a',stroke:'#2a211b','stroke-width':3,'class':k==3?'pulse':''},city).style.setProperty('--d',s[2]+'s')});
 
   /* nav, floating button, timeline fill */
-  var nav=document.getElementById('nav'),fab=document.getElementById('fab'),tl=document.getElementById('tl');
-  function onS(){var sy=scrollY;nav.classList.toggle('on',sy>30);fab.classList.toggle('on',sy>innerHeight*.6);
-    var r=tl.getBoundingClientRect();tl.style.setProperty('--p',Math.max(0,Math.min(1,(innerHeight*.7-r.top)/r.height)).toFixed(3))}
+  var nav=document.getElementById('nav'),fab=document.getElementById('fab');
+  function onS(){var sy=scrollY;nav.classList.toggle('on',sy>30);fab.classList.toggle('on',sy>innerHeight*.6);}
   addEventListener('scroll',onS,{passive:true});addEventListener('resize',onS);onS();
 
   /* reveals */
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
   document.querySelectorAll('.rv,#asm').forEach(function(e){io.observe(e)});
+
+  /* testimonial videos play only while visible */
+  var vio=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&!RM){var pr=e.target.play();if(pr&&pr.catch)pr.catch(function(){})}else e.target.pause()})},{threshold:.35});
+  document.querySelectorAll('video').forEach(function(v){if(RM)v.controls=true;vio.observe(v)});
 
   /* data story: scatter -> bars -> map */
   var svg=document.getElementById('dots'),N=60,S=[[],[],[]];
