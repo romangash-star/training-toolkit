@@ -15,14 +15,14 @@
 :root{--bg:#faf5ec;--bg2:#f2eadc;--card:#fffdf8;--ink:#2a211b;--mut:#6b5d52;--line:#e3d8c6;--brand:#b4502f;--deep:#8f3d22;--teal:#1f5f5b;--amber:#d99a2b;--gold:#f0b95a;--wa:#17794f}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Alef,Arial,sans-serif;font-size:18px;line-height:1.6;overflow-x:hidden}
+body{margin:0;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='380'%3E%3Cg fill='none' stroke='%23c9b9a0' stroke-width='1.6' opacity='.5'%3E%3Cpath d='M0 96 L140 92 L280 99 L420 96'/%3E%3Cpath d='M0 286 L140 290 L280 283 L420 286'/%3E%3Cpath d='M118 0 L122 127 L115 254 L118 380'/%3E%3Cpath d='M330 0 L326 127 L333 254 L330 380'/%3E%3C/g%3E%3Crect x='136' y='110' width='176' height='160' rx='8' fill='%231f5f5b' fill-opacity='.03'/%3E%3C/svg%3E");color:var(--ink);font-family:Alef,Arial,sans-serif;font-size:18px;line-height:1.6;overflow-x:hidden}
 h1,h2,h3{font-family:Rubik,Alef,sans-serif;font-weight:900;line-height:1.05;margin:0;text-wrap:balance}
 p{margin:0}
 a{color:inherit}
 .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
 section{padding:96px 0;position:relative}
 .kick{font-family:Rubik,sans-serif;font-weight:800;font-size:15px;color:var(--brand);margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.kick::before{content:"";width:34px;height:3px;background:currentColor;border-radius:3px}
+.kick::before{content:"";width:15px;height:15px;border-radius:50%;background:var(--gold);border:3px solid var(--ink);flex:none}
 .big{font-size:clamp(38px,6.4vw,84px)}
 .mid{font-size:clamp(30px,4.4vw,56px)}
 .lead{font-size:clamp(18px,1.6vw,22px);color:var(--mut);max-width:34em;margin-top:20px}
@@ -48,7 +48,17 @@ section{padding:96px 0;position:relative}
 .nav ul a:hover::after{transform:scaleX(1)}
 .sp{flex:1}
 
-.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:110px 0 70px;overflow:hidden}
+#main{position:relative}
+.route{position:absolute;inset-block:0;inset-inline-start:max(7px,calc(50% - 596px));width:4px;border-radius:4px;background:rgba(180,80,47,.18);z-index:3;pointer-events:none}
+.route i{position:absolute;inset:0 0 auto 0;height:calc(100%*var(--p,0));background:var(--brand);border-radius:4px}
+.route b{position:absolute;top:calc(100%*var(--p,0));left:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--brand);border:3px solid var(--ink);animation:pulse 2.4s ease-in-out infinite}
+.duo{text-align:center;margin-bottom:34px}
+.duo p{color:var(--mut);font-size:20px;margin-top:10px}
+.doors{position:relative}
+.who{position:absolute;left:50%;top:0;width:104px;height:104px;margin:-52px 0 0 -52px;border-radius:50%;overflow:hidden;border:6px solid var(--bg);z-index:2;box-shadow:0 10px 24px -12px rgba(42,33,27,.6)}
+.who img{display:block;width:100%;height:100%;object-fit:cover}
+.door .num{position:absolute;inset:24px 28px auto auto;font-family:Rubik,sans-serif;font-weight:800;font-size:15px;border:2px solid rgba(255,255,255,.7);border-radius:999px;padding:3px 14px}
+.hero{position:relative;background:var(--bg);min-height:100svh;display:flex;align-items:center;padding:110px 0 70px;overflow:hidden}
 #city{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 #city path{fill:none;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s cubic-bezier(.6,0,.2,1) forwards;animation-delay:var(--d)}
 #city .blk{opacity:0;animation:pop .7s ease forwards;animation-delay:var(--d)}
@@ -128,7 +138,7 @@ section{padding:96px 0;position:relative}
 .chat.show .m{width:var(--w)}
 .part{margin-top:34px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bg2);border-radius:18px;padding:16px 20px;font-weight:700}
 
-.build{background:var(--bg2)}
+.build{background:var(--bg2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='380'%3E%3Cg fill='none' stroke='%23c9b9a0' stroke-width='1.6' opacity='.5'%3E%3Cpath d='M0 96 L140 92 L280 99 L420 96'/%3E%3Cpath d='M0 286 L140 290 L280 283 L420 286'/%3E%3Cpath d='M118 0 L122 127 L115 254 L118 380'/%3E%3Cpath d='M330 0 L326 127 L333 254 L330 380'/%3E%3C/g%3E%3Crect x='136' y='110' width='176' height='160' rx='8' fill='%231f5f5b' fill-opacity='.03'/%3E%3C/svg%3E")}
 .words{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
 .word{border-top:4px solid var(--ink);padding-top:16px}
 .word b{display:block;font-family:Rubik,sans-serif;font-weight:900;font-size:clamp(40px,6vw,82px);line-height:1.05}
@@ -163,7 +173,7 @@ section{padding:96px 0;position:relative}
 .field .ph2 img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;border-radius:22px}
 .field .vids{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px auto 0;max-width:760px}
 .field video{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:top;border-radius:22px;border:1px solid var(--line);background:var(--bg2)}
-.about{background:var(--bg2)}
+.about{background:var(--bg2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='380'%3E%3Cg fill='none' stroke='%23c9b9a0' stroke-width='1.6' opacity='.5'%3E%3Cpath d='M0 96 L140 92 L280 99 L420 96'/%3E%3Cpath d='M0 286 L140 290 L280 283 L420 286'/%3E%3Cpath d='M118 0 L122 127 L115 254 L118 380'/%3E%3Cpath d='M330 0 L326 127 L333 254 L330 380'/%3E%3C/g%3E%3Crect x='136' y='110' width='176' height='160' rx='8' fill='%231f5f5b' fill-opacity='.03'/%3E%3C/svg%3E")}
 .about .wrap{display:flex;gap:40px;align-items:center}
 .me .ph{width:170px;height:170px;border-radius:50%;overflow:hidden;border:6px solid var(--card);box-shadow:0 0 0 3px var(--brand);flex:none}
 .me .ph img{width:100%;height:100%;object-fit:cover;display:block}
@@ -187,6 +197,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
   .nav .wrap{gap:10px;height:60px}
   .doors,.two{grid-template-columns:1fr}
   .door{min-height:0;padding:170px 26px 26px}
+  .who{top:50%;width:84px;height:84px;margin:-42px 0 0 -42px}
   .door svg.art{width:210px;height:158px}
   .syl{grid-template-columns:1fr}
   .words{grid-template-columns:1fr;gap:26px}
@@ -240,13 +251,17 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
   <div class="down" aria-hidden="true">↓</div>
 </header>
 
-<section id="doors" style="padding-top:40px"><div class="wrap">
+<main id="main"><div class="route" id="route" aria-hidden="true"><i></i><b></b></div>
+<section id="doors" style="padding-top:56px"><div class="wrap">
+  <div class="duo rv"><h2 class="mid">שני שירותים. אדם אחד.</h2><p>אפשר להזמין הכשרה, אפשר להזמין אתר או מערכת. בשניהם עובדים ישירות איתי.</p></div>
   <div class="doors">
+    <div class="who"><img src="../assets/roman.jpg" alt="רומן גרינשטיין" width="180" height="180"></div>
     <a class="door t rv" href="#train">
       <svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMinYMin slice" aria-hidden="true">
         <g fill="#f0b95a"><rect class="bar" style="--b:0s" x="34" y="40" width="26" height="120" rx="6"/><rect class="bar" style="--b:.08s" x="70" y="70" width="26" height="90" rx="6"/><rect class="bar" style="--b:.16s" x="106" y="20" width="26" height="140" rx="6"/><rect class="bar" style="--b:.24s" x="142" y="90" width="26" height="70" rx="6"/></g>
         <path d="M26 162H178" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
       </svg>
+      <span class="num">שירות 1</span>
       <h2>הכשרות לרשויות מקומיות</h2>
       <p>החלטות מבוססות נתונים, Copilot וכלי AI. מעשי, על אתגרים אמיתיים.</p>
       <span class="go">לתכנים <i>←</i></span>
@@ -255,6 +270,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
       <svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMinYMin slice" aria-hidden="true">
         <g fill="#fff"><rect class="blk2" style="--b:0s" x="34" y="30" width="150" height="16" rx="5"/><rect class="blk2" style="--b:.08s" x="34" y="56" width="150" height="56" rx="8" fill="#f0b95a"/><rect class="blk2" style="--b:.16s" x="34" y="122" width="70" height="40" rx="8"/><rect class="blk2" style="--b:.24s" x="114" y="122" width="70" height="40" rx="8"/></g>
       </svg>
+      <span class="num">שירות 2</span>
       <h2>אתרים, מערכות וכלים</h2>
       <p>אתם מתארים, אני בונה, וזה עולה לאוויר. מהר, יציב ובעלות נמוכה.</p>
       <span class="go">לעבודות <i>←</i></span>
@@ -272,7 +288,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 </div></section>
 
 <section id="train"><div class="wrap">
-  <div class="kick rv">הכשרות</div>
+  <div class="kick rv">שירות 1 · הכשרות</div>
   <h2 class="big rv">לא הרצאה על AI.<br>יום עבודה עם AI.</h2>
   <p class="lead rv">הכשרות מעשיות לעובדי רשויות מקומיות. כל משתתף עובד על אתגר אמיתי מהמחלקה שלו, ויוצא עם תוצר ביד.</p>
   <div class="syl">
@@ -314,22 +330,22 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 </div></section>
 
 <section class="field" style="padding-top:0"><div class="wrap">
-  <div class="kick rv">מהשטח</div>
+  <div class="kick rv">שירות 1 · מהשטח</div>
   <h2 class="big rv">מה אמרו המשתתפים.</h2>
   <div class="vids">
-    <video class="rv" muted loop playsinline preload="none" poster="../assets/field/t1.jpg" src="../assets/field/t1.mp4" aria-label="הודעות תודה של משתתפים בהכשרה"></video>
+    <video class="rv" muted loop playsinline preload="none" poster="../assets/field/t1.jpg?v=2" src="../assets/field/t1.mp4?v=2" aria-label="הודעות תודה של משתתפים בהכשרה"></video>
     <video class="rv" style="--t:.1s" muted loop playsinline preload="none" poster="../assets/field/t2.jpg" src="../assets/field/t2.mp4" aria-label="הודעות תודה של משתתפים בהכשרה"></video>
   </div>
   <div class="ph2">
-    <img class="rv" src="../assets/field/f1.jpg" alt="משתתפי הכשרה עם תעודות סיום" loading="lazy" width="1200" height="608">
-    <img class="rv" style="--t:.1s" src="../assets/field/f2.jpg" alt="משתתפי הכשרה עם תעודות סיום" loading="lazy" width="1200" height="564">
+    <img class="rv" src="../assets/field/f1.jpg?v=2" alt="משתתפי הכשרה עם תעודות סיום" loading="lazy" width="1200" height="608">
+    <img class="rv" style="--t:.1s" src="../assets/field/f2.jpg?v=2" alt="משתתפי הכשרה עם תעודות סיום" loading="lazy" width="1200" height="564">
   </div>
 </div></section>
 
 <section id="build" class="build"><div class="wrap">
   <div class="two">
     <div>
-      <div class="kick rv">פיתוח ובנייה</div>
+      <div class="kick rv">שירות 2 · פיתוח ובנייה</div>
       <h2 class="big rv">אתם מתארים.<br>אני בונה.<br>זה עולה לאוויר.</h2>
       <p class="lead rv">אני מפתח בווייב קודינג: הבינה המלאכותית כותבת את הקוד, ואני מתכנן, מכוון ובודק.</p>
     </div>
@@ -345,7 +361,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 </div></section>
 
 <section id="works"><div class="wrap">
-  <div class="kick rv">עבודות</div>
+  <div class="kick rv">שירות 2 · עבודות</div>
   <h2 class="big rv">דברים שבניתי.</h2>
   <div class="kinds rv"><span>אתרים</span><span>מערכות</span><span>דשבורדים</span><span>מפות</span><span>כלים</span><span>משחקים</span></div>
 </div>
@@ -363,9 +379,11 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
   </div>
 </div></section>
 
+</main>
+
 <section class="cta"><div class="wrap">
-  <h2 class="rv">יש לכם רעיון?<br>בואו נדבר.</h2>
-  <p class="rv">הכשרה לרשות, אתר, מערכת או דשבורד. הודעה אחת ומתחילים.</p>
+  <h2 class="rv">הכשרה או אתר?<br>בואו נדבר.</h2>
+  <p class="rv">שני שירותים, כתובת אחת. הודעה אחת ומתחילים.</p>
   <a class="btn rv" data-wa href="#"><svg class="wa-i" style="width:26px;height:26px"><use href="#wa"/></svg>שלחו לי וואטסאפ</a>
   <small class="rv">או במייל: <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></small>
 </div></section>
@@ -400,8 +418,8 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
     el('circle',{cx:s[0],cy:s[1],r:k==3?13:9,fill:k==3?'#b4502f':'#f0b95a',stroke:'#2a211b','stroke-width':3,'class':k==3?'pulse':''},city).style.setProperty('--d',s[2]+'s')});
 
   /* nav, floating button, timeline fill */
-  var nav=document.getElementById('nav'),fab=document.getElementById('fab');
-  function onS(){var sy=scrollY;nav.classList.toggle('on',sy>30);fab.classList.toggle('on',sy>innerHeight*.6);}
+  var nav=document.getElementById('nav'),fab=document.getElementById('fab'),main=document.getElementById('main'),route=document.getElementById('route');
+  function onS(){var sy=scrollY;nav.classList.toggle('on',sy>30);fab.classList.toggle('on',sy>innerHeight*.6);var mr=main.getBoundingClientRect();route.style.setProperty('--p',Math.max(0,Math.min(1,(innerHeight*.5-mr.top)/mr.height)).toFixed(4));}
   addEventListener('scroll',onS,{passive:true});addEventListener('resize',onS);onS();
 
   /* reveals */
