@@ -588,13 +588,13 @@ footer a{font-weight:700}
   document.getElementById('navlist').addEventListener('click',function(e){if(e.target.tagName=='A')setMenu(false)});
 
   /* accessibility menu: choices are remembered on this device */
-  var ab=document.getElementById('a11y'),ap=document.getElementById('a11yp'),H=document.documentElement;
+  var ab=document.getElementById('a11y'),ap=document.getElementById('a11yp'),HT=document.documentElement;
   function setAp(o){ap.hidden=!o;ab.setAttribute('aria-expanded',o)}
   ab.addEventListener('click',function(){setAp(ap.hidden)});
-  ap.querySelectorAll('button').forEach(function(b){var c=b.dataset.c;b.setAttribute('aria-pressed',H.classList.contains(c));
-    b.addEventListener('click',function(){H.classList.toggle(c);var on=['nomotion','bigtext','hc'].filter(function(k){return H.classList.contains(k)});
+  ap.querySelectorAll('button').forEach(function(b){var c=b.dataset.c;b.setAttribute('aria-pressed',HT.classList.contains(c));
+    b.addEventListener('click',function(){HT.classList.toggle(c);var on=['nomotion','bigtext','hc'].filter(function(k){return HT.classList.contains(k)});
       try{localStorage.setItem('romanai_a11y',JSON.stringify(on))}catch(e){}
-      if(c=='nomotion')location.reload();else b.setAttribute('aria-pressed',H.classList.contains(c))})});
+      if(c=='nomotion')location.reload();else b.setAttribute('aria-pressed',HT.classList.contains(c))})});
   document.addEventListener('keydown',function(e){if(e.key=='Escape'){if(!ap.hidden){setAp(false);ab.focus()}if(navEl.classList.contains('open')){setMenu(false);menu.focus()}}});
 
   /* contact form: builds a ready message, nothing is stored or sent by the site */
