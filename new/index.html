@@ -137,6 +137,7 @@ section{padding:72px 0;position:relative}
 .chat.show tr:nth-child(2){transition-delay:.15s}.chat.show tr:nth-child(3){transition-delay:.3s}.chat.show tr:nth-child(4){transition-delay:.45s}
 .chat .m{display:inline-block;height:8px;border-radius:8px;background:var(--amber);vertical-align:middle;width:0;transition:width .8s .5s}
 .chat.show .m{width:var(--w)}
+.tgap{margin-top:70px}
 .part{margin-top:34px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--bg2);border-radius:18px;padding:16px 20px;font-weight:700}
 
 .build{background:var(--bg2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='380'%3E%3Cg fill='none' stroke='%23c9b9a0' stroke-width='1.6' opacity='.5'%3E%3Cpath d='M0 96 L140 92 L280 99 L420 96'/%3E%3Cpath d='M0 286 L140 290 L280 283 L420 286'/%3E%3Cpath d='M118 0 L122 127 L115 254 L118 380'/%3E%3Cpath d='M330 0 L326 127 L333 254 L330 380'/%3E%3C/g%3E%3Crect x='136' y='110' width='176' height='160' rx='8' fill='%231f5f5b' fill-opacity='.03'/%3E%3C/svg%3E")}
@@ -193,22 +194,42 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
 .fab svg{width:26px;height:26px}
 
 @media(max-width:900px){
-  section{padding:52px 0}
+  section{padding:42px 0}
+  .hero{min-height:86svh;padding:90px 0 54px}
   .nav ul{display:none}
   .nav .wrap{gap:10px;height:60px}
   .doors,.two{grid-template-columns:1fr}
-  .door{min-height:0;padding:170px 26px 26px}
+  .doors{gap:14px}
+  .door{min-height:0;padding:104px 22px 22px;border-radius:22px}
+  .door .go{margin-top:14px}
   .who{top:50%;width:84px;height:84px;margin:-42px 0 0 -42px}
-  .door svg.art{width:210px;height:158px}
-  .syl{grid-template-columns:1fr}
-  .words{grid-template-columns:1fr;gap:26px}
+  .door svg.art{width:150px;height:112px;inset:8px auto auto 8px}
+  .syl{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:26px -22px 0;padding:4px 22px 14px;scrollbar-width:none}
+  .syl::-webkit-scrollbar{display:none}
+  .syl .card{flex:0 0 82%;scroll-snap-align:center;padding:20px;opacity:1;transform:none}
+  .card li{padding:8px 0;font-size:15.5px}
+  .two{gap:22px}
+  .tgap{margin-top:34px}
+  .part{margin-top:18px;padding:12px 14px}
+  .chat{min-height:0;padding:16px}
+  .words{gap:10px;margin-top:30px}
+  .word{border-top-width:3px;padding-top:10px}
+  .word b{font-size:clamp(22px,7vw,34px)}
+  .word span{font-size:13.5px;line-height:1.35;display:block}
+  .asm{min-height:0;padding:12px;gap:8px}
+  .asm .b{height:64px}.asm .c,.asm .c2,.asm .c3{height:48px}
+  .field .vids{gap:10px}
+  .strip figure{width:62vw}
+  .strip{margin-top:24px}
+  .cta{min-height:0;padding:56px 0}
   .data .wrap{grid-template-columns:1fr;gap:0}
-  .viz{height:44svh;top:60px;z-index:2;background:var(--ink);order:-1;padding:8px 0}
+  .viz{height:40svh;top:60px;z-index:2;background:var(--ink);order:-1;padding:8px 0}
   #dots{height:100%;width:auto;max-width:100%}
-  .data .steps>div{min-height:56svh;justify-content:flex-start;padding-top:26px}
+  .data .steps>div{min-height:40svh;justify-content:flex-start;padding-top:18px}
   .about .wrap{flex-direction:column;align-items:flex-start;gap:22px}
   .me .ph{width:120px;height:120px}
-  .field .ph2{grid-template-columns:1fr}
+  .field .ph2{gap:10px;margin-top:10px}
+  .field .ph2 img{aspect-ratio:4/3;border-radius:14px}
 }
 @media(max-width:430px){.nav .hide-s{display:none}}
 @media(prefers-reduced-motion:reduce){
@@ -309,7 +330,7 @@ footer{padding:26px 22px;text-align:center;color:var(--mut);font-size:15px}
       <p class="out"><b>יוצאים עם</b>כלי אחד שעובד</p>
     </article>
   </div>
-  <div class="two" style="margin-top:70px">
+  <div class="two tgap">
     <div class="rv">
       <h2 class="mid">שאלה אחת.<br>תשובה שאפשר לעבוד איתה.</h2>
       <p class="lead">לומדים לבקש נכון, לבדוק את התשובה, ולדעת מה לא מכניסים לכלי.</p>
