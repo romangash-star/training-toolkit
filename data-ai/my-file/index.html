@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הקובץ שלי בשבוע הבא · עבודה עם נתונים בעזרת בינה מלאכותית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/hub.css?v=28">
+<link rel="stylesheet" href="../dataai.css?v=28">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/site.css?v=28">
+</head>
+<body class="dai">
+  <main>
+    <div class="wrap">
+      <div class="rhead"><h1>הקובץ שלי בשבוע הבא</h1><p>קובץ אחד אמיתי מהעבודה, וסבב אחד שתנסו עליו. ועוד שלוש שאלות קצרות על היום.</p></div>
+      <form class="form box" id="f" novalidate>
+        <div class="two">
+          <div><label for="name">שם מלא</label><input type="text" id="name" autocomplete="name" required></div>
+          <div><label for="org">רשות</label><input type="text" id="org"></div>
+        </div>
+        <div><label for="file">איזה קובץ מהעבודה תנסו? <small>תיאור בלבד, למשל הנושא ומי מעדכן אותו. בלי שמות ופרטים של תושבים.</small></label><textarea id="file" required></textarea></div>
+        <div><label for="round">איזה סבב תנסו עליו?</label>
+          <select id="round">
+            <option>1. לשאול את הטבלה</option><option>2. לנקות</option><option>3. להעשיר ולסווג</option><option>4. לנתח ולמצוא תובנה</option><option>5. מתובנה למוצר</option>
+          </select></div>
+        <div><label id="rl">עד כמה היום היה שימושי לעבודה שלכם? <small>1 = בכלל לא · 5 = מאוד</small></label>
+          <div class="rate" role="group" aria-labelledby="rl" id="rate"><button type="button" aria-pressed="false">1</button><button type="button" aria-pressed="false">2</button><button type="button" aria-pressed="false">3</button><button type="button" aria-pressed="false">4</button><button type="button" aria-pressed="false">5</button></div></div>
+        <div><label for="good">מה היה הכי שימושי?</label><textarea id="good"></textarea></div>
+        <div><label for="bad">מה היה חסר או קשה?</label><textarea id="bad"></textarea></div>
+        <input type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">
+        <button class="send" id="send">שליחה ←</button>
+        <div id="msg" role="status"></div>
+      </form>
+    </div>
+  </main>
+<script src="../files.js?v=28"></script>
+<script src="../dataai.js?v=28"></script>
+<script>
+(function(){
+  var ENDPOINT='https://script.google.com/macros/s/AKfycbxbL96r8kwtEZ3CORszdOB8qE_4j1Cpc7RQSi0y6Ld2Qk98I0QjCTcL6enjhJU3YXLScA/exec';
+  var $=function(i){ return document.getElementById(i); }, D=window.DataAI, rate='';
+  var id={}; try{ id=JSON.parse(localStorage.getItem('toolkit_identity')||'{}'); }catch(e){}
+  $('name').value=id.name||''; $('org').value=id.org||'';
+  [].forEach.call($('rate').children,function(b){
+    b.onclick=function(){ rate=b.textContent; [].forEach.call($('rate').children,function(x){ x.setAttribute('aria-pressed',x===b); }); };
+  });
+  function label(list,k){ for(var i=0;i<list.length;i++) if(list[i][0]===k) return list[i][1]; return ''; }
+  function fallback(d){
+    var text=['שם: '+d.name,'רשות: '+d.org,'קובץ התרגול: '+d.practice,'רמה: '+d.level,'כלי: '+d.tool,'הקובץ מהעבודה: '+d.file,'הסבב שאנסה עליו: '+d.round,
+              'עד כמה היום היה שימושי (1-5): '+d.rate,'מה היה הכי שימושי: '+d.good,'מה היה חסר או קשה: '+d.bad].join('\n');
+    $('msg').className='msg err';
+    $('msg').innerHTML='<b>השליחה לא הצליחה.</b> התשובות שלכם לא אבדו: אפשר לשלוח אותן במייל, או להעתיק ולהעביר לרומן.'+
+      '<div class="fx"><a class="btn-dl" id="mail">שליחה במייל ←</a><button type="button" class="copy" id="cp">העתקת התשובות</button></div>';
+    $('mail').href='mailto:romangash@gmail.com?subject='+encodeURIComponent('נתונים ו-AI, הקובץ שלי: '+d.name)+'&body='+encodeURIComponent(text);
+    $('cp').onclick=function(){ var b=this; (navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject()).then(function(){ b.textContent='הועתק ✓'; },function(){ prompt('העתיקו את הטקסט:',text); }); };
+  }
+  $('f').onsubmit=function(e){
+    e.preventDefault();
+    var v=function(i){ return ($(i).value||'').trim(); };
+    if(!v('name')){ $('name').focus(); return; }
+    if(!v('file')){ $('file').focus(); return; }
+    var c=D.choice();
+    var d={kind:'dataai',website:v('website'),name:v('name'),org:v('org'),dept:id.dept||'',file:v('file'),round:v('round'),rate:rate,good:v('good'),bad:v('bad'),
+           practice:c.set?c.file+' '+D.files[c.file].short:'',level:c.set?label(D.levels,c.level):'',tool:c.set?label(D.tools,c.tool):''};
+    $('send').disabled=true; $('msg').className='msg'; $('msg').textContent='שולח…';
+    var ctl=window.AbortController?new AbortController():null, t=setTimeout(function(){ if(ctl) ctl.abort(); },20000);
+    fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d),signal:ctl?ctl.signal:undefined})
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(!(j&&j.ok&&j.kind==='dataai')) throw new Error('not accepted'); $('msg').className='msg ok'; $('msg').textContent='נשלח, תודה. נתראה בשבוע הבא עם הקובץ.'; $('send').style.display='none'; })
+      .catch(function(){ $('send').disabled=false; fallback(d); })
+      .then(function(){ clearTimeout(t); });
+  };
+})();
+</script>
+<script src="../../assets/site.js?v=28" data-crumbs='כל ההכשרות|../../;עבודה עם נתונים בעזרת בינה מלאכותית|../'></script>
+</body>
+</html>

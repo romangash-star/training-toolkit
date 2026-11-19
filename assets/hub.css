@@ -20,6 +20,7 @@ main{flex:1;padding:var(--space-4) 0 var(--space-6)}
 .cards{display:grid;gap:var(--space-3)}
 .cards.c3{grid-template-columns:repeat(3,1fr)}
 .cards.c2{grid-template-columns:repeat(2,1fr)}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
 .cardlink{position:relative;display:flex;flex-direction:column;gap:10px;background:var(--surface-card);border:1px solid var(--line);border-radius:var(--radius-md);box-shadow:var(--shadow-card);padding:var(--space-4);transition:transform .15s,border-color .15s}
 .cardlink:hover{transform:translateY(-3px);border-color:var(--teal)}
 .cardlink h2{font-size:21px;line-height:28px;font-weight:700}
@@ -52,8 +53,9 @@ main{flex:1;padding:var(--space-4) 0 var(--space-6)}
 .idbar .who{font-weight:700}
 .idbar button{background:none;border:none;cursor:pointer;font:700 14px var(--font-sans);color:var(--teal);text-decoration:underline}
 
+@media (max-width:1040px){.cards.c4{grid-template-columns:1fr 1fr}}
 @media (max-width:900px){.cards.c3{grid-template-columns:1fr 1fr}}
-@media (max-width:640px){.cards.c3,.cards.c2{grid-template-columns:1fr}.wrap{padding:0 16px}.idcard .fields{grid-template-columns:1fr}.day-h h2{font-size:23px;line-height:30px}}
+@media (max-width:640px){.cards.c3,.cards.c2,.cards.c4{grid-template-columns:1fr}.wrap{padding:0 16px}.idcard .fields{grid-template-columns:1fr}.day-h h2{font-size:23px;line-height:30px}}
 
 /* wipe-this-computer link at the bottom of the hub */
 .wipe{margin-top:var(--space-5);text-align:center}
