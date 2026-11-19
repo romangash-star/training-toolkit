@@ -123,16 +123,14 @@ section{padding:72px 0;position:relative}
 #dots text{fill:#cfc3b3;font-family:Alef,sans-serif;font-size:11px;opacity:0;transition:opacity .5s}
 #dots.s1 .l1{opacity:1;transition-delay:.7s}
 
-.syl{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px}
-@media(min-width:900px) and (max-width:1120px){.syl{grid-template-columns:repeat(2,1fr)}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;position:relative;display:flex;flex-direction:column;transition:opacity .8s,transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .3s;transition-delay:var(--t,0s),0s,0s}
+.syl{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:44px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px;display:flex;flex-direction:column;transition:opacity .8s,transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .3s;transition-delay:var(--t,0s),0s,0s}
 .card.rv.in:hover{transform:translateY(-6px);box-shadow:0 22px 40px -28px rgba(42,33,27,.5)}
 .card .ic{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;margin-bottom:18px;background:var(--c)}
 .card .ic svg{width:32px;height:32px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.card h3{font-size:20px}
-.card .new{position:absolute;inset:22px auto auto 22px;font-family:Rubik,sans-serif;font-weight:800;font-size:13px;background:var(--gold);color:var(--ink);border-radius:999px;padding:3px 12px}
+.card h3{font-size:22px}
 .card ol{list-style:none;margin:18px 0 0;padding:0;counter-reset:s}
-.card li{counter-increment:s;display:flex;gap:10px;padding:9px 0;border-top:1px dashed var(--line);font-size:16px;line-height:1.4}
+.card li{counter-increment:s;display:flex;gap:12px;padding:10px 0;border-top:1px dashed var(--line);font-size:16.5px;line-height:1.4}
 .card li::before{content:counter(s);font-family:Rubik,sans-serif;font-weight:900;color:var(--c);min-width:14px}
 .card .out{margin-top:auto;padding-top:16px;font-weight:700;font-size:16px;border-top:2px solid var(--c)}
 .card .out b{font-family:Rubik,sans-serif;font-weight:800;color:var(--c);display:block;font-size:14px}
@@ -407,20 +405,13 @@ footer a{font-weight:700}
       <ol><li>מבעיה לשאלה שאפשר לבדוק</li><li>איפה הנתונים: של הרשות ופתוחים</li><li>מנתון לתובנה, בעזרת AI</li><li>מפתחים פתרון ומציגים להנהלה</li></ol>
       <p class="out"><b>יוצאים עם</b>אתגר מנותח ומצגת להנהלה</p>
     </article>
-    <article class="card rv" style="--c:var(--ink);--t:.1s">
-      <span class="new">חדש</span>
-      <div class="ic"><svg viewBox="0 0 32 32"><path d="M5 7h15v18H5zM5 13h15M5 19h15M11 7v18M26 4l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg></div>
-      <h3>בינה מלאכותית בעבודת נתונים</h3>
-      <ol><li>שואלים את הטבלה בשפה חופשית</li><li>מנקים: כפילויות, שורות ריקות, כתיבים</li><li>מעשירים ומסווגים בעמודות חדשות</li><li>מנתחים ומוצאים תובנה</li><li>הופכים את התובנה למוצר</li></ol>
-      <p class="out"><b>יוצאים עם</b>דו"ח, דף מצב או דשבורד למנהל</p>
-    </article>
-    <article class="card rv" style="--c:var(--brand);--t:.2s">
+    <article class="card rv" style="--c:var(--brand);--t:.1s">
       <div class="ic"><svg viewBox="0 0 32 32"><path d="M6 8h20v13H14l-6 5v-5H6zM11 13h10M11 17h6"/></svg></div>
       <h3>Copilot בעבודה היומיומית</h3>
       <ol><li>מה Copilot יודע, ומה אסור לתת לו</li><li>לכתוב בקשה שמקבלת תשובה טובה</li><li>Word, Excel, Outlook ו-Teams</li><li>תהליך קבוע שחוזר כל שבוע</li></ol>
       <p class="out"><b>יוצאים עם</b>ספריית בקשות אישית לתפקיד</p>
     </article>
-    <article class="card rv" style="--c:#8a5d0c;--t:.3s">
+    <article class="card rv" style="--c:#8a5d0c;--t:.2s">
       <div class="ic" style="background:var(--amber)"><svg viewBox="0 0 32 32"><path d="M16 4l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/></svg></div>
       <h3>כלי עבודה בעידן ה-AI</h3>
       <ol><li>מפת הכלים: איזה כלי לאיזו משימה</li><li>כתיבה, סיכום ומחקר</li><li>מצגות ומסמכים בדקות</li><li>בונים כלי קטן בלי קוד</li></ol>
