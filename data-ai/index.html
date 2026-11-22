@@ -6,56 +6,26 @@
 <title>עבודה עם נתונים בעזרת בינה מלאכותית · ארגז הכלים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/hub.css?v=28">
-<link rel="stylesheet" href="dataai.css?v=28">
+<link rel="stylesheet" href="../assets/hub.css?v=29">
+<link rel="stylesheet" href="dataai.css?v=29">
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../assets/site.css?v=28">
+<link rel="stylesheet" href="../assets/site.css?v=29">
 </head>
-<body class="dai">
+<body class="dai" data-page="id">
   <header class="hero">
-    <div class="wrap">
-      <h1>עבודה עם נתונים בעזרת <em>בינה מלאכותית</em></h1>
-      <p class="lead">יום אחד: קובץ אחד שלכם, חמישה סבבים, מהשאלה ועד מוצר.</p>
+    <div class="wrap herogrid">
+      <div class="herotxt">
+        <h1><span>עבודה</span> <span>עם</span> <span>נתונים</span> <span>בעזרת</span> <em><span>בינה</span> <span>מלאכותית</span></em></h1>
+        <p class="lead">יום אחד: קובץ אחד שלכם, חמישה סבבים, מהשאלה ועד מוצר.</p>
+      </div>
+      <div class="mo" aria-hidden="true"><div class="mo-stage"><div class="mo-tbl"><div class="mo-r"><i class="n"></i><i class="n"></i><i class="d"></i><i class="n"></i><i class="x"></i></div><div class="mo-r"><i class="n"></i><i class="d"></i><i class="n"></i><i class="n"></i><i class="x"></i></div><div class="mo-r"><i class="n"></i><i class="n"></i><i class="n"></i><i class="d"></i><i class="x"></i></div><div class="mo-r dup"><i class="n"></i><i class="d"></i><i class="n"></i><i class="n"></i><i class="x"></i></div><div class="mo-r"><i class="n"></i><i class="n"></i><i class="d"></i><i class="n"></i><i class="x"></i></div></div><div class="mo-scan"></div><div class="mo-q">?</div><div class="mo-bars"><i style="--h:.42"></i><i style="--h:.7"></i><i style="--h:1"></i><i style="--h:.55"></i><i style="--h:.3"></i></div><div class="mo-card"><b></b><span></span><span></span><em></em></div></div><ol class="mo-words"><li>לשאול</li><li>לנקות</li><li>להעשיר</li><li>לנתח</li><li>למוצר</li></ol></div>
     </div>
   </header>
   <main>
     <div class="wrap">
-      <div id="idZone"></div>
-      <h2 class="sec">מתחילים: קובץ, רמה וכלי</h2>
-      <div class="pick" id="pick"></div>
-      <div id="start"></div>
-
-      <h2 class="sec">חמשת הסבבים</h2>
-      <div class="cards rounds">
-        <a class="cardlink" href="r1/">
-          <span class="n">1</span>
-          <h2>לשאול את הטבלה</h2>
-          <p>שואלים בשפה חופשית, ומבקשים נוסחה במקום מספר.</p>
-        </a>
-        <a class="cardlink" href="r2/">
-          <span class="n">2</span>
-          <h2>לנקות</h2>
-          <p>ה-AI מאבחן, אתם מחליטים ומבצעים.</p>
-        </a>
-        <a class="cardlink" href="r3/">
-          <span class="n">3</span>
-          <h2>להעשיר ולסווג</h2>
-          <p>עמודות חדשות: חישובים, תאריכים, קטגוריות.</p>
-        </a>
-        <a class="cardlink" href="r4/">
-          <span class="n">4</span>
-          <h2>לנתח ולמצוא תובנה</h2>
-          <p>טבלת ציר, גרף ותובנה שעוברת בדיקות.</p>
-        </a>
-        <a class="cardlink" href="r5/">
-          <span class="n">5</span>
-          <h2>מתובנה למוצר</h2>
-          <p>דו"ח, דף מצב או דשבורד למנהל.</p>
-        </a>
-      </div>
-      <div class="after"><span class="t">בסוף היום: הקובץ שלי בשבוע הבא, ומשוב קצר</span><a class="btn-dl" href="my-file/">לטופס ←</a></div>
+      <div id="app"></div>
 
       <h2 class="sec">כלים שעוזרים בדרך</h2>
       <div class="tools">
@@ -75,8 +45,8 @@
       </div>
     </div>
   </main>
-<script src="files.js?v=28"></script>
-<script src="dataai.js?v=28"></script>
+<script src="files.js?v=29"></script>
+<script src="dataai.js?v=29"></script>
 <script>
 document.getElementById('wipeAll').onclick=function(){
   if(!confirm('למחוק מהמחשב הזה את כל מה שמילאתם בכלים של ההכשרה, כולל השם והרשות? אי אפשר לשחזר.')) return;
@@ -87,6 +57,6 @@ document.getElementById('wipeAll').onclick=function(){
   location.reload();
 };
 </script>
-<script src="../assets/site.js?v=28" data-crumbs='כל ההכשרות|../'></script>
+<script src="../assets/site.js?v=29" data-crumbs='כל ההכשרות|../'></script>
 </body>
 </html>

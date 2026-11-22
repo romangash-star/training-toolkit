@@ -6,17 +6,18 @@
 <title>הקובץ שלי בשבוע הבא · עבודה עם נתונים בעזרת בינה מלאכותית</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../assets/hub.css?v=28">
-<link rel="stylesheet" href="../dataai.css?v=28">
+<link rel="stylesheet" href="../../assets/hub.css?v=29">
+<link rel="stylesheet" href="../dataai.css?v=29">
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=28">
+<link rel="stylesheet" href="../../assets/site.css?v=29">
 </head>
-<body class="dai">
+<body class="dai" data-page="end">
   <main>
     <div class="wrap">
-      <div class="rhead"><h1>הקובץ שלי בשבוע הבא</h1><p>קובץ אחד אמיתי מהעבודה, וסבב אחד שתנסו עליו. ועוד שלוש שאלות קצרות על היום.</p></div>
+      <div id="stepper"></div>
+      <div class="rhead"><h1>סיכום: הקובץ שלי בשבוע הבא</h1><p>קובץ אחד אמיתי מהעבודה, וסבב אחד שתנסו עליו. ועוד שלוש שאלות קצרות על היום.</p></div>
       <form class="form box" id="f" novalidate>
         <div class="two">
           <div><label for="name">שם מלא</label><input type="text" id="name" autocomplete="name" required></div>
@@ -37,8 +38,8 @@
       </form>
     </div>
   </main>
-<script src="../files.js?v=28"></script>
-<script src="../dataai.js?v=28"></script>
+<script src="../files.js?v=29"></script>
+<script src="../dataai.js?v=29"></script>
 <script>
 (function(){
   var ENDPOINT='https://script.google.com/macros/s/AKfycbxbL96r8kwtEZ3CORszdOB8qE_4j1Cpc7RQSi0y6Ld2Qk98I0QjCTcL6enjhJU3YXLScA/exec';
@@ -72,10 +73,11 @@
       .then(function(r){ return r.json(); })
       .then(function(j){ if(!(j&&j.ok&&j.kind==='dataai')) throw new Error('not accepted'); $('msg').className='msg ok'; $('msg').textContent='נשלח, תודה. נתראה בשבוע הבא עם הקובץ.'; $('send').style.display='none'; })
       .catch(function(){ $('send').disabled=false; fallback(d); })
+      .then(function(){ D.mark('end'); })
       .then(function(){ clearTimeout(t); });
   };
 })();
 </script>
-<script src="../../assets/site.js?v=28" data-crumbs='כל ההכשרות|../../;עבודה עם נתונים בעזרת בינה מלאכותית|../'></script>
+<script src="../../assets/site.js?v=29" data-crumbs='כל ההכשרות|../../;עבודה עם נתונים בעזרת בינה מלאכותית|../'></script>
 </body>
 </html>
