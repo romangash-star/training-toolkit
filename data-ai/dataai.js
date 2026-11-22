@@ -14,7 +14,7 @@ var ROUNDS=[null,
   {t:'עוזר אישי לנוסחאות', s:'מתארים את העמודות, בלי הנתונים, ומקבלים נוסחה. גם בלי מנוי בתשלום.', min:10, tool:'Gemini או Copilot בצ\'אט'},
   {t:'דשבורד ב-Gemini Canvas', s:'מקובץ נתונים לדשבורד, בשיחה.', min:20, tool:'Gemini Canvas'},
   {t:'ניתוח נתונים בתוך הגיליון', s:'ניתוח, סידור ודשבורד בתוך הגיליון. אין מנוי? אותם פרומפטים בצ\'אט, עם העלאת קובץ.', min:25, tool:'Copilot ב-Excel · Gemini ב-Sheets'},
-  {t:'NotebookLM', s:'מחברת שעונה מתוך הקבצים שלכם, עם הפניה למקור.', min:15, tool:'NotebookLM'}];
+  {t:'NotebookLM', s:'מחברת שעונה מתוך הקבצים שלכם, עם הפניה למקור. במסך תראו את השם החדש שלה: Gemini Notebook.', min:15, tool:'Gemini Notebook'}];
 /* the deck's slide "rules" */
 var RULES=['מתממים לפני שמעלים','נוסחה, ולא תשובה','בודקים מול המקור','מתעקשים: התשובה הראשונה היא טיוטה','כלי מתאים לכל משימה'];
 var AGG={sum:'סכום',avg:'ממוצע',count:'ספירה'};
@@ -93,11 +93,11 @@ window.cpF=function(b){ put(b.parentNode.querySelector('code').textContent,b); }
 function home(){
   var app=document.getElementById('app');
   var Q=[['me_name','שם','לא חובה','input'],
-         ['me_role','1. מה התפקיד שלי?','תפקיד, מחלקה ורשות','input'],
-         ['me_small','2. מה המשימות שלי? הקטנות','מה חוזר כל יום או כל שבוע. שורה לכל משימה.','area'],
-         ['me_big','2. מה המשימות שלי? הגדולות','פרויקטים, דוחות תקופתיים, החלטות. שורה לכל משימה.','area'],
-         ['me_data','3. עם אילו נתונים אני עובד?','קבצים, מערכות, דוחות וטבלאות. שורה לכל אחד.','area']];
-  var h=stepper('id')+'<div class="rhead"><p>שלוש שאלות, כל אחד לעצמו. רשימה שתלווה אתכם בהמשך היום.</p></div>';
+         ['me_role','1. מה התפקיד שלי ברשות?','תפקיד, מחלקה ורשות','input'],
+         ['me_big','2. משימות גדולות ומשמעותיות','פרויקטים, דוחות תקופתיים, החלטות. שורה לכל משימה.','area'],
+         ['me_small','3. משימות יומיומיות וחזרתיות','מה חוזר כל יום או כל שבוע. שורה לכל משימה.','area'],
+         ['me_data','4. באילו נתונים אני משתמש?','קבצים, מערכות, דוחות וטבלאות. שורה לכל אחד.','area']];
+  var h=stepper('id')+'<div class="rhead"><p>כל אחד לעצמו: רשימה אישית שממנה בוחרים על מה עובדים היום.</p></div>';
   h+='<p class="priv"><b>המידע לא נשמר ולא נשלח לשום מקום.</b> רוצים לשמור? מייצאים לתמונה או ל-Word.</p>';
   h+='<section class="stepcard meform">'+Q.map(function(q){
     return '<div class="mq'+(q[3]==='input'?' short':'')+'"><label for="'+q[0]+'">'+q[1]+' <small>'+q[2]+'</small></label>'+
@@ -107,10 +107,10 @@ function home(){
   app.innerHTML=h;
   function val(id){ return (document.getElementById(id).value||'').trim(); }
   function lines(id){ return val(id).split(/\n+/).map(function(x){ return x.replace(/^[\s•*\-–]+/,'').trim(); }).filter(Boolean); }
-  function data(){ return {name:val('me_name'),role:val('me_role'),parts:[['המשימות הקטנות',lines('me_small')],['המשימות הגדולות',lines('me_big')],['הנתונים שאני עובד איתם',lines('me_data')]]}; }
+  function data(){ return {name:val('me_name'),role:val('me_role'),parts:[['משימות גדולות ומשמעותיות',lines('me_big')],['משימות יומיומיות וחזרתיות',lines('me_small')],['הנתונים שאני משתמש בהם',lines('me_data')]]}; }
   function empty(d){ return !d.name&&!d.role&&d.parts.every(function(p){ return !p[1].length; }); }
   function today(){ try{ return new Date().toLocaleDateString('he-IL'); }catch(e){ return ''; } }
-  function fname(d,ext){ return 'התפקיד שלי'+(d.name?' - '+d.name.replace(/[\\\/:*?"<>|]/g,''):'')+'.'+ext; }
+  function fname(d,ext){ return 'מה אני עושה ברשות'+(d.name?' - '+d.name.replace(/[\\\/:*?"<>|]/g,''):'')+'.'+ext; }
   function save(blob,name){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500); }
   function msg(t){ var m=document.getElementById('exMsg'); m.textContent=t; setTimeout(function(){ if(m.textContent===t) m.textContent=''; },3000); }
   var dirty=false;
@@ -119,7 +119,7 @@ function home(){
 
   document.getElementById('exDoc').onclick=function(){
     var d=data(); if(empty(d)){ msg('עוד לא כתבתם כלום.'); return; }
-    var body='<h1>התפקיד שלי, המשימות שלי והנתונים שלי</h1>'+(d.name?'<p><b>'+esc(d.name)+'</b></p>':'')+(d.role?'<p>'+esc(d.role)+'</p>':'')+
+    var body='<h1>מה אני עושה ברשות?</h1>'+(d.name?'<p><b>'+esc(d.name)+'</b></p>':'')+(d.role?'<p>'+esc(d.role)+'</p>':'')+
       d.parts.map(function(p){ return '<h2>'+p[0]+'</h2>'+(p[1].length?'<ul>'+p[1].map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>':'<p>-</p>'); }).join('')+
       '<p style="color:#777;font-size:10pt">עבודה עם נתונים בעזרת בינה מלאכותית · '+today()+'</p>';
     var doc='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>התפקיד שלי</title>'+
@@ -142,7 +142,7 @@ function home(){
       }
       if(!measureOnly){ ctx.fillStyle='#1F5F5B'; ctx.fillRect(0,0,W,14); }
       y+=10;
-      wrap('התפקיד שלי, המשימות שלי והנתונים שלי',44,'700','#2a211b',14);
+      wrap('מה אני עושה ברשות?',44,'700','#2a211b',14);
       if(d.name) wrap(d.name,30,'700','#1F5F5B',2);
       if(d.role) wrap(d.role,28,'400','#5c4f45',10);
       d.parts.forEach(function(p){
@@ -277,7 +277,8 @@ function ext(u,t){ return '<a class="ln" href="'+u+'" target="_blank" rel="noope
 function letterOf(f,name){ return (f.letters||{})[name]||''; }
 function colList(f){ return f.head.map(function(h){ return letterOf(f,h)+' '+h; }).join(', '); }
 function plist(list){ return list.map(function(p,i){ return prompt((i+1)+'. '+p[0],p[1]); }).join(''); }
-function solQ(q){ return '<li>'+esc(q.q)+' <b>'+num(q.v,isPct(q.q))+'</b>'+fx(q.f)+'</li>'; }
+function solQ(q){ var p=isPct(q.q), frac=p&&Math.abs(q.v)<=1.5;   // a column of 0-1 fractions is shown as %, a column of 0-100 numbers as is
+  return '<li>'+esc(q.q)+' <b>'+num(q.v,frac)+'</b>'+fx(q.f)+(p&&!frac&&q.v>100?'<p class="out">ממוצע מעל 100? בעמודה יש ערכים חריגים: גדולים מ-100 ומתחת לאפס. זה חלק מהתרגיל: מוצאים אותם, ומחשבים שוב.</p>':'')+'</li>'; }
 
 function build(n,c,f){
   var L=c.level, own=c.src&&c.src!=='practice', cols=own?'[שמות העמודות והאותיות שלהן]':colList(f), r={lv:false,ex:'',tip:'',prompts:[],sol:'',check:''};
@@ -336,7 +337,7 @@ function build(n,c,f){
       ['שגיאות','מצא שגיאות: כפילויות, תאים ריקים, ערכים חריגים וכתיב שונה'],
       ['סידור','סדר את הנתונים: אחד כתיב, פצל עמודות ותקן תאריכים'],
       ['דשבורד','צור גיליון דשבורד עם מדדים וגרפים שמתעדכנים כשמוסיפים שורות'],
-      ['עמודה מחושבת',own?'הוסף עמודה שמחשבת [מה לחשב], והסבר באיזו נוסחה השתמשת':'הוסף עמודה שמחשבת '+C0.name+' ('+C0.what+'), והסבר באיזו נוסחה השתמשת']];
+      ['עמודה מחושבת',own?'הוסף עמודה שמחשבת [מה לחשב], והסבר באיזו נוסחה השתמשת':'הוסף עמודה בשם "'+C0.name+'": '+C0.what+'. הסבר באיזו נוסחה השתמשת']];
     if(!own) r.sol='<p>מספרים לבדיקה בקובץ '+f.n+':</p><ul><li>שורות בקובץ: <b>'+num(f.st.raw)+'</b>. אחרי הסרת כפילויות: <b>'+num(f.st.clean)+'</b>.</li>'+
       (f.hood?'<li>כתיבים שונים בעמודת השכונה: <b>'+f.st.spell_before+'</b>. אחרי איחוד: <b>'+f.st.spell_after+'</b>.</li>':'')+
       (f.st.text?'<li>מספרים או תאריכים שנשמרו כטקסט: <b>'+f.st.text+'</b> תאים.</li>':'')+'</ul>'+
@@ -345,7 +346,7 @@ function build(n,c,f){
     r.pit=['טעה בתאריכים','בלבל בין עמודות','קרא רק חלק מהקובץ','חישב לא נכון','המציא מספר','תא ריק נספר כאפס'];
   }
   if(n===4){
-    r.steps=['נכנסים ל-'+ext(NLM,'notebooklm.google')+', בחינם עם חשבון Google.','יוצרים מחברת ומעלים שניים או שלושה קבצים.','שואלים שאלה אחת. כל משפט בתשובה מפנה למקור.','ב-Studio יוצרים תוצר ויזואלי אחד.'];
+    r.steps=['נכנסים ל-'+ext(NLM,'Gemini Notebook')+' (לשעבר NotebookLM), בחינם עם חשבון Google.','יוצרים מחברת ומעלים שניים או שלושה קבצים.','שואלים שאלה אחת. כל משפט בתשובה מפנה למקור.','ב-Studio יוצרים תוצר ויזואלי אחד.'];
     r.note='קובץ Excel לא עולה? פותחים אותו ב-Google Sheets, ומוסיפים אותו כמקור מ-Google Drive.';
     r.task='<p>מעלים את הקובץ שלכם ועוד קובץ או שניים: קובץ תרגול נוסף, מאגר פתוח של באר שבע, או מסמך רקע. שואלים שאלה אחת, ויוצרים תוצר ויזואלי אחד.</p>';
     r.prompts=[['מגמות','מה שלוש המגמות הבולטות בקבצים? ציין מקור לכל אחת'],
@@ -362,7 +363,7 @@ function round(){
   var c=choice(), f=F[c.file], n=ROUND, R=ROUNDS[n], r=build(n,c,f), li=LEVELS.map(function(l){return l[0];}).indexOf(c.level);
   var own=c.src!=='practice';
   var h=stepper('r'+n)+'<div class="mine lv-'+c.level+'"><span class="f">'+(own?(c.src==='own'?'קובץ שלי מהעבודה':'נתונים פתוחים של באר שבע'):'קובץ '+f.n+': '+esc(f.short))+'</span>'+(r.lv?'<span class="lvtag">רמה '+label(LEVELS,c.level)+'</span>':'')+'<a class="ln" href="../file/">החלפת קובץ'+(r.lv?' או רמה':'')+'</a></div>';
-  h+='<div class="rhead"><p>'+R.s+'</p><p class="rmeta"><span>'+R.min+' דקות</span><span>'+R.tool+'</span></p></div>';
+  h+='<div class="rhead"><p>'+R.s+'</p><p class="rmeta"><span>'+R.min+' דקות</span><span>'+R.tool.split(' · ').map(function(x){ return '<bdi>'+x+'</bdi>'; }).join(' · ')+'</span></p></div>';
   if(own&&n!==4) h+='<section class="box tip"><p><b>אתם עובדים על קובץ משלכם.</b> במקום שמסומן בסוגריים מרובעים, כותבים את שמות העמודות שלכם.</p></section>';
   h+='<section class="box task lv-'+c.level+'"><h2>המשימה'+(r.lv?' <span class="lvtag">רמה '+label(LEVELS,c.level)+'</span>':'')+'</h2>'+r.task+
      (r.lv?'<div class="shift"><button type="button" id="easier"'+(li===0?' disabled':'')+'>קשה לי: רמה אחת למטה</button><button type="button" id="harder"'+(li===2?' disabled':'')+'>קל לי: רמה אחת למעלה</button></div>':'')+'</section>';
