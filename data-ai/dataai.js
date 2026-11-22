@@ -11,17 +11,24 @@ var LEVELS=[['b','בסיסית'],['m','בינונית'],['a','מתקדמת']];
 var TOOLS=[['gapp','Gemini'],['copilot','Copilot ב-Excel'],['gemini','Gemini ב-Sheets'],['chat','צ\'אט חינמי עם העלאת קובץ']];
 /* the four work parts of the deck, in its order (div-a, div-b, div-c, div-d). Names and times are the deck's. */
 var ROUNDS=[null,
-  {t:'עוזר לנוסחאות', s:'מתארים את העמודות, בלי הנתונים, ומקבלים נוסחה. גם בלי מנוי בתשלום.', min:10, tool:'Gemini או Copilot בצ\'אט'},
+  {t:'עוזר אישי לנוסחאות', s:'מתארים את העמודות, בלי הנתונים, ומקבלים נוסחה. גם בלי מנוי בתשלום.', min:10, tool:'Gemini או Copilot בצ\'אט'},
   {t:'דשבורד ב-Gemini Canvas', s:'מקובץ נתונים לדשבורד, בשיחה.', min:20, tool:'Gemini Canvas'},
-  {t:'ניתוח בתוך הגיליון', s:'ניתוח, סידור ודשבורד בתוך הגיליון. אין מנוי? אותם פרומפטים בצ\'אט, עם העלאת קובץ.', min:25, tool:'Copilot ב-Excel · Gemini ב-Sheets'},
+  {t:'ניתוח נתונים בתוך הגיליון', s:'ניתוח, סידור ודשבורד בתוך הגיליון. אין מנוי? אותם פרומפטים בצ\'אט, עם העלאת קובץ.', min:25, tool:'Copilot ב-Excel · Gemini ב-Sheets'},
   {t:'NotebookLM', s:'מחברת שעונה מתוך הקבצים שלכם, עם הפניה למקור.', min:15, tool:'NotebookLM'}];
 /* the deck's slide "rules" */
 var RULES=['מתממים לפני שמעלים','נוסחה, ולא תשובה','בודקים מול המקור','מתעקשים: התשובה הראשונה היא טיוטה','כלי מתאים לכל משימה'];
 var AGG={sum:'סכום',avg:'ממוצע',count:'ספירה'};
-/* The day's path. The deck follows the same order: to reorder or rename a step, change it here. */
-var STEPS=[{k:'id',t:'מי אתם',h:''},{k:'file',t:'הקובץ',h:'file/'},{k:'anon',t:'התממה',h:'anonymize/',opt:1}]
-  .concat([1,2,3,4].map(function(i){ return {k:'r'+i,n:i,t:ROUNDS[i].t,h:'r'+i+'/'}; }))
-  .concat([{k:'open',t:'מידע פתוח',h:'open/'},{k:'end',t:'סיכום',h:'my-file/'}]);
+/* The day's stages, numbered, coloured and shaped like the deck's section slides
+   (div-work = 01, div-a = 02, div-b = 03, div-c = 04, div-d = 05, div-e = 06).
+   The deck shows the same number, colour and shape: change both together. Moving on is the trainer's call, from the deck,
+   so the pages have no "next" buttons; the bar at the top lets anyone go to any stage. */
+var STAGES=[
+  {n:'01',t:'עכשיו עובדים',c:'#1F5F5B',sh:'circle',h:'',subs:[{k:'id',t:'מי אתם',h:''},{k:'file',t:'הקובץ',h:'file/'},{k:'anon',t:'התממה',h:'anonymize/',opt:1}]},
+  {n:'02',t:ROUNDS[1].t,c:'#B4472A',sh:'square',k:'r1',h:'r1/'},
+  {n:'03',t:ROUNDS[2].t,c:'#2B579A',sh:'diamond',k:'r2',h:'r2/'},
+  {n:'04',t:ROUNDS[3].t,c:'#6B4594',sh:'hexagon',k:'r3',h:'r3/'},
+  {n:'05',t:ROUNDS[4].t,c:'#8A6500',sh:'pentagon',k:'r4',h:'r4/'},
+  {n:'06',t:'מקורות מידע פתוחים',c:'#2E6B2C',sh:'leaf',k:'open',h:'open/'}];
 /* the deck's slide "start" */
 var LVTXT={b:'שאלות בשפה חופשית, פרומפטים מוכנים, צעד אחר צעד',
            m:'עמודות חדשות, טבלאות ציר, בדיקה מדגמית',
@@ -50,14 +57,16 @@ function done(){ try{ return JSON.parse(localStorage.getItem(KD)||'{}')||{}; }ca
 function mark(k){ var d=done(); d[k]=1; try{ localStorage.setItem(KD,JSON.stringify(d)); }catch(e){} }
 var KS='dataai_me';
 function ident(){ try{ return JSON.parse(sessionStorage.getItem(KS)||'{}')||{}; }catch(e){ return {}; } }
+function stageOf(k){ for(var i=0;i<STAGES.length;i++){ var S=STAGES[i]; if(S.k===k||(S.subs&&S.subs.some(function(x){ return x.k===k; }))) return i; } return -1; }
+function badge(S,cls){ return '<b class="sg sg-'+S.sh+(cls?' '+cls:'')+'" style="--sc:'+S.c+'" aria-hidden="true"><em>'+S.n+'</em></b>'; }
 function stepper(cur){
-  var d=done(), ci=0; if(ident().name) d.id=1;
-  STEPS.forEach(function(s,i){ if(s.k===cur) ci=i; });
-  var S=STEPS[ci];
-  return '<nav class="steps" aria-label="שלבי היום" style="--n:'+STEPS.length+';--p:'+(ci/(STEPS.length-1))+';--p0:'+(Math.max(ci-1,0)/(STEPS.length-1))+'">'+STEPS.map(function(s,i){
-    var st=s.k===cur?'cur':(d[s.k]?'done':'todo');
-    return '<a class="'+st+'" href="'+UP+s.h+'"'+(s.k===cur?' aria-current="step"':'')+'><b>'+(st==='done'?'✓':(s.n||''))+'</b><span>'+(s.n?'<i>סבב '+s.n+'</i>':(s.opt?'<i>לא חובה</i>':''))+esc(s.t)+'</span></a>';
-  }).join('')+'</nav><p class="stepnow">שלב '+(ci+1)+' מתוך '+STEPS.length+': <b>'+(S.n?'סבב '+S.n+' · ':'')+esc(S.t)+'</b></p>';
+  var ci=stageOf(cur), S=STAGES[ci];
+  var h='<nav class="stages" aria-label="שלבי היום">'+STAGES.map(function(x,i){
+    return '<a'+(i===ci?' class="cur" aria-current="step"':'')+' href="'+UP+x.h+'" style="--sc:'+x.c+'">'+badge(x)+'<span>'+esc(x.t)+'</span></a>'; }).join('')+'</nav>';
+  if(!S) return h;
+  h+='<div class="stagehead" style="--sc:'+S.c+'">'+badge(S,'big')+'<div class="st-txt"><small>שלב '+S.n+'</small>'+(S.subs?'<p class="st-t">':'<h1 class="st-t">')+esc(S.t)+(S.subs?'</p>':'</h1>')+'</div>'+
+    (S.subs?'<div class="subs">'+S.subs.map(function(x){ return '<a href="'+UP+x.h+'"'+(x.k===cur?' aria-current="page"':'')+'>'+esc(x.t)+(x.opt?' <i>לא חובה</i>':'')+'</a>'; }).join('')+'</div>':'')+'</div>';
+  return h;
 }
 function label(list,k){ for(var i=0;i<list.length;i++) if(list[i][0]===k) return list[i][1]; return ''; }
 function raw(f){ return UP+'../data/practice-files/files/'+f.n+'.xlsx'; }
@@ -106,7 +115,7 @@ function promptsPage(){
     if(t){
       h+=B.stages.map(function(st,si){
         var items=B.items.filter(function(p){ return p.stage===st.k; }); if(!items.length) return '';
-        return '<section class="bk-st"><h2><span>שלב '+(si+1)+'</span>'+esc(st.t)+'</h2>'+items.map(function(p){
+        return '<section class="bk-st"><h2>'+esc(st.t)+'</h2>'+items.map(function(p){
           return '<details class="bk-it" name="bk"><summary><b>'+two(p.id)+'</b><span><strong>'+esc(p.title)+'</strong><small>'+esc(p.why)+'</small></span><i aria-hidden="true"></i></summary>'+
             '<div class="bk-body"><p class="bk-where"><b>איפה זה עובד הכי טוב ב-'+T+':</b> '+esc(p.where[t==='copilot'?'c':'g'])+'</p>'+
             '<pre>'+marks(pick(p.text,t))+'</pre>'+
@@ -145,7 +154,7 @@ function filePage(){
   }
   function render(){
     var f=F[st.file], prac=st.src==='practice';
-    var h=stepper('file')+'<div class="rhead"><h1>בוחרים קובץ</h1><p>קובץ אחד ילווה אתכם בכל ארבעת הסבבים. העובדים על אותו קובץ יושבים יחד.</p></div>';
+    var h=stepper('file')+'<div class="rhead"><h1>בוחרים קובץ</h1><p>קובץ אחד ילווה אתכם בכל שלבי העבודה. העובדים על אותו קובץ יושבים יחד.</p></div>';
     h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">א</span><div><h2>על איזה קובץ עובדים?</h2></div></div><div class="srcs">'+
       [['practice','קובץ תרגול','עשרה קבצים פיקטיביים מעולם הרשות. רואים אותם כאן לפני שבוחרים.'],
        ['own','קובץ שלי מהעבודה','קודם מתממים, ורק אז מעלים ל-AI.'],
@@ -156,20 +165,19 @@ function filePage(){
       '<li><b>שומרים את הקובץ המותמם</b> במחשב, וחוזרים לכאן.</li></ol>';
     if(st.src==='open') h+='<ol class="how"><li><b>בוחרים מאגר ומורידים אותו.</b> זה מידע שהעירייה פרסמה לציבור.<br><a class="btn-dl" href="'+OPEN+'" target="_blank" rel="noopener">למאגרים של באר שבע ב-data.gov.il ←</a></li>'+
       '<li><b>פותחים את הקובץ</b> ובודקים שיש בו טבלה אחת, עם שורת כותרות.</li></ol>';
-    if(st.src&&!prac) h+='<div class="exfile"><label for="exf">המשימות בסבבים זהות לכולם. הדוגמאות והפתרונות יהיו מקובץ התרגול הזה:</label><select id="exf">'+
+    if(st.src&&!prac) h+='<div class="exfile"><label for="exf">המשימות זהות לכולם. הדוגמאות והפתרונות יהיו מקובץ התרגול הזה:</label><select id="exf">'+
       Object.keys(F).sort().map(function(n){ return '<option value="'+n+'"'+((st.file||'01')===n?' selected':'')+'>'+n+' · '+esc(F[n].short)+'</option>'; }).join('')+'</select></div>';
     h+='</section>';
-    h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">ב</span><div><h2>באיזו רמה מתחילים?</h2><p>אפשר לעלות או לרדת רמה בכל סבב.</p></div></div><div class="lvs">'+
+    h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">ב</span><div><h2>באיזו רמה מתחילים?</h2><p>אפשר לעלות או לרדת רמה בכל שלב.</p></div></div><div class="lvs">'+
       LEVELS.map(function(l){ return '<button type="button" class="lvc lv-'+l[0]+'" data-level="'+l[0]+'" aria-pressed="'+(st.level===l[0])+'"><strong>'+l[1]+'</strong><span>'+LVTXT[l[0]]+'</span></button>'; }).join('')+'</div></section>';
-    h+='<p class="gem">בכל סבב כלי אחר: Gemini או Copilot, Gemini Canvas, Copilot ב-Excel או Gemini ב-Sheets, ו-NotebookLM. הכלי כתוב בראש הסבב.</p>';
-    h+='<div class="pn"><a href="../">→ מי אתם</a>'+(st.src==='own'?'<a class="nx" id="go" href="../anonymize/">להתממה ←</a>':'<a class="nx" id="go" href="../r1/">לסבב 1 ←</a>')+'</div>'+
-       (st.src==='own'?'':'<p class="skipnote">ההתממה היא שלב רשות, לקבצים מהעבודה. <a class="ln" href="../anonymize/">לשלב ההתממה</a></p>');
+    h+='<p class="gem">בכל שלב כלי אחר: Gemini או Copilot, Gemini Canvas, Copilot ב-Excel או Gemini ב-Sheets, ו-NotebookLM. הכלי כתוב בראש השלב.</p>';
+    if(st.src==='own') h+='<div class="pn"><a class="nx" id="go" href="../anonymize/">להתממה ←</a></div>';
     var y=window.scrollY; app.innerHTML=h; window.scrollTo(0,y);
     [].forEach.call(app.querySelectorAll('[data-src]'),function(b){ b.onclick=function(){ st.src=b.dataset.src; keep(); render(); }; });
     [].forEach.call(app.querySelectorAll('[data-file]'),function(b){ b.onclick=function(){ st.file=b.dataset.file; keep(); render(); var pv=app.querySelector('.pv'); if(pv&&pv.getBoundingClientRect().top>window.innerHeight-160) pv.scrollIntoView({behavior:'smooth',block:'nearest'}); }; });
     [].forEach.call(app.querySelectorAll('[data-level]'),function(b){ b.onclick=function(){ st.level=b.dataset.level; keep(); render(); }; });
     var ex=document.getElementById('exf'); if(ex) ex.onchange=function(){ st.file=ex.value; keep(); };
-    document.getElementById('go').onclick=function(){ if(!st.file) st.file='01'; if(!st.level) st.level='b'; keep(); if(st.src) mark('file'); };
+    var go=document.getElementById('go'); if(go) go.onclick=function(){ if(!st.file) st.file='01'; if(!st.level) st.level='b'; keep(); if(st.src) mark('file'); };
   }
   render();
 }
@@ -180,12 +188,10 @@ function anonPage(){
   var own=raw0.src==='own';
   var h=stepper('anon')+'<div class="rhead"><h1>התממה <span class="opt">לא חובה</span></h1>'+
     '<p>רק למי שעובד על קובץ מהעבודה. נתונים פתוחים וקובצי התרגול לא צריכים התממה.</p></div>';
-  h+='<div class="skipbar"><a class="nx" id="skip" href="../r1/">'+(own?'יש לי קובץ מותמם. לסבב 1 ←':'דילוג: לסבב 1 ←')+'</a></div>';
   h+='<details class="stepcard anon-tool"'+(own?' open':'')+'><summary>'+(own?'כלי ההתממה':'רוצים לתרגל התממה? פתיחת הכלי')+'</summary>'+
      '<p class="out">מסירים שמות, תעודות זהות, טלפונים וכתובות. הקובץ לא נשלח לשום מקום.</p>'+
      '<iframe id="anonf" title="כלי ההתממה"></iframe>'+
      '<p class="out">הכלי לא נטען? <a class="ln" href="../../data/anonymize/" target="_blank" rel="noopener">פתיחה בעמוד מלא ←</a></p></details>';
-  h+='<div class="pn"><a href="../file/">→ הקובץ</a><a class="nx" href="../r1/">לסבב 1 ←</a></div>';
   app.innerHTML=h;
   var fr=document.getElementById('anonf'), det=app.querySelector('.anon-tool'), last=0;
   /* fit the frame to its content. Measure the content itself, never the frame's viewport, so it cannot grow forever. */
@@ -195,7 +201,6 @@ function anonPage(){
   function load(){ if(fr.src) return; fr.src='../../data/anonymize/?embed=1';
     fr.addEventListener('load',function(){ fit(); try{ new ResizeObserver(fit).observe(fr.contentDocument.querySelector('main')||fr.contentDocument.body); }catch(e){ setInterval(fit,1000); } }); }
   if(det.open) load(); det.addEventListener('toggle',function(){ if(det.open) load(); });
-  [].forEach.call(app.querySelectorAll('a.nx'),function(x){ x.onclick=function(){ mark('anon'); }; });
 }
 
 /* ---------- round pages: the four work parts of the deck (div-a, div-b, div-c, div-d). Prompts are the deck's wording,
@@ -291,7 +296,7 @@ function round(){
   var c=choice(), f=F[c.file], n=ROUND, R=ROUNDS[n], r=build(n,c,f), li=LEVELS.map(function(l){return l[0];}).indexOf(c.level);
   var own=c.src!=='practice';
   var h=stepper('r'+n)+'<div class="mine lv-'+c.level+'"><span class="f">'+(own?(c.src==='own'?'קובץ שלי מהעבודה':'נתונים פתוחים של באר שבע'):'קובץ '+f.n+': '+esc(f.short))+'</span>'+(r.lv?'<span class="lvtag">רמה '+label(LEVELS,c.level)+'</span>':'')+'<a class="ln" href="../file/">החלפת קובץ'+(r.lv?' או רמה':'')+'</a></div>';
-  h+='<div class="rhead"><h1>סבב '+n+': '+R.t+'</h1><p>'+R.s+'</p><p class="rmeta"><span>'+R.min+' דקות</span><span>'+R.tool+'</span></p></div>';
+  h+='<div class="rhead"><p>'+R.s+'</p><p class="rmeta"><span>'+R.min+' דקות</span><span>'+R.tool+'</span></p></div>';
   if(own&&n!==4) h+='<section class="box tip"><p><b>אתם עובדים על קובץ משלכם.</b> במקום שמסומן בסוגריים מרובעים, כותבים את שמות העמודות שלכם.</p></section>';
   h+='<section class="box task lv-'+c.level+'"><h2>המשימה'+(r.lv?' <span class="lvtag">רמה '+label(LEVELS,c.level)+'</span>':'')+'</h2>'+r.task+
      (r.lv?'<div class="shift"><button type="button" id="easier"'+(li===0?' disabled':'')+'>קשה לי: רמה אחת למטה</button><button type="button" id="harder"'+(li===2?' disabled':'')+'>קל לי: רמה אחת למעלה</button></div>':'')+'</section>';
@@ -304,14 +309,11 @@ function round(){
   if(r.sol) h+='<details class="hint sol"><summary>פתרון: מה אמור לצאת בקובץ התרגול</summary><div class="in">'+r.sol+'</div></details>';
   h+='<section class="box check"><h2>נקודת ביקורת</h2>'+r.check+'</section>';
   if(n<=3) h+='<section class="box stuck"><span class="t">קובץ התרגול</span><span class="d">קובץ '+f.n+': '+esc(f.short)+' · '+num(f.st.raw)+' שורות</span>'+dl(raw(f),f.n+' '+f.short+' - נתונים פיקטיביים.xlsx','הורדה ←')+'</section>';
-  h+='<details class="hint more"><summary>שני פרומפטים שעוזרים בכל סבב</summary><div class="in">'+
+  h+='<details class="hint more"><summary>שני פרומפטים שעוזרים בכל שלב</summary><div class="in">'+
      prompt('תקלה','קיבלתי את השגיאה הזאת: [מדביקים כאן את השגיאה]. תקן ותן לי את הכל מחדש.')+
      prompt('בדיקה עצמית','אילו מספרים בתשובה חישבת בעצמך, ואילו לקחת מנוסחה? מה כדאי לאמת ידנית?')+'</div></details>';
-  h+='<div class="pn">'+(n>1?'<a href="../r'+(n-1)+'/">→ סבב '+(n-1)+': '+ROUNDS[n-1].t+'</a>':'<a href="../anonymize/">→ התממה</a>')+
-     (n<4?'<a class="nx" id="nx" href="../r'+(n+1)+'/">סיימתי. לסבב '+(n+1)+': '+ROUNDS[n+1].t+' ←</a>':'<a class="nx" id="nx" href="../open/">סיימתי. למידע פתוח ←</a>')+'</div>';
   var app=document.getElementById('app'); app.innerHTML=h;
   function set(k,v){ var x=choice(); x[k]=v; save(x); var y=window.scrollY; round(); window.scrollTo(0,y); }
-  document.getElementById('nx').onclick=function(){ mark('r'+n); };
   var st=document.getElementById('sTool'); if(st) st.onchange=function(){ set('tool',this.value); };
   var e1=document.getElementById('easier'), e2=document.getElementById('harder');
   if(e1) e1.onclick=function(){ set('level',LEVELS[li-1][0]); };
@@ -327,12 +329,10 @@ function openPage(){
     ['שקיפות בחינוך','נתוני מוסדות חינוך: הישגים, נשירה, אקלים ותקציב.','https://shkifut.education.gov.il/home'],
     ['נתונים מוניציפליים','דמוגרפיה והשוואה בין רשויות.','https://municipal-data.org/demographics'],
     ['אתר העירייה','באר שבע במספרים: הדשבורד הדמוגרפי.','https://www.beer-sheva.muni.il/City/OnTheCity/b7numbers/Documents/demographic-dash.html']];
-  var h=stepper('open')+'<div class="rhead"><h1>מקורות מידע פתוחים</h1><p>איפה מוצאים נתונים, גם בלי לבקש מאף אחד. מידע פתוח לא צריך התממה.</p></div>';
+  var h=stepper('open')+'<div class="rhead"><p>איפה מוצאים נתונים, גם בלי לבקש מאף אחד. מידע פתוח לא צריך התממה.</p></div>';
   h+='<ul class="srcl">'+S.map(function(s){ return '<li><a href="'+s[2]+'" target="_blank" rel="noopener"><strong>'+esc(s[0])+' ↗</strong><span>'+esc(s[1])+'</span></a></li>'; }).join('')+'</ul>';
   h+='<p class="out pad">עוד מקורות, לפי נושא: <a class="ln" href="../../data/sources/">כלי מיפוי מקורות המידע</a></p>';
-  h+='<div class="pn"><a href="../r4/">→ סבב 4: '+ROUNDS[4].t+'</a><a class="nx" id="nx" href="../my-file/">לסיכום ←</a></div>';
   document.getElementById('app').innerHTML=h;
-  document.getElementById('nx').onclick=function(){ mark('open'); };
 }
 
 var APPEL=document.getElementById('app'); if(APPEL){ APPEL.classList.add('first'); setTimeout(function(){ APPEL.classList.remove('first'); },1100); }
@@ -343,6 +343,6 @@ else if(PAGE==='anon') anonPage();
 else if(PAGE==='prompts') promptsPage();
 else if(PAGE==='open') openPage();
 else if(PAGE==='end'){ var sp=document.getElementById('stepper'); if(sp) sp.innerHTML=stepper('end'); }
-if(PAGE&&PAGE!=='prompts') document.body.insertAdjacentHTML('beforeend','<a class="pbank" href="'+UP+'prompts/">מאגר פרומפטים</a>');
+if(PAGE&&PAGE!=='prompts') document.body.insertAdjacentHTML('beforeend','<a class="pbank" href="'+UP+'prompts/"><span>מאגר הפרומפטים</span></a>');
 window.DataAI={choice:choice,files:F,levels:LEVELS,tools:TOOLS,rounds:ROUNDS,rules:RULES,esc:esc,stepper:stepper,mark:mark,build:build};
 })();
