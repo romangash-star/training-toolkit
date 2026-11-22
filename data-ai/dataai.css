@@ -387,7 +387,7 @@ body[data-page="prompts"] .wrap{max-width:860px}
 @media (max-width:640px){.srcl{grid-template-columns:1fr}}
 
 /* ---------- the day's stages: number, colour and shape, the same as in the deck ---------- */
-.stages{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:2px 0 14px;padding:14px 6px 12px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card)}
+.stages{display:grid;grid-template-columns:repeat(var(--n,7),1fr);gap:4px;margin:2px 0 14px;padding:14px 6px 12px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card)}
 .stages a{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font-size:13.5px;line-height:1.25;color:var(--ink-muted);text-decoration:none;padding:2px;opacity:.62;transition:opacity .15s}
 .stages a:hover{opacity:.85}
 .stages a.cur{opacity:1;color:var(--ink);font-weight:700}
@@ -419,3 +419,19 @@ body[data-page="prompts"] .wrap{max-width:860px}
 .stagenext p b{color:var(--ink)}
 .stagenext a{display:inline-flex;align-items:center;gap:14px;font:700 19px var(--font-sans);color:var(--sc);text-decoration:none;padding:6px 18px 6px 8px;border-radius:999px;background:color-mix(in srgb,var(--sc) 8%,var(--surface-card))}
 .stagenext a:hover{background:color-mix(in srgb,var(--sc) 16%,var(--surface-card))}
+
+.sg-triangle{clip-path:polygon(50% 2%,100% 96%,0 96%)}
+.sg-triangle em{padding-top:34%;font-size:calc(var(--s)*.32)}
+/* stage 00: the three questions */
+.meform{display:grid;gap:18px}
+.mq label{display:block;font-weight:700;font-size:19px;margin-bottom:6px}
+.mq label small{display:block;font-weight:400;font-size:15px;color:var(--ink-muted);margin-top:2px}
+.mq input,.mq textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font:400 17px/1.6 var(--font-sans);color:var(--ink);background:#fff;resize:vertical}
+.mq.short input{max-width:520px}
+.mq input:focus,.mq textarea:focus{outline:none;border-color:#5A4636;box-shadow:0 0 0 3px rgba(90,70,54,.15)}
+.exbar{position:sticky;bottom:10px;z-index:5;display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 14px;border-radius:14px;background:var(--surface-card);border:1.5px solid var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.exbar>span:first-child{font-weight:700;font-size:17px}
+.exbar button{font:700 17px var(--font-sans);color:#fffdf8;background:var(--ink);border:none;border-radius:10px;padding:11px 22px;cursor:pointer}
+.exbar button:hover{background:var(--brand)}
+.exmsg{font-size:15.5px;color:var(--success)}
+@media (max-width:640px){.exbar{flex-wrap:nowrap;gap:8px;padding:8px 10px;bottom:6px}.exbar>span:first-child{font-size:15px}.exbar button{font-size:15.5px;padding:9px 14px;white-space:nowrap}.exmsg{position:absolute;bottom:100%;inset-inline-start:8px;background:var(--surface-card);padding:2px 8px;border-radius:6px}}

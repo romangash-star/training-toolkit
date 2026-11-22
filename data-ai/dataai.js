@@ -23,7 +23,8 @@ var AGG={sum:'סכום',avg:'ממוצע',count:'ספירה'};
    The deck shows the same number, colour and shape: change both together. Moving on is the trainer's call, from the deck,
    so the pages have no "next" buttons; the bar at the top lets anyone go to any stage. */
 var STAGES=[
-  {n:'01',t:'עכשיו עובדים',c:'#1F5F5B',sh:'circle',h:'',subs:[{k:'id',t:'מי אתם',h:''},{k:'file',t:'הקובץ',h:'file/'},{k:'anon',t:'התממה',h:'anonymize/',opt:1}]},
+  {n:'00',t:'לפני שמתחילים',c:'#5A4636',sh:'triangle',k:'id',h:''},
+  {n:'01',t:'עכשיו עובדים',c:'#1F5F5B',sh:'circle',h:'file/',subs:[{k:'file',t:'הקובץ',h:'file/'},{k:'anon',t:'התממה',h:'anonymize/',opt:1}]},
   {n:'02',t:ROUNDS[1].t,c:'#B4472A',sh:'square',k:'r1',h:'r1/'},
   {n:'03',t:ROUNDS[2].t,c:'#2B579A',sh:'diamond',k:'r2',h:'r2/'},
   {n:'04',t:ROUNDS[3].t,c:'#6B4594',sh:'hexagon',k:'r3',h:'r3/'},
@@ -61,11 +62,11 @@ function stageOf(k){ for(var i=0;i<STAGES.length;i++){ var S=STAGES[i]; if(S.k==
 function badge(S,cls){ return '<b class="sg sg-'+S.sh+(cls?' '+cls:'')+'" style="--sc:'+S.c+'" aria-hidden="true"><em>'+S.n+'</em></b>'; }
 function stepper(cur){
   var ci=stageOf(cur), S=STAGES[ci];
-  var h='<nav class="stages" aria-label="שלבי היום">'+STAGES.map(function(x,i){
+  var h='<nav class="stages" aria-label="שלבי היום" style="--n:'+STAGES.length+'">'+STAGES.map(function(x,i){
     return '<a'+(i===ci?' class="cur" aria-current="step"':'')+' href="'+UP+x.h+'" style="--sc:'+x.c+'">'+badge(x)+'<span>'+esc(x.t)+'</span></a>'; }).join('')+'</nav>';
   if(!S) return h;
   h+='<div class="stagehead" style="--sc:'+S.c+'">'+badge(S,'big')+'<div class="st-txt"><small>שלב '+S.n+'</small>'+(S.subs?'<p class="st-t">':'<h1 class="st-t">')+esc(S.t)+(S.subs?'</p>':'</h1>')+'</div>'+
-    (S.subs?'<div class="subs">'+S.subs.map(function(x){ return '<a href="'+UP+x.h+'"'+(x.k===cur?' aria-current="page"':'')+'>'+esc(x.t)+(x.opt?' <i>לא חובה</i>':'')+'</a>'; }).join('')+'</div>':'')+'<a class="pbank-in" href="'+UP+'prompts/">מאגר הפרומפטים</a></div>';
+    (S.subs?'<div class="subs">'+S.subs.map(function(x){ return '<a href="'+UP+x.h+'"'+(x.k===cur?' aria-current="page"':'')+'>'+esc(x.t)+(x.opt?' <i>לא חובה</i>':'')+'</a>'; }).join('')+'</div>':'')+(cur==='id'?'':'<a class="pbank-in" href="'+UP+'prompts/">מאגר הפרומפטים</a>')+'</div>';
   return h;
 }
 function nextCard(cur){
@@ -87,19 +88,79 @@ function put(text,btn){
 window.copyPrompt=function(b){ put(b.closest('.prompt').querySelector('pre').textContent,b); };
 window.cpF=function(b){ put(b.parentNode.querySelector('code').textContent,b); };
 
-/* ---------- step 1: who are you (optional; kept only until the browser closes, never sent) ---------- */
+/* ---------- stage 00: before we start. Three questions, each person for themselves. Nothing is kept: the page warns before
+   it is closed, and everything can be exported at any moment, as a picture (drawn on a canvas, no library) or a Word file. ---------- */
 function home(){
-  var app=document.getElementById('app'), d=ident();
-  var h=stepper('id')+'<section class="stepcard solo"><div class="sc-h"><span class="sc-n">1</span><div><h2>מי אתם? <small>לא חובה</small></h2></div></div>'+
-    '<p class="priv"><b>המידע לא נשמר ולא נשלח לשום מקום.</b></p>'+
-    '<div class="idform"><div><label for="idName">שם</label><input type="text" id="idName" autocomplete="off" value="'+esc(d.name||'')+'"></div>'+
-    '<div><label for="idOrg">רשות</label><input type="text" id="idOrg" autocomplete="off" value="'+esc(d.org||'')+'"></div></div>'+
-    '<a class="next" id="idGo" href="file/">המשך ←</a></section>';
+  var app=document.getElementById('app');
+  var Q=[['me_name','שם','לא חובה','input'],
+         ['me_role','1. מה התפקיד שלי?','תפקיד, מחלקה ורשות','input'],
+         ['me_small','2. מה המשימות שלי? הקטנות','מה חוזר כל יום או כל שבוע. שורה לכל משימה.','area'],
+         ['me_big','2. מה המשימות שלי? הגדולות','פרויקטים, דוחות תקופתיים, החלטות. שורה לכל משימה.','area'],
+         ['me_data','3. עם אילו נתונים אני עובד?','קבצים, מערכות, דוחות וטבלאות. שורה לכל אחד.','area']];
+  var h=stepper('id')+'<div class="rhead"><p>שלוש שאלות, כל אחד לעצמו. רשימה שתלווה אתכם בהמשך היום.</p></div>';
+  h+='<p class="priv"><b>המידע לא נשמר ולא נשלח לשום מקום.</b> רוצים לשמור? מייצאים לתמונה או ל-Word.</p>';
+  h+='<section class="stepcard meform">'+Q.map(function(q){
+    return '<div class="mq'+(q[3]==='input'?' short':'')+'"><label for="'+q[0]+'">'+q[1]+' <small>'+q[2]+'</small></label>'+
+      (q[3]==='input'?'<input type="text" id="'+q[0]+'" autocomplete="off">':'<textarea id="'+q[0]+'" rows="5"></textarea>')+'</div>'; }).join('')+
+    '<div class="exbar"><span>ייצוא:</span><button type="button" id="exImg">תמונה</button><button type="button" id="exDoc">קובץ Word</button><span class="exmsg" id="exMsg" role="status"></span></div></section>';
+  h+=nextCard('id');
   app.innerHTML=h;
-  document.getElementById('idGo').onclick=function(){
-    var g=function(i){ return (document.getElementById(i).value||'').trim(); }, v={name:g('idName'),org:g('idOrg')};
-    try{ if(v.name||v.org) sessionStorage.setItem(KS,JSON.stringify(v)); else sessionStorage.removeItem(KS); }catch(x){}
-    if(v.name) mark('id');
+  function val(id){ return (document.getElementById(id).value||'').trim(); }
+  function lines(id){ return val(id).split(/\n+/).map(function(x){ return x.replace(/^[\s•*\-–]+/,'').trim(); }).filter(Boolean); }
+  function data(){ return {name:val('me_name'),role:val('me_role'),parts:[['המשימות הקטנות',lines('me_small')],['המשימות הגדולות',lines('me_big')],['הנתונים שאני עובד איתם',lines('me_data')]]}; }
+  function empty(d){ return !d.name&&!d.role&&d.parts.every(function(p){ return !p[1].length; }); }
+  function today(){ try{ return new Date().toLocaleDateString('he-IL'); }catch(e){ return ''; } }
+  function fname(d,ext){ return 'התפקיד שלי'+(d.name?' - '+d.name.replace(/[\\\/:*?"<>|]/g,''):'')+'.'+ext; }
+  function save(blob,name){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1500); }
+  function msg(t){ var m=document.getElementById('exMsg'); m.textContent=t; setTimeout(function(){ if(m.textContent===t) m.textContent=''; },3000); }
+  var dirty=false;
+  [].forEach.call(app.querySelectorAll('.meform input,.meform textarea'),function(x){ x.addEventListener('input',function(){ dirty=true; }); });
+  window.addEventListener('beforeunload',function(e){ if(dirty&&!empty(data())){ e.preventDefault(); e.returnValue=''; } });
+
+  document.getElementById('exDoc').onclick=function(){
+    var d=data(); if(empty(d)){ msg('עוד לא כתבתם כלום.'); return; }
+    var body='<h1>התפקיד שלי, המשימות שלי והנתונים שלי</h1>'+(d.name?'<p><b>'+esc(d.name)+'</b></p>':'')+(d.role?'<p>'+esc(d.role)+'</p>':'')+
+      d.parts.map(function(p){ return '<h2>'+p[0]+'</h2>'+(p[1].length?'<ul>'+p[1].map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>':'<p>-</p>'); }).join('')+
+      '<p style="color:#777;font-size:10pt">עבודה עם נתונים בעזרת בינה מלאכותית · '+today()+'</p>';
+    var doc='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>התפקיד שלי</title>'+
+      '<style>body{font-family:Arial,sans-serif;direction:rtl;text-align:right;font-size:12pt}h1{font-size:18pt;color:#1F5F5B}h2{font-size:14pt;margin-top:14pt}</style></head><body dir="rtl" lang="he">'+body+'</body></html>';
+    save(new Blob(['﻿',doc],{type:'application/msword'}),fname(d,'doc')); dirty=false; msg('הקובץ ירד ✓');
+  };
+
+  document.getElementById('exImg').onclick=function(){
+    var d=data(); if(empty(d)){ msg('עוד לא כתבתם כלום.'); return; }
+    var W=1200, P=70, F='Alef, Arial, sans-serif';
+    function draw(ctx,measureOnly){
+      var y=P; ctx.direction='rtl'; ctx.textAlign='right'; ctx.textBaseline='top';
+      function wrap(t,size,weight,color,gap,indent){
+        ctx.font=weight+' '+size+'px '+F; ctx.fillStyle=color;
+        var words=t.split(/\s+/), line='', max=W-2*P-(indent||0), out=[];
+        words.forEach(function(w){ var tst=line?line+' '+w:w; if(ctx.measureText(tst).width>max&&line){ out.push(line); line=w; } else line=tst; });
+        if(line) out.push(line);
+        out.forEach(function(l){ if(!measureOnly) ctx.fillText(l,W-P-(indent||0),y); y+=size*1.35; });
+        y+=gap||0;
+      }
+      if(!measureOnly){ ctx.fillStyle='#1F5F5B'; ctx.fillRect(0,0,W,14); }
+      y+=10;
+      wrap('התפקיד שלי, המשימות שלי והנתונים שלי',44,'700','#2a211b',14);
+      if(d.name) wrap(d.name,30,'700','#1F5F5B',2);
+      if(d.role) wrap(d.role,28,'400','#5c4f45',10);
+      d.parts.forEach(function(p){
+        y+=18; wrap(p[0],32,'700','#B4472A',8);
+        (p[1].length?p[1]:['-']).forEach(function(x){
+          if(!measureOnly){ ctx.fillStyle='#B4472A'; ctx.beginPath(); ctx.arc(W-P-8,y+16,5,0,7); ctx.fill(); }
+          wrap(x,27,'400','#2a211b',6,30); });
+      });
+      y+=30; wrap('עבודה עם נתונים בעזרת בינה מלאכותית · '+today(),22,'400','#8a7d72',0);
+      return y+P;
+    }
+    var go=function(){
+      var c=document.createElement('canvas'), ctx=c.getContext('2d'); c.width=W; c.height=10;
+      var H=Math.ceil(draw(ctx,true)); c.width=W; c.height=H; ctx=c.getContext('2d');
+      ctx.fillStyle='#faf5ec'; ctx.fillRect(0,0,W,H); draw(ctx,false);
+      c.toBlob(function(b){ if(b){ save(b,fname(d,'png')); dirty=false; msg('התמונה ירדה ✓'); } else msg('הייצוא לא הצליח. נסו את Word.'); },'image/png');
+    };
+    if(document.fonts&&document.fonts.load) document.fonts.load('700 30px Alef').then(go,go); else go();
   };
 }
 
@@ -349,6 +410,6 @@ else if(PAGE==='anon') anonPage();
 else if(PAGE==='prompts') promptsPage();
 else if(PAGE==='open') openPage();
 else if(PAGE==='end'){ var sp=document.getElementById('stepper'); if(sp) sp.innerHTML=stepper('end'); }
-if(PAGE&&PAGE!=='prompts') document.body.insertAdjacentHTML('beforeend','<a class="pbank" href="'+UP+'prompts/"><span>מאגר הפרומפטים</span></a>');
+if(PAGE&&PAGE!=='prompts'&&PAGE!=='id') document.body.insertAdjacentHTML('beforeend','<a class="pbank" href="'+UP+'prompts/"><span>מאגר הפרומפטים</span></a>');
 window.DataAI={choice:choice,files:F,levels:LEVELS,tools:TOOLS,rounds:ROUNDS,rules:RULES,esc:esc,stepper:stepper,mark:mark,build:build};
 })();
