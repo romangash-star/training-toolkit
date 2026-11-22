@@ -65,7 +65,7 @@ function stepper(cur){
     return '<a'+(i===ci?' class="cur" aria-current="step"':'')+' href="'+UP+x.h+'" style="--sc:'+x.c+'">'+badge(x)+'<span>'+esc(x.t)+'</span></a>'; }).join('')+'</nav>';
   if(!S) return h;
   h+='<div class="stagehead" style="--sc:'+S.c+'">'+badge(S,'big')+'<div class="st-txt"><small>שלב '+S.n+'</small>'+(S.subs?'<p class="st-t">':'<h1 class="st-t">')+esc(S.t)+(S.subs?'</p>':'</h1>')+'</div>'+
-    (S.subs?'<div class="subs">'+S.subs.map(function(x){ return '<a href="'+UP+x.h+'"'+(x.k===cur?' aria-current="page"':'')+'>'+esc(x.t)+(x.opt?' <i>לא חובה</i>':'')+'</a>'; }).join('')+'</div>':'')+'</div>';
+    (S.subs?'<div class="subs">'+S.subs.map(function(x){ return '<a href="'+UP+x.h+'"'+(x.k===cur?' aria-current="page"':'')+'>'+esc(x.t)+(x.opt?' <i>לא חובה</i>':'')+'</a>'; }).join('')+'</div>':'')+'<a class="pbank-in" href="'+UP+'prompts/">מאגר הפרומפטים</a></div>';
   return h;
 }
 function label(list,k){ for(var i=0;i<list.length;i++) if(list[i][0]===k) return list[i][1]; return ''; }
