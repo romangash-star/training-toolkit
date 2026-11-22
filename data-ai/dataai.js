@@ -18,7 +18,7 @@ var ROUNDS=[null,
 var RULES=['מתממים לפני שמעלים','נוסחה ולא תשובה','מנקים לפני שמנתחים','בודקים מדגם','תובנה עוברת בדיקות'];
 var AGG={sum:'סכום',avg:'ממוצע',count:'ספירה'};
 /* The day's path. The deck follows the same order: to reorder or rename a step, change it here. */
-var STEPS=[{k:'id',t:'מי אתם',h:''},{k:'file',t:'הקובץ',h:'file/'},{k:'anon',t:'התממה',h:'anonymize/'}]
+var STEPS=[{k:'id',t:'מי אתם',h:''},{k:'file',t:'הקובץ',h:'file/'},{k:'anon',t:'התממה',h:'anonymize/',opt:1}]
   .concat([1,2,3,4,5].map(function(i){ return {k:'r'+i,n:i,t:ROUNDS[i].t,h:'r'+i+'/'}; }))
   .concat([{k:'end',t:'סיכום',h:'my-file/'}]);
 var LVTXT={b:'נוסחאות פשוטות, צעד אחר צעד. למי שמשתמש בגיליון בעיקר כדי לקרוא ולסנן.',
@@ -50,9 +50,9 @@ function stepper(cur){
   var d=done(), ci=0; if(ident().name) d.id=1;
   STEPS.forEach(function(s,i){ if(s.k===cur) ci=i; });
   var S=STEPS[ci];
-  return '<nav class="steps" aria-label="שלבי היום" style="--p:'+(ci/(STEPS.length-1))+';--p0:'+(Math.max(ci-1,0)/(STEPS.length-1))+'">'+STEPS.map(function(s,i){
+  return '<nav class="steps" aria-label="שלבי היום" style="--n:'+STEPS.length+';--p:'+(ci/(STEPS.length-1))+';--p0:'+(Math.max(ci-1,0)/(STEPS.length-1))+'">'+STEPS.map(function(s,i){
     var st=s.k===cur?'cur':(d[s.k]?'done':'todo');
-    return '<a class="'+st+'" href="'+UP+s.h+'"'+(s.k===cur?' aria-current="step"':'')+'><b>'+(st==='done'?'✓':(s.n||''))+'</b><span>'+(s.n?'<i>סבב '+s.n+'</i>':'')+esc(s.t)+'</span></a>';
+    return '<a class="'+st+'" href="'+UP+s.h+'"'+(s.k===cur?' aria-current="step"':'')+'><b>'+(st==='done'?'✓':(s.n||''))+'</b><span>'+(s.n?'<i>סבב '+s.n+'</i>':(s.opt?'<i>לא חובה</i>':''))+esc(s.t)+'</span></a>';
   }).join('')+'</nav><p class="stepnow">שלב '+(ci+1)+' מתוך '+STEPS.length+': <b>'+(S.n?'סבב '+S.n+' · ':'')+esc(S.t)+'</b></p>';
 }
 function label(list,k){ for(var i=0;i<list.length;i++) if(list[i][0]===k) return list[i][1]; return ''; }
@@ -158,7 +158,8 @@ function filePage(){
     h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">ב</span><div><h2>באיזו רמה מתחילים?</h2><p>אפשר לעלות או לרדת רמה בכל סבב.</p></div></div><div class="lvs">'+
       LEVELS.map(function(l){ return '<button type="button" class="lvc lv-'+l[0]+'" data-level="'+l[0]+'" aria-pressed="'+(st.level===l[0])+'"><strong>'+l[1]+'</strong><span>'+LVTXT[l[0]]+'</span></button>'; }).join('')+'</div></section>';
     h+='<p class="gem">כולם עובדים ב-Gemini. <a class="ln" href="'+GEMINI+'" target="_blank" rel="noopener">פתיחת Gemini</a></p>';
-    h+='<div class="pn"><a href="../">→ מי אתם</a><a class="nx" id="go" href="../anonymize/">להתממה ←</a></div>';
+    h+='<div class="pn"><a href="../">→ מי אתם</a>'+(st.src==='own'?'<a class="nx" id="go" href="../anonymize/">להתממה ←</a>':'<a class="nx" id="go" href="../r1/">לסבב 1 ←</a>')+'</div>'+
+       (st.src==='own'?'':'<p class="skipnote">ההתממה היא שלב רשות, לקבצים מהעבודה. <a class="ln" href="../anonymize/">לשלב ההתממה</a></p>');
     var y=window.scrollY; app.innerHTML=h; window.scrollTo(0,y);
     [].forEach.call(app.querySelectorAll('[data-src]'),function(b){ b.onclick=function(){ st.src=b.dataset.src; keep(); render(); }; });
     [].forEach.call(app.querySelectorAll('[data-file]'),function(b){ b.onclick=function(){ st.file=b.dataset.file; keep(); render(); var pv=app.querySelector('.pv'); if(pv&&pv.getBoundingClientRect().top>window.innerHeight-160) pv.scrollIntoView({behavior:'smooth',block:'nearest'}); }; });
@@ -171,21 +172,26 @@ function filePage(){
 
 /* ---------- step 3: anonymization. The tool itself is /data/anonymize/, shown here inside the page (?embed=1 hides its own header). ---------- */
 function anonPage(){
-  var app=document.getElementById('app'), c=choice(), raw0={}; try{ raw0=JSON.parse(localStorage.getItem(KC)||'{}')||{}; }catch(e){}
-  var src=raw0.src||'practice';
-  var note={own:['<b>קובץ מהעבודה: מתממים לפני כל דבר אחר.</b> מעלים אותו לכלי שכאן, מסמנים עמודות מזהות, ומורידים קובץ נקי. רק את הקובץ הנקי מעלים ל-AI.','own'],
-            open:['<b>נתונים פתוחים: אין פרטים מזהים, אפשר לדלג.</b> מי שרוצה, מתרגל כאן את ההרגל על קובץ התרגול.','open'],
-            practice:['<b>קובץ תרגול: הנתונים פיקטיביים, ובכל זאת מתרגלים את ההרגל.</b> מעלים את קובץ התרגול שהורדתם ובודקים מה הכלי מציע להסיר.','practice']}[src]||[];
-  var h=stepper('anon')+'<div class="rhead"><h1>מתממים את הקובץ</h1><p>מסירים שמות, תעודות זהות, טלפונים וכתובות, לפני שהקובץ מגיע ל-AI. הכול קורה בדפדפן: הקובץ לא נשלח לשום מקום.</p></div>';
-  h+='<section class="stepcard anon-note anon-'+note[1]+'"><p>'+note[0]+'</p></section>';
-  h+='<section class="stepcard anon-tool"><iframe id="anonf" src="../../data/anonymize/?embed=1" title="כלי ההתממה" loading="eager"></iframe>'+
-     '<p class="out">הכלי לא נטען? <a class="ln" href="../../data/anonymize/" target="_blank" rel="noopener">פתיחה בעמוד מלא ←</a></p></section>';
-  h+='<div class="pn"><a href="../file/">→ הקובץ</a><a class="nx" id="go" href="../r1/">'+(src==='own'?'יש לי קובץ מותמם. לסבב 1 ←':'לסבב 1 ←')+'</a></div>';
+  var app=document.getElementById('app'), raw0={}; try{ raw0=JSON.parse(localStorage.getItem(KC)||'{}')||{}; }catch(e){}
+  var own=raw0.src==='own';
+  var h=stepper('anon')+'<div class="rhead"><h1>התממה <span class="opt">לא חובה</span></h1>'+
+    '<p>רק למי שעובד על קובץ מהעבודה. נתונים פתוחים וקובצי התרגול לא צריכים התממה.</p></div>';
+  h+='<div class="skipbar"><a class="nx" id="skip" href="../r1/">'+(own?'יש לי קובץ מותמם. לסבב 1 ←':'דילוג: לסבב 1 ←')+'</a></div>';
+  h+='<details class="stepcard anon-tool"'+(own?' open':'')+'><summary>'+(own?'כלי ההתממה':'רוצים לתרגל התממה? פתיחת הכלי')+'</summary>'+
+     '<p class="out">מסירים שמות, תעודות זהות, טלפונים וכתובות. הקובץ לא נשלח לשום מקום.</p>'+
+     '<iframe id="anonf" title="כלי ההתממה"></iframe>'+
+     '<p class="out">הכלי לא נטען? <a class="ln" href="../../data/anonymize/" target="_blank" rel="noopener">פתיחה בעמוד מלא ←</a></p></details>';
+  h+='<div class="pn"><a href="../file/">→ הקובץ</a><a class="nx" href="../r1/">לסבב 1 ←</a></div>';
   app.innerHTML=h;
-  var fr=document.getElementById('anonf');
-  function fit(){ try{ var d=fr.contentDocument; if(d&&d.body){ fr.style.height=Math.max(420,d.body.scrollHeight+24)+'px'; } }catch(e){} }
-  fr.addEventListener('load',function(){ fit(); try{ new ResizeObserver(fit).observe(fr.contentDocument.body); }catch(e){ setInterval(fit,800); } });
-  document.getElementById('go').onclick=function(){ mark('anon'); };
+  var fr=document.getElementById('anonf'), det=app.querySelector('.anon-tool'), last=0;
+  /* fit the frame to its content. Measure the content itself, never the frame's viewport, so it cannot grow forever. */
+  function fit(){ try{ var d=fr.contentDocument, m=d&&(d.querySelector('main')||d.body); if(!m) return;
+    var hgt=Math.ceil(m.getBoundingClientRect().bottom+(d.defaultView.scrollY||0))+16;
+    if(Math.abs(hgt-last)>4){ last=Math.max(360,hgt); fr.style.height=last+'px'; } }catch(e){} }
+  function load(){ if(fr.src) return; fr.src='../../data/anonymize/?embed=1';
+    fr.addEventListener('load',function(){ fit(); try{ new ResizeObserver(fit).observe(fr.contentDocument.querySelector('main')||fr.contentDocument.body); }catch(e){ setInterval(fit,1000); } }); }
+  if(det.open) load(); det.addEventListener('toggle',function(){ if(det.open) load(); });
+  [].forEach.call(app.querySelectorAll('a.nx'),function(x){ x.onclick=function(){ mark('anon'); }; });
 }
 
 /* ---------- round pages ---------- */

@@ -132,11 +132,11 @@ table.mini td.num{direction:ltr;text-align:end}
 
 /* ---------- the day's path: one stepper on every page ---------- */
 @view-transition{navigation:auto}
-.steps{view-transition-name:dai-steps;position:relative;display:grid;grid-template-columns:repeat(8,1fr);margin:2px 0 18px;padding:14px 6px 12px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card)}
-.steps::before,.steps::after{content:"";position:absolute;top:29px;inset-inline-start:calc(6.25% + 5px);height:4px;border-radius:4px}
-.steps::before{width:calc(87.5% - 10px);background:var(--surface-200)}
-.steps::after{width:calc((87.5% - 10px)*var(--p,0));background:var(--teal);animation:dai-fill .8s cubic-bezier(.2,.7,.2,1) both}
-@keyframes dai-fill{from{width:calc((87.5% - 10px)*var(--p0,0))}}
+.steps{view-transition-name:dai-steps;position:relative;display:grid;grid-template-columns:repeat(var(--n,8),1fr);margin:2px 0 18px;padding:14px 6px 12px;background:var(--surface-card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-card)}
+.steps::before,.steps::after{content:"";position:absolute;top:29px;inset-inline-start:calc(50% / var(--n,8) + 5px);height:4px;border-radius:4px}
+.steps::before{width:calc(100% - 100% / var(--n,8) - 10px);background:var(--surface-200)}
+.steps::after{width:calc((100% - 100% / var(--n,8) - 10px)*var(--p,0));background:var(--teal);animation:dai-fill .8s cubic-bezier(.2,.7,.2,1) both}
+@keyframes dai-fill{from{width:calc((100% - 100% / var(--n,8) - 10px)*var(--p0,0))}}
 .steps a{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:13.5px;line-height:1.25;color:var(--ink-muted);padding:0 3px;min-width:0}
 .steps a b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--surface-card);border:2.5px solid var(--surface-200);font-size:15px;color:var(--ink-muted);transition:transform .2s,border-color .2s}
 .steps a b:empty::after{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
@@ -354,5 +354,14 @@ body[data-page="prompts"] .wrap{max-width:860px}
 .anon-note p{font-size:16.5px;line-height:1.55}
 .anon-note.anon-own{border-color:#e7b9aa;background:#f8e7e1}
 .anon-tool{padding:8px}
-.anon-tool iframe{display:block;width:100%;height:900px;border:0;border-radius:12px;background:transparent}
+.anon-tool iframe{display:block;width:100%;height:600px;border:0;border-radius:12px;background:transparent;margin-top:8px}
+.anon-tool>summary{cursor:pointer;font-weight:700;font-size:18px;list-style:none;padding:8px 10px}
+.anon-tool>summary::-webkit-details-marker{display:none}
+.anon-tool>summary::before{content:"+";display:inline-grid;place-items:center;width:24px;height:24px;margin-inline-end:10px;border-radius:50%;background:var(--teal-tint);color:var(--teal)}
+.anon-tool[open]>summary::before{content:"−"}
+.rhead .opt{font-size:15px;font-weight:700;color:var(--teal);background:var(--teal-tint);border-radius:999px;padding:3px 12px;vertical-align:middle}
+.skipbar{margin-top:14px}
+.skipbar .nx{display:inline-block;font:700 17px var(--font-sans);color:var(--on-teal);background:var(--teal);border-radius:var(--radius-md);padding:12px 24px;text-decoration:none}
+.skipbar .nx:hover{background:#174a47;color:#fff}
+.skipnote{margin-top:10px;font-size:15px;color:var(--ink-muted);text-align:end}
 .anon-tool .out{padding:6px 10px 2px}
