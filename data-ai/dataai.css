@@ -365,3 +365,16 @@ body[data-page="prompts"] .wrap{max-width:860px}
 .skipbar .nx:hover{background:#174a47;color:#fff}
 .skipnote{margin-top:10px;font-size:15px;color:var(--ink-muted);text-align:end}
 .anon-tool .out{padding:6px 10px 2px}
+
+/* ---------- rounds aligned to the deck ---------- */
+.rmeta{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.rmeta span{font-size:14.5px;font-weight:700;color:var(--teal);background:var(--teal-tint);border-radius:999px;padding:3px 12px}
+.pit{list-style:none;margin:6px 0 12px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pit li{font-size:16px;background:var(--surface-100);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+@media (max-width:640px){.pit{grid-template-columns:1fr 1fr}}
+.srcl{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.srcl a{display:block;height:100%;padding:16px 18px;background:var(--surface-card);border:1px solid var(--line);border-radius:14px;color:var(--ink);text-decoration:none;box-shadow:var(--shadow-card);transition:transform .15s}
+.srcl a:hover{transform:translateY(-2px)}
+.srcl strong{display:block;font-size:19px}
+.srcl span{display:block;font-size:15.5px;color:var(--ink-muted);margin-top:4px}
+@media (max-width:640px){.srcl{grid-template-columns:1fr}}
