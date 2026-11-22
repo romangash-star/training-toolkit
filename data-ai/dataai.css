@@ -294,3 +294,11 @@ body.dai .hero .lead{margin:8px 0 0;font-size:17px}
   .next,.src,.fcard,.lvc,.pn a.nx{transition:none}
 }
 @media print{.steps,.stepnow,.mine a,details.alt{display:none!important}}
+
+/* lighter pages */
+.stepcard.solo{max-width:640px}
+.sc-h h2 small{font-size:14px;font-weight:400;color:var(--ink-muted)}
+.priv{display:flex;align-items:center;gap:10px;margin:-4px 0 16px;padding:10px 14px;border-radius:12px;background:var(--teal-tint);color:var(--teal);font-size:16.5px}
+.priv::before{content:"";flex:none;width:18px;height:18px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 10V8a6 6 0 1 1 12 0v2h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1zm2 0h8V8a4 4 0 1 0-8 0z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 10V8a6 6 0 1 1 12 0v2h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1zm2 0h8V8a4 4 0 1 0-8 0z'/%3E%3C/svg%3E") center/contain no-repeat}
+.gem{margin-top:16px;font-size:16px}
+details.hint.more{margin-top:14px}

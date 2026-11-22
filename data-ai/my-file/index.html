@@ -6,12 +6,12 @@
 <title>הקובץ שלי בשבוע הבא · עבודה עם נתונים בעזרת בינה מלאכותית</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../assets/hub.css?v=29">
-<link rel="stylesheet" href="../dataai.css?v=29">
+<link rel="stylesheet" href="../../assets/hub.css?v=30">
+<link rel="stylesheet" href="../dataai.css?v=30">
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=29">
+<link rel="stylesheet" href="../../assets/site.css?v=30">
 </head>
 <body class="dai" data-page="end">
   <main>
@@ -38,13 +38,13 @@
       </form>
     </div>
   </main>
-<script src="../files.js?v=29"></script>
-<script src="../dataai.js?v=29"></script>
+<script src="../files.js?v=30"></script>
+<script src="../dataai.js?v=30"></script>
 <script>
 (function(){
   var ENDPOINT='https://script.google.com/macros/s/AKfycbxbL96r8kwtEZ3CORszdOB8qE_4j1Cpc7RQSi0y6Ld2Qk98I0QjCTcL6enjhJU3YXLScA/exec';
   var $=function(i){ return document.getElementById(i); }, D=window.DataAI, rate='';
-  var id={}; try{ id=JSON.parse(localStorage.getItem('toolkit_identity')||'{}'); }catch(e){}
+  var id={}; try{ id=JSON.parse(sessionStorage.getItem('dataai_me')||'{}')||{}; }catch(e){}
   $('name').value=id.name||''; $('org').value=id.org||'';
   [].forEach.call($('rate').children,function(b){
     b.onclick=function(){ rate=b.textContent; [].forEach.call($('rate').children,function(x){ x.setAttribute('aria-pressed',x===b); }); };
@@ -78,6 +78,6 @@
   };
 })();
 </script>
-<script src="../../assets/site.js?v=29" data-crumbs='כל ההכשרות|../../;עבודה עם נתונים בעזרת בינה מלאכותית|../'></script>
+<script src="../../assets/site.js?v=30" data-crumbs='כל ההכשרות|../../;עבודה עם נתונים בעזרת בינה מלאכותית|../'></script>
 </body>
 </html>

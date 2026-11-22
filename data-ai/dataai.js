@@ -44,7 +44,8 @@ function choice(){
 function save(c){ try{ localStorage.setItem(KC,JSON.stringify({file:c.file,level:c.level,tool:c.tool,src:c.src})); }catch(e){} }
 function done(){ try{ return JSON.parse(localStorage.getItem(KD)||'{}')||{}; }catch(e){ return {}; } }
 function mark(k){ var d=done(); d[k]=1; try{ localStorage.setItem(KD,JSON.stringify(d)); }catch(e){} }
-function ident(){ try{ return JSON.parse(localStorage.getItem(KI)||'{}')||{}; }catch(e){ return {}; } }
+var KS='dataai_me';
+function ident(){ try{ return JSON.parse(sessionStorage.getItem(KS)||'{}')||{}; }catch(e){ return {}; } }
 function stepper(cur){
   var d=done(), ci=0; if(ident().name) d.id=1;
   STEPS.forEach(function(s,i){ if(s.k===cur) ci=i; });
@@ -68,36 +69,20 @@ function put(text,btn){
 window.copyPrompt=function(b){ put(b.closest('.prompt').querySelector('pre').textContent,b); };
 window.cpF=function(b){ put(b.parentNode.querySelector('code').textContent,b); };
 
-/* ---------- step 1: who are you ---------- */
+/* ---------- step 1: who are you (optional; kept only until the browser closes, never sent) ---------- */
 function home(){
-  var app=document.getElementById('app'), d=ident(), dn=done();
-  function fld(id,lab,val,opt){ return '<div><label for="'+id+'">'+lab+(opt?' <small>לא חובה</small>':'')+'</label><input type="text" id="'+id+'" value="'+esc(val||'')+'"></div>'; }
-  function render(edit){
-    var h=stepper('id');
-    if(d.name&&!edit){
-      h+='<section class="stepcard ok"><div class="sc-h"><span class="sc-n">✓</span><div><h2>שלום, '+esc(d.name)+'</h2><p>'+esc([d.org,d.dept,d.role].filter(Boolean).join(' · '))+'</p></div><button type="button" class="lnk" id="idEdit">שינוי</button></div>'+
-         '<a class="next" href="file/">לשלב הבא: בוחרים קובץ ←</a></section>';
-    }else{
-      h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">1</span><div><h2>מי אתם?</h2><p>השם והרשות נשמרים רק בדפדפן שלכם, ומשמשים את הכלים באתר.</p></div></div>'+
-         '<div class="idform">'+fld('idName','שם מלא',d.name)+fld('idOrg','רשות',d.org)+fld('idDept','אגף או מחלקה',d.dept,1)+fld('idRole','תפקיד',d.role,1)+'</div>'+
-         '<p class="err" id="idErr" role="alert" hidden>צריך שם ורשות כדי להמשיך.</p>'+
-         '<button type="button" class="next" id="idSave">שמירה, ולשלב הבא ←</button></section>';
-    }
-    h+='<h2 class="sec">המסלול של היום</h2><ol class="path">'+STEPS.map(function(s){
-      var st=s.k==='id'?(d.name?'done':'cur'):(dn[s.k]?'done':'todo');
-      var sub=s.k==='id'?'שם ורשות.':s.k==='file'?'קובץ תרגול עם תצוגה מקדימה, או קובץ משלכם אחרי התממה. ובוחרים רמה.':s.k==='end'?'הקובץ שלי בשבוע הבא, ומשוב קצר.':ROUNDS[s.n].s;
-      return '<li class="'+st+'"><a href="'+s.h+'"><b>'+(st==='done'?'✓':(s.n||''))+'</b><span><strong>'+(s.n?'סבב '+s.n+': ':'')+esc(s.t)+'</strong>'+esc(sub)+'</span></a></li>';
-    }).join('')+'</ol>';
-    app.innerHTML=h;
-    var e=document.getElementById('idEdit'); if(e) e.onclick=function(){ render(true); };
-    var sv=document.getElementById('idSave'); if(sv) sv.onclick=function(){
-      var g=function(i){ return (document.getElementById(i).value||'').trim(); }, v={name:g('idName'),org:g('idOrg'),dept:g('idDept'),role:g('idRole')};
-      if(!v.name||!v.org){ document.getElementById('idErr').hidden=false; document.getElementById(v.name?'idOrg':'idName').focus(); return; }
-      try{ localStorage.setItem(KI,JSON.stringify(v)); }catch(x){}
-      mark('id'); location.href='file/';
-    };
-  }
-  render(false);
+  var app=document.getElementById('app'), d=ident();
+  var h=stepper('id')+'<section class="stepcard solo"><div class="sc-h"><span class="sc-n">1</span><div><h2>מי אתם? <small>לא חובה</small></h2></div></div>'+
+    '<p class="priv"><b>המידע לא נשמר ולא נשלח לשום מקום.</b></p>'+
+    '<div class="idform"><div><label for="idName">שם</label><input type="text" id="idName" autocomplete="off" value="'+esc(d.name||'')+'"></div>'+
+    '<div><label for="idOrg">רשות</label><input type="text" id="idOrg" autocomplete="off" value="'+esc(d.org||'')+'"></div></div>'+
+    '<a class="next" id="idGo" href="file/">המשך ←</a></section>';
+  app.innerHTML=h;
+  document.getElementById('idGo').onclick=function(){
+    var g=function(i){ return (document.getElementById(i).value||'').trim(); }, v={name:g('idName'),org:g('idOrg')};
+    try{ if(v.name||v.org) sessionStorage.setItem(KS,JSON.stringify(v)); else sessionStorage.removeItem(KS); }catch(x){}
+    if(v.name) mark('id');
+  };
 }
 
 /* ---------- step 2: the file ---------- */
@@ -120,7 +105,7 @@ function filePage(){
       return '<button type="button" class="fcard" data-file="'+n+'" aria-pressed="'+(st.file===n)+'"><b>'+n+'</b><strong>'+esc(f.short)+'</strong><small>'+esc(f.who)+'</small></button>'; }).join('')+'</div>';
   }
   function render(){
-    var f=F[st.file], prac=st.src==='practice', ready=!!(st.src&&st.level&&(f||!prac));
+    var f=F[st.file], prac=st.src==='practice';
     var h=stepper('file')+'<div class="rhead"><h1>בוחרים קובץ</h1><p>קובץ אחד ילווה אתכם בכל חמשת הסבבים.</p></div>';
     h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">א</span><div><h2>על איזה קובץ עובדים?</h2></div></div><div class="srcs">'+
       [['practice','קובץ תרגול','עשרה קבצים פיקטיביים מעולם הרשות. רואים אותם כאן לפני שבוחרים.'],
@@ -135,17 +120,16 @@ function filePage(){
     if(st.src&&!prac) h+='<div class="exfile"><label for="exf">המשימות בסבבים זהות לכולם. הדוגמאות והפתרונות יהיו מקובץ התרגול הזה:</label><select id="exf">'+
       Object.keys(F).sort().map(function(n){ return '<option value="'+n+'"'+((st.file||'01')===n?' selected':'')+'>'+n+' · '+esc(F[n].short)+'</option>'; }).join('')+'</select></div>';
     h+='</section>';
-    if(st.src) h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">ב</span><div><h2>באיזו רמה מתחילים?</h2><p>אפשר לעלות או לרדת רמה בכל סבב.</p></div></div><div class="lvs">'+
+    h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">ב</span><div><h2>באיזו רמה מתחילים?</h2><p>אפשר לעלות או לרדת רמה בכל סבב.</p></div></div><div class="lvs">'+
       LEVELS.map(function(l){ return '<button type="button" class="lvc lv-'+l[0]+'" data-level="'+l[0]+'" aria-pressed="'+(st.level===l[0])+'"><strong>'+l[1]+'</strong><span>'+LVTXT[l[0]]+'</span></button>'; }).join('')+'</div></section>';
-    if(ready) h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">ג</span><div><h2>לפני שממשיכים</h2><p>כולם מתחילים ב-Gemini.</p></div></div>'+
-      '<ul class="checks"><li><label><input type="checkbox">הקובץ שמור במחשב, ונפתח.</label></li><li><label><input type="checkbox">Gemini פתוח בדפדפן.</label> <a class="ln" href="'+GEMINI+'" target="_blank" rel="noopener">פתיחת Gemini</a></li></ul></section>';
-    h+='<div class="pn"><a href="../">→ מי אתם</a>'+(ready?'<a class="nx" id="go" href="../r1/">לשלב הבא: סבב 1 ←</a>':'<span class="nx off">'+(!st.src||(prac&&!f)?'בחרו קובץ כדי להמשיך':'בחרו רמה כדי להמשיך')+'</span>')+'</div>';
+    h+='<p class="gem">כולם עובדים ב-Gemini. <a class="ln" href="'+GEMINI+'" target="_blank" rel="noopener">פתיחת Gemini</a></p>';
+    h+='<div class="pn"><a href="../">→ מי אתם</a><a class="nx" id="go" href="../r1/">לסבב 1 ←</a></div>';
     var y=window.scrollY; app.innerHTML=h; window.scrollTo(0,y);
     [].forEach.call(app.querySelectorAll('[data-src]'),function(b){ b.onclick=function(){ st.src=b.dataset.src; keep(); render(); }; });
     [].forEach.call(app.querySelectorAll('[data-file]'),function(b){ b.onclick=function(){ st.file=b.dataset.file; keep(); render(); var pv=app.querySelector('.pv'); if(pv&&pv.getBoundingClientRect().top>window.innerHeight-160) pv.scrollIntoView({behavior:'smooth',block:'nearest'}); }; });
     [].forEach.call(app.querySelectorAll('[data-level]'),function(b){ b.onclick=function(){ st.level=b.dataset.level; keep(); render(); }; });
     var ex=document.getElementById('exf'); if(ex) ex.onchange=function(){ st.file=ex.value; keep(); };
-    var go=document.getElementById('go'); if(go) go.onclick=function(){ if(!st.file) st.file='01'; keep(); mark('file'); };
+    document.getElementById('go').onclick=function(){ if(!st.file) st.file='01'; if(!st.level) st.level='b'; keep(); if(st.src) mark('file'); };
   }
   render();
 }
@@ -353,9 +337,9 @@ function round(){
      '<details class="hint locked"><summary>רמז 2</summary><div class="in"><p>'+r.hints[1]+'</p></div></details>'+
      '<details class="hint sol locked"><summary>פתרון</summary><div class="in">'+r.sol+'</div></details></section>';
   h+='<section class="box check"><h2>נקודת ביקורת: מה צריך להיות על המסך כדי להמשיך</h2>'+r.check+'</section>';
-  h+='<section class="box"><h2>סיימתם מוקדם? בונוס</h2>'+r.bonus+'</section>';
+  h+='<details class="hint more"><summary>סיימתם מוקדם? בונוס</summary><div class="in">'+r.bonus+'</div></details>';
   h+='<section class="box stuck"><span class="t">'+(n<=2?'הקובץ לסבב הזה':'לא הגעתם לכאן עם קובץ מוכן?')+'</span><span class="d">'+r.stuck[0]+' · '+r.stuck[1]+'</span>'+dl(r.stuck[2],r.stuck[3],'הורדה ←')+'</section>';
-  h+='<details class="hint" style="margin-top:14px"><summary>שני פרומפטים שעוזרים בכל סבב</summary><div class="in">'+
+  h+='<details class="hint more"><summary>שני פרומפטים שעוזרים בכל סבב</summary><div class="in">'+
      prompt('תקלה','קיבלתי את השגיאה הזאת: [מדביקים כאן את השגיאה]. תקן ותן לי את הכל מחדש.')+
      prompt('בדיקה עצמית','אילו מספרים בתשובה חישבת בעצמך, ואילו לקחת מנוסחה? מה כדאי לאמת ידנית?')+'</div></details>';
   h+='<div class="pn">'+(n>1?'<a href="../r'+(n-1)+'/">→ סבב '+(n-1)+': '+ROUNDS[n-1].t+'</a>':'<a href="../file/">→ הקובץ</a>')+
