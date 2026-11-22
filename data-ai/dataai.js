@@ -18,7 +18,7 @@ var ROUNDS=[null,
 var RULES=['מתממים לפני שמעלים','נוסחה ולא תשובה','מנקים לפני שמנתחים','בודקים מדגם','תובנה עוברת בדיקות'];
 var AGG={sum:'סכום',avg:'ממוצע',count:'ספירה'};
 /* The day's path. The deck follows the same order: to reorder or rename a step, change it here. */
-var STEPS=[{k:'id',t:'מי אתם',h:''},{k:'file',t:'הקובץ',h:'file/'}]
+var STEPS=[{k:'id',t:'מי אתם',h:''},{k:'file',t:'הקובץ',h:'file/'},{k:'anon',t:'התממה',h:'anonymize/'}]
   .concat([1,2,3,4,5].map(function(i){ return {k:'r'+i,n:i,t:ROUNDS[i].t,h:'r'+i+'/'}; }))
   .concat([{k:'end',t:'סיכום',h:'my-file/'}]);
 var LVTXT={b:'נוסחאות פשוטות, צעד אחר צעד. למי שמשתמש בגיליון בעיקר כדי לקרוא ולסנן.',
@@ -158,7 +158,7 @@ function filePage(){
     h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">ב</span><div><h2>באיזו רמה מתחילים?</h2><p>אפשר לעלות או לרדת רמה בכל סבב.</p></div></div><div class="lvs">'+
       LEVELS.map(function(l){ return '<button type="button" class="lvc lv-'+l[0]+'" data-level="'+l[0]+'" aria-pressed="'+(st.level===l[0])+'"><strong>'+l[1]+'</strong><span>'+LVTXT[l[0]]+'</span></button>'; }).join('')+'</div></section>';
     h+='<p class="gem">כולם עובדים ב-Gemini. <a class="ln" href="'+GEMINI+'" target="_blank" rel="noopener">פתיחת Gemini</a></p>';
-    h+='<div class="pn"><a href="../">→ מי אתם</a><a class="nx" id="go" href="../r1/">לסבב 1 ←</a></div>';
+    h+='<div class="pn"><a href="../">→ מי אתם</a><a class="nx" id="go" href="../anonymize/">להתממה ←</a></div>';
     var y=window.scrollY; app.innerHTML=h; window.scrollTo(0,y);
     [].forEach.call(app.querySelectorAll('[data-src]'),function(b){ b.onclick=function(){ st.src=b.dataset.src; keep(); render(); }; });
     [].forEach.call(app.querySelectorAll('[data-file]'),function(b){ b.onclick=function(){ st.file=b.dataset.file; keep(); render(); var pv=app.querySelector('.pv'); if(pv&&pv.getBoundingClientRect().top>window.innerHeight-160) pv.scrollIntoView({behavior:'smooth',block:'nearest'}); }; });
@@ -167,6 +167,25 @@ function filePage(){
     document.getElementById('go').onclick=function(){ if(!st.file) st.file='01'; if(!st.level) st.level='b'; keep(); if(st.src) mark('file'); };
   }
   render();
+}
+
+/* ---------- step 3: anonymization. The tool itself is /data/anonymize/, shown here inside the page (?embed=1 hides its own header). ---------- */
+function anonPage(){
+  var app=document.getElementById('app'), c=choice(), raw0={}; try{ raw0=JSON.parse(localStorage.getItem(KC)||'{}')||{}; }catch(e){}
+  var src=raw0.src||'practice';
+  var note={own:['<b>קובץ מהעבודה: מתממים לפני כל דבר אחר.</b> מעלים אותו לכלי שכאן, מסמנים עמודות מזהות, ומורידים קובץ נקי. רק את הקובץ הנקי מעלים ל-AI.','own'],
+            open:['<b>נתונים פתוחים: אין פרטים מזהים, אפשר לדלג.</b> מי שרוצה, מתרגל כאן את ההרגל על קובץ התרגול.','open'],
+            practice:['<b>קובץ תרגול: הנתונים פיקטיביים, ובכל זאת מתרגלים את ההרגל.</b> מעלים את קובץ התרגול שהורדתם ובודקים מה הכלי מציע להסיר.','practice']}[src]||[];
+  var h=stepper('anon')+'<div class="rhead"><h1>מתממים את הקובץ</h1><p>מסירים שמות, תעודות זהות, טלפונים וכתובות, לפני שהקובץ מגיע ל-AI. הכול קורה בדפדפן: הקובץ לא נשלח לשום מקום.</p></div>';
+  h+='<section class="stepcard anon-note anon-'+note[1]+'"><p>'+note[0]+'</p></section>';
+  h+='<section class="stepcard anon-tool"><iframe id="anonf" src="../../data/anonymize/?embed=1" title="כלי ההתממה" loading="eager"></iframe>'+
+     '<p class="out">הכלי לא נטען? <a class="ln" href="../../data/anonymize/" target="_blank" rel="noopener">פתיחה בעמוד מלא ←</a></p></section>';
+  h+='<div class="pn"><a href="../file/">→ הקובץ</a><a class="nx" id="go" href="../r1/">'+(src==='own'?'יש לי קובץ מותמם. לסבב 1 ←':'לסבב 1 ←')+'</a></div>';
+  app.innerHTML=h;
+  var fr=document.getElementById('anonf');
+  function fit(){ try{ var d=fr.contentDocument; if(d&&d.body){ fr.style.height=Math.max(420,d.body.scrollHeight+24)+'px'; } }catch(e){} }
+  fr.addEventListener('load',function(){ fit(); try{ new ResizeObserver(fit).observe(fr.contentDocument.body); }catch(e){ setInterval(fit,800); } });
+  document.getElementById('go').onclick=function(){ mark('anon'); };
 }
 
 /* ---------- round pages ---------- */
@@ -377,7 +396,7 @@ function round(){
   h+='<details class="hint more"><summary>שני פרומפטים שעוזרים בכל סבב</summary><div class="in">'+
      prompt('תקלה','קיבלתי את השגיאה הזאת: [מדביקים כאן את השגיאה]. תקן ותן לי את הכל מחדש.')+
      prompt('בדיקה עצמית','אילו מספרים בתשובה חישבת בעצמך, ואילו לקחת מנוסחה? מה כדאי לאמת ידנית?')+'</div></details>';
-  h+='<div class="pn">'+(n>1?'<a href="../r'+(n-1)+'/">→ סבב '+(n-1)+': '+ROUNDS[n-1].t+'</a>':'<a href="../file/">→ הקובץ</a>')+
+  h+='<div class="pn">'+(n>1?'<a href="../r'+(n-1)+'/">→ סבב '+(n-1)+': '+ROUNDS[n-1].t+'</a>':'<a href="../anonymize/">→ התממה</a>')+
      (n<5?'<a class="nx" id="nx" href="../r'+(n+1)+'/">סיימתי. לסבב '+(n+1)+': '+ROUNDS[n+1].t+' ←</a>':'<a class="nx" id="nx" href="../my-file/">סיימתי. לסיכום ←</a>')+'</div>';
   var app=document.getElementById('app'); app.innerHTML=h;
   function set(k,v){ var x=choice(); x[k]=v; save(x); var y=window.scrollY; round(); window.scrollTo(0,y); }
@@ -397,6 +416,7 @@ var APPEL=document.getElementById('app'); if(APPEL){ APPEL.classList.add('first'
 if(ROUND) round();
 else if(PAGE==='id') home();
 else if(PAGE==='file') filePage();
+else if(PAGE==='anon') anonPage();
 else if(PAGE==='prompts') promptsPage();
 else if(PAGE==='end'){ var sp=document.getElementById('stepper'); if(sp) sp.innerHTML=stepper('end'); }
 if(PAGE&&PAGE!=='prompts') document.body.insertAdjacentHTML('beforeend','<a class="pbank" href="'+UP+'prompts/">מאגר פרומפטים</a>');

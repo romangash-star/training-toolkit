@@ -349,3 +349,10 @@ body[data-page="prompts"] .wrap{max-width:860px}
 @media (max-width:640px){.bk-it summary{grid-template-columns:38px 1fr 22px;gap:10px}.bk-it summary>b{font-size:20px}.bk-body{padding:0 0 20px}}
 @media print{.pbank{display:none!important}.bk-it .bk-body{display:block}}
 @media (prefers-reduced-motion:reduce){.bk-body{animation:none}}
+
+/* step 3: the anonymization tool inside the page */
+.anon-note p{font-size:16.5px;line-height:1.55}
+.anon-note.anon-own{border-color:#e7b9aa;background:#f8e7e1}
+.anon-tool{padding:8px}
+.anon-tool iframe{display:block;width:100%;height:900px;border:0;border-radius:12px;background:transparent}
+.anon-tool .out{padding:6px 10px 2px}
