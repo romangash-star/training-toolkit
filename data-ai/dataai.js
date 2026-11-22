@@ -68,6 +68,11 @@ function stepper(cur){
     (S.subs?'<div class="subs">'+S.subs.map(function(x){ return '<a href="'+UP+x.h+'"'+(x.k===cur?' aria-current="page"':'')+'>'+esc(x.t)+(x.opt?' <i>לא חובה</i>':'')+'</a>'; }).join('')+'</div>':'')+'<a class="pbank-in" href="'+UP+'prompts/">מאגר הפרומפטים</a></div>';
   return h;
 }
+function nextCard(cur){
+  var i=stageOf(cur), N=STAGES[i+1]; if(!N) return '';
+  return '<div class="stagenext" style="--sc:'+N.c+'"><p><b>סיימתם את השלב?</b> ממשיכים כשנגיע במצגת לשלב '+N.n+':</p>'+
+    '<a href="'+UP+N.h+'">'+badge(N)+'<span>'+esc(N.t)+'</span></a></div>';
+}
 function label(list,k){ for(var i=0;i<list.length;i++) if(list[i][0]===k) return list[i][1]; return ''; }
 function raw(f){ return UP+'../data/practice-files/files/'+f.n+'.xlsx'; }
 function dl(href,name,text){ return '<a class="btn-dl" href="'+href+'" download="'+esc(name)+'">'+text+'</a>'; }
@@ -170,8 +175,8 @@ function filePage(){
     h+='</section>';
     h+='<section class="stepcard"><div class="sc-h"><span class="sc-n">ב</span><div><h2>באיזו רמה מתחילים?</h2><p>אפשר לעלות או לרדת רמה בכל שלב.</p></div></div><div class="lvs">'+
       LEVELS.map(function(l){ return '<button type="button" class="lvc lv-'+l[0]+'" data-level="'+l[0]+'" aria-pressed="'+(st.level===l[0])+'"><strong>'+l[1]+'</strong><span>'+LVTXT[l[0]]+'</span></button>'; }).join('')+'</div></section>';
-    h+='<p class="gem">בכל שלב כלי אחר: Gemini או Copilot, Gemini Canvas, Copilot ב-Excel או Gemini ב-Sheets, ו-NotebookLM. הכלי כתוב בראש השלב.</p>';
-    if(st.src==='own') h+='<div class="pn"><a class="nx" id="go" href="../anonymize/">להתממה ←</a></div>';
+    h+='<p class="gem">בכל שלב עובדים בכלי אחר. הכלי כתוב בראש השלב.</p>';
+    h+=st.src==='own'?'<div class="pn"><a class="nx" id="go" href="../anonymize/">המשך: התממה ←</a></div>':nextCard('file');
     var y=window.scrollY; app.innerHTML=h; window.scrollTo(0,y);
     [].forEach.call(app.querySelectorAll('[data-src]'),function(b){ b.onclick=function(){ st.src=b.dataset.src; keep(); render(); }; });
     [].forEach.call(app.querySelectorAll('[data-file]'),function(b){ b.onclick=function(){ st.file=b.dataset.file; keep(); render(); var pv=app.querySelector('.pv'); if(pv&&pv.getBoundingClientRect().top>window.innerHeight-160) pv.scrollIntoView({behavior:'smooth',block:'nearest'}); }; });
@@ -191,7 +196,7 @@ function anonPage(){
   h+='<details class="stepcard anon-tool"'+(own?' open':'')+'><summary>'+(own?'כלי ההתממה':'רוצים לתרגל התממה? פתיחת הכלי')+'</summary>'+
      '<p class="out">מסירים שמות, תעודות זהות, טלפונים וכתובות. הקובץ לא נשלח לשום מקום.</p>'+
      '<iframe id="anonf" title="כלי ההתממה"></iframe>'+
-     '<p class="out">הכלי לא נטען? <a class="ln" href="../../data/anonymize/" target="_blank" rel="noopener">פתיחה בעמוד מלא ←</a></p></details>';
+     '<p class="out">הכלי לא נטען? <a class="ln" href="../../data/anonymize/" target="_blank" rel="noopener">פתיחה בעמוד מלא ←</a></p></details>'+nextCard('anon');
   app.innerHTML=h;
   var fr=document.getElementById('anonf'), det=app.querySelector('.anon-tool'), last=0;
   /* fit the frame to its content. Measure the content itself, never the frame's viewport, so it cannot grow forever. */
@@ -312,6 +317,7 @@ function round(){
   h+='<details class="hint more"><summary>שני פרומפטים שעוזרים בכל שלב</summary><div class="in">'+
      prompt('תקלה','קיבלתי את השגיאה הזאת: [מדביקים כאן את השגיאה]. תקן ותן לי את הכל מחדש.')+
      prompt('בדיקה עצמית','אילו מספרים בתשובה חישבת בעצמך, ואילו לקחת מנוסחה? מה כדאי לאמת ידנית?')+'</div></details>';
+  h+=nextCard('r'+n);
   var app=document.getElementById('app'); app.innerHTML=h;
   function set(k,v){ var x=choice(); x[k]=v; save(x); var y=window.scrollY; round(); window.scrollTo(0,y); }
   var st=document.getElementById('sTool'); if(st) st.onchange=function(){ set('tool',this.value); };
