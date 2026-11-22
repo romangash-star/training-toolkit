@@ -85,6 +85,39 @@ function home(){
   };
 }
 
+/* ---------- the prompt bank (/data-ai/prompts/): content in prompts.js ---------- */
+function bankTool(){ try{ var t=localStorage.getItem('dataai_tool'); return t==='copilot'||t==='gapp'?t:''; }catch(e){ return ''; } }
+window.cpP=function(b){ put(b.closest('.pcard').querySelector('pre').textContent,b); };
+function promptsPage(){
+  var app=document.getElementById('app'), B=window.DATAAI_PROMPTS, flt='all';
+  function pick(s,t){ return s.replace(/\{\{([\s\S]*?)\|\|([\s\S]*?)\}\}/g,function(m,g,c){ return t==='copilot'?c:g; }); }
+  function marks(s){ return esc(s).replace(/\[[^\]\n]+\]/g,function(m){ return '<mark>'+m+'</mark>'; }); }
+  function render(){
+    var t=bankTool();
+    var h='<div class="rhead"><h1>מאגר פרומפטים</h1><p>מעתיקים, מחליפים את מה שב<mark>סוגריים</mark>, ומדביקים.</p></div>';
+    h+='<div class="tsel'+(t?'':' first')+'"><span>'+(t?'הפרומפטים מותאמים ל:':'קודם כול: עם איזה כלי אתם עובדים?')+'</span><div>'+
+      [['gapp','Gemini'],['copilot','Copilot']].map(function(o){ return '<button type="button" data-t="'+o[0]+'" aria-pressed="'+(t===o[0])+'">'+o[1]+'</button>'; }).join('')+'</div></div>';
+    if(t){
+      h+='<ul class="ptips">'+B.tips.map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul>';
+      h+='<div class="pflt">'+[['all','הכל']].concat(B.stages.map(function(s){ return [s.k,s.t]; })).map(function(o){
+        return '<button type="button" data-f="'+o[0]+'" aria-pressed="'+(flt===o[0])+'">'+esc(o[1])+'</button>'; }).join('')+'</div>';
+      h+='<div class="pgrid">'+B.items.filter(function(p){ return flt==='all'||p.stage===flt; }).map(function(p){
+        var txt=pick(p.text,t), long=txt.split('\n').length>7;
+        return '<article class="pcard'+(long?' long':'')+'"><header><b>'+p.id+'</b><div><h2>'+esc(p.title)+'</h2><p>'+esc(p.why)+'</p></div></header>'+
+          '<p class="where"><span>'+(t==='copilot'?'Copilot':'Gemini')+'</span>'+esc(p.where[t==='copilot'?'c':'g'])+'</p>'+
+          '<pre>'+marks(txt)+'</pre>'+
+          '<footer>'+(long?'<button type="button" class="more">הצגת כל הפרומפט</button>':'<span></span>')+'<button type="button" class="copy" onclick="cpP(this)">העתקת הפרומפט</button></footer></article>';
+      }).join('')+'</div>';
+    }
+    var y=window.scrollY; app.innerHTML=h; window.scrollTo(0,y);
+    [].forEach.call(app.querySelectorAll('[data-t]'),function(b){ b.onclick=function(){
+      try{ localStorage.setItem('dataai_tool',b.dataset.t); }catch(e){} var c=choice(); c.tool=b.dataset.t; save(c); render(); }; });
+    [].forEach.call(app.querySelectorAll('[data-f]'),function(b){ b.onclick=function(){ flt=b.dataset.f; render(); }; });
+    [].forEach.call(app.querySelectorAll('.more'),function(b){ b.onclick=function(){ var c=b.closest('.pcard'); c.classList.toggle('open'); b.textContent=c.classList.contains('open')?'פחות':'הצגת כל הפרומפט'; }; });
+  }
+  render();
+}
+
 /* ---------- step 2: the file ---------- */
 function filePage(){
   var app=document.getElementById('app'), P=window.DATAAI_PREVIEW||{};
@@ -362,6 +395,8 @@ var APPEL=document.getElementById('app'); if(APPEL){ APPEL.classList.add('first'
 if(ROUND) round();
 else if(PAGE==='id') home();
 else if(PAGE==='file') filePage();
+else if(PAGE==='prompts') promptsPage();
 else if(PAGE==='end'){ var sp=document.getElementById('stepper'); if(sp) sp.innerHTML=stepper('end'); }
+if(PAGE&&PAGE!=='prompts') document.body.insertAdjacentHTML('beforeend','<a class="pbank" href="'+UP+'prompts/">מאגר פרומפטים</a>');
 window.DataAI={choice:choice,files:F,levels:LEVELS,tools:TOOLS,rounds:ROUNDS,rules:RULES,esc:esc,stepper:stepper,mark:mark,build:build,steps:steps};
 })();
