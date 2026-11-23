@@ -122,7 +122,7 @@ const Q=(()=>{
   const FIELDS=[
     {k:'who',     l:'מי מחליט',    ph:'מנהלת האגף לפיתוח כלכלי',                      h:'למי התשובה מיועדת: ראש הרשות, מנהל האגף, הוועדה?'},
     {k:'decision',l:'איזו החלטה',  ph:'באילו עסקים לתמוך',                            h:'מה נבחר, נשנה או נתקצב בעקבות התשובה?'},
-    {k:'measure', l:'מה מודדים',   ph:'אילו עסקים נסגרו, ומה מבדיל אותם מאלה ששרדו', h:'משהו שאפשר לספור או להשוות, לא ״שביעות רצון״ כללית.'},
+    {k:'measure', l:'מה מודדים',   ph:'אילו עסקים נסגרו, ומה מבדיל אותם מאלה ששרדו', h:'משהו שאפשר לספור או להשוות.'},
     {k:'scope',   l:'מתי ואיפה',   ph:'במרכז המסחרי, בשנתיים האחרונות',               h:'באיזו תקופה, באילו שכונות, לאיזו אוכלוסייה.'}
   ];
   /* slide 36 */
@@ -158,36 +158,25 @@ const Q=(()=>{
 
   const SCREENS={
     pain:()=>`
-      ${head(1,'הכאב'+DD.help('כתבו מה <b>לא עובד היום</b>, מנקודת המבט של התושב או של העובדים, בלי פתרון בפנים. במקום ״אין מספיק פקחים״ כתבו ״הטיפול בפנייה לוקח יותר מ-14 יום״.'),'שלב 1 מתוך 4')}
-      <p class="lead">חזרו לרשימה שעשיתם בתחילת היום (<a href="../role-worksheet/">מה אני עושה ברשות</a>): איפה הציבור הכי מתלונן? איפה תהליך נתקע? בחרו בעיה <b>שיש לכם עליה נתונים</b>, ושאתם רוצים להתעסק בה.</p>
-      <div class="gap">
-        <div><span>המצוי</span>תושב ממתין 3 שבועות לאישור, ולא יודע באיזה שלב הבקשה</div>
-        <b aria-hidden="true">⇄</b>
-        <div><span>הרצוי</span>אישור תוך ימים, עם עדכון שקוף בכל שלב</div>
-      </div>
-      <p class="gapnote"><b>כאב = הפער בין הרצוי למצוי.</b> ככל שהפער גדול יותר, חוזר יותר ויקר יותר, כך כדאי יותר לטפל בו.</p>
+      ${head(1,'הכאב'+DD.help('מה <b>לא עובד היום</b>, בלי פתרון בפנים.'),'שלב 1 מתוך 4')}
+      <p class="lead">מה לא עובד היום? איפה תושבים מתלוננים, איפה תהליך נתקע? אפשר להיעזר ברשימה מ<a href="../role-worksheet/">מה אני עושה ברשות</a>.</p>
+      <p class="gapnote"><b>כאב = הפער בין הרצוי למצוי.</b></p>
       <div class="field-label">הכאב שלכם</div>
       <textarea id="problem" style="min-height:100px" aria-label="הכאב שלכם">${E(data.problem)}</textarea>
       <div id="probWarn"></div>
-      <div class="field-label">כאב אמיתי, או רק חוסר נוחות?${DD.help('המבחן: האם זה פוגע במשהו אמיתי, או שזה פשוט מעצבן? חוסר נוחות הוא חד-פעמי, לא חוסם, ונעלם מעצמו עם הזמן. מחפשים כאב אמיתי.')}</div>
+      <div class="field-label">כאב אמיתי, או רק חוסר נוחות?${DD.help('כאב אמיתי פוגע בעבודה וחוזר. חוסר נוחות חולף מעצמו.')}</div>
       <div class="signs">${SIGNS.map((x,i)=>`<button type="button" class="${data.signs[i]?'on':''}" aria-pressed="${!!data.signs[i]}" onclick="Q.sign(${i})">${data.signs[i]?'✓ ':''}${x}</button>`).join('')}</div>
       <div id="signNote"></div>`,
     template:()=>`
-      ${head(2,'ניסוח האתגר'+DD.help('אתגר משולחן העבודה הוא לא נושא ולא תלונה. זו שאלה שמובילה להחלטה, ושאפשר לענות עליה בנתונים. המבחן: <b>אם נקבל תשובה, מה נעשה אחרת?</b>'),'שלב 2 מתוך 4')}
-      <div class="ladder">
-        <div><span>נושא</span>״העסקים במרכז המסחרי״</div><i aria-hidden="true">←</i>
-        <div><span>תלונה</span>״עסקים נסגרים כל הזמן״</div><i aria-hidden="true">←</i>
-        <div class="on"><span>אתגר משולחן העבודה</span>״אילו עסקים במרכז המסחרי נסגרו בשנתיים האחרונות, ומה מבדיל אותם מאלה ששרדו?״</div>
-      </div>
-      <p class="lead">ארבעה רכיבים של שאלה טובה. המשפט נבנה בזמן שאתם כותבים.</p>
+      ${head(2,'ניסוח האתגר'+DD.help('שאלה שמובילה להחלטה, ושאפשר לענות עליה בנתונים. <b>אם נקבל תשובה, מה נעשה אחרת?</b>'),'שלב 2 מתוך 4')}
+      <p class="lead">ארבעה רכיבים. ממלאים מה שאפשר, והמשפט נבנה תוך כדי.</p>
       <div class="grid2">${FIELDS.map(f=>`<div><div class="field-label" style="margin-top:4px">${f.l}${DD.help(f.h)}</div><input class="txt" data-q="${f.k}" aria-label="${f.l}" value="${E(data.q[f.k])}"></div>`).join('')}</div>
-      <div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="Q.example()">הדוגמה מהמצגת</button></div>
       <div class="field-label">האתגר שלכם</div>
       <div class="out" id="sentence"></div>
-      <details class="more"><summary>רוצים לנסח במילים שלכם? מה שתכתבו כאן יופיע בייצוא</summary>
+      <details class="more"><summary>רוצים לנסח במילים שלכם?</summary>
         <textarea data-q="own" style="margin-top:8px" aria-label="האתגר במילים שלכם">${E(data.q.own)}</textarea></details>`,
     tests:()=>`
-      ${head(3,'חמש בדיקות לאתגר שלכם'+DD.help('בדיקה עצמית לפני שממשיכים. אם עניתם ״לא״ על אחת מהן, חוזרים לשלב 2 ומחדדים את הניסוח.'),'שלב 3 מתוך 4')}
+      ${head(3,'חמש בדיקות לאתגר שלכם'+DD.help('עניתם ״לא״? חוזרים לשלב 2 ומחדדים.'),'שלב 3 מתוך 4')}
       <div class="out" style="font-size:15.5px;margin-bottom:14px">${plain(sentence(false))}</div>
       ${TESTS.map((t,i)=>`
         <div class="check ${data.tests[i]==='y'?'on':data.tests[i]==='n'?'bad':''}">
@@ -196,10 +185,9 @@ const Q=(()=>{
         </div>`).join('')}
       ${data.tests.includes('n')?'<div class="callout warn">עניתם "לא" על אחת הבדיקות. <a href="#" onclick="Q.go(1);return false">חוזרים ומחדדים את הניסוח ←</a></div>':''}`,
     whys:()=>`
-      ${head(4,'חמש פעמים "למה"'+DD.help('בכל שורה עונים על ״למה זה קורה?״ לגבי השורה שמעליה. לא חייבים למלא את כל החמש: עוצרים כשמגיעים לסיבה שאפשר לבדוק ולתקן.'),'שלב 4 מתוך 4')}
-      <p class="lead">יורדים לשורש: שואלים "למה?" שוב ושוב. אם השורש שונה ממה שניסחתם, <a href="#" onclick="Q.go(1);return false">חוזרים לניסוח</a> ומעדכנים.</p>
+      ${head(4,'חמש פעמים "למה"'+DD.help('כל שורה עונה על ״למה?״ לשורה שמעליה. לא חייבים חמש: עוצרים בסיבה שאפשר לבדוק.'),'שלב 4 מתוך 4')}
+      <p class="lead">שואלים "למה?" שוב ושוב. השורש שונה מהניסוח? <a href="#" onclick="Q.go(1);return false">חוזרים לניסוח</a>.</p>
       ${data.whys.map((w,i)=>`<div class="why-row"><span class="lbl">${i===0?'הכאב':'← למה? '+i}</span><input class="txt" data-why="${i}" aria-label="${i===0?'הכאב':'למה '+i}" value="${E(w)}"></div>`).join('')}
-      <details class="more"><summary>הדוגמה מהמצגת</summary><ol class="whyex">${WHY_PH.map((w,i)=>`<li>${i?'למה? ':''}${E(w)}</li>`).join('')}</ol></details>
       <div class="field-label">השורש שאליו הגעתם</div>
       <div class="out" id="root"></div>`,
     export:()=>`

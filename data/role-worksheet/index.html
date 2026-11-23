@@ -149,29 +149,26 @@ const App=(()=>{
         <div class="titles">
           <span class="pill"><span class="dot"></span>דף עבודה אישי · ממלאים לבד</span>
           <div class="tooltag" style="text-align:center;margin:0 0 8px"><span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:#1F5F5B;background:#FFFDF8;border:2px solid #1F5F5B;border-radius:999px;padding:4px 16px 4px 5px"><span style="width:32px;height:32px;border-radius:50%;background:#1F5F5B;color:#FFFDF8;display:inline-grid;place-items:center;font-size:18px;line-height:1">1</span>יום 1 · כלי 1 מתוך 6</span></div><h1>מה אני עושה ברשות?</h1>
-          <p>מפו לעצמכם שלושה דברים — לכל אחד יש דוגמה שתעזור להתחיל. לאורך היום נחזור לרשימה ונחפש איפה AI יחסוך לכם זמן.</p>
+          <p>רשימה אישית שממנה בוחרים על מה עובדים היום. לא חובה למלא הכל.</p>
         </div>
       </div>
 
       <div class="sec s1">
         <div class="sh"><span class="num">1</span><h3>מה התפקיד שלי ברשות?</h3></div>
-        <span class="ex">דוגמה: רכזת פניות ותושבים באגף שירות</span>
         <div class="in-wrap micwrap"><input class="txt" id="role" data-t="role" aria-label="התפקיד שלי" value="${attr(data.role)}"><button class="mic" data-t="role"></button></div>
       </div>
 
       <div class="cols">
         <div class="sec s2">
           <div class="sh"><span class="num">2</span><h3>משימות גדולות ומשמעותיות</h3></div>
-          <span class="ex">דוגמה: הכנת דוח שנתי לאגף</span>
           ${listHTML(data.big,'big')}
         </div>
         <div class="sec s3">
           <div class="sh"><span class="num">3</span><h3>משימות יומיומיות וחזרתיות</h3></div>
-          <span class="ex">דוגמה: מענה לפניות חוזרות של תושבים</span>
           ${listHTML(data.daily,'daily')}
         </div>
       </div>
-      <div class="aihint">לחצו על סמל ה‑AI ליד משימה שבה נראה לכם ש‑AI יכול לחסוך זמן — נחזור לזה בהמשך.</div>
+      <div class="aihint">סמנו AI ליד משימה שבה AI יכול לחסוך לכם זמן.</div>
 
       <div class="exportbar">
         <button class="btn btn-brand" onclick="App.exportPNG()">תמונה</button>

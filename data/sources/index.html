@@ -156,7 +156,7 @@ const S=(()=>{
       </div>
       <div class="qbox ${q?'':'missing'}">${q
         ? `<div class="ql"><span>האתגר משולחן העבודה שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
-        : `<div class="ql"><span>עדיין אין אתגר משולחן העבודה</span><a href="../question/">לבונה האתגר משולחן העבודה ←</a></div>אפשר למלא גם בלי, אבל קל יותר לחפש נתונים כשהשאלה מול העיניים.`}</div>
+        : `<div class="ql"><span>עדיין אין אתגר משולחן העבודה</span><a href="../question/">לבונה האתגר משולחן העבודה ←</a></div>אפשר למלא גם בלי.`}</div>
       <div class="steps2 noprint">
         <button class="stepbtn ${data.step===1?'on':''}" onclick="S.go(1)"><span class="sn">1</span><span>משוטטים באתרים<small>מה קיים בחוץ</small></span></button>
         <button class="stepbtn ${data.step===2?'on':''}" onclick="S.go(2)"><span class="sn">2</span><span>ממפים את המקורות<small>מה יש, מה ציבורי, מה חסר</small></span></button>
@@ -164,7 +164,7 @@ const S=(()=>{
       ${data.step===1 ? `
       <div class="panel">
         <h2><span class="num">1</span>משוטטים באתרים${DD.help('לפני שממלאים רשימה, מסתכלים מה בכלל קיים. פותחים כל אתר, מסתכלים חמש דקות, ושואלים: יש כאן משהו שעוזר לענות על השאלה שלי? אתר שמצאתם בו משהו, מוסיפים לרשימה בלחיצה.')}</h2>
-        <p class="lead">פותחים, מסתכלים, ובודקים אם יש שם נתון שעוזר לשאלה שלכם. מה שמצאתם מוסיפים לרשימה.</p>
+        <p class="lead">פותחים, מסתכלים, ומה שעוזר מוסיפים לרשימה.</p>
         <div class="field-label">מה מחפשים?${DD.help('כתבו מילה או שתיים מהשאלה שלכם, למשל ״פניות מוקד״ או ״ארנונה״. הכפתור <b>חיפוש באתר</b> ליד כל אתר יפתח חיפוש בגוגל של המילים האלה בתוך אותו אתר בלבד.')}</div>
         <div class="search"><input class="txt" id="term" aria-label="מה מחפשים" value="${E(data.term)}"></div>
         ${['ארצי'].map(grp=>`<div class="sitegrp">${grp}</div>`+SITES.map((x,i)=>x.g!==grp?'':`

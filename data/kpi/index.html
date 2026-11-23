@@ -98,20 +98,19 @@ const K=(()=>{
       <div class="pagehead"><div class="tooltag" style="text-align:center;margin:0 0 8px"><span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:#8A5A10;background:#FFFDF8;border:2px solid #8A5A10;border-radius:999px;padding:4px 16px 4px 5px"><span style="width:32px;height:32px;border-radius:50%;background:#8A5A10;color:#FFFDF8;display:inline-grid;place-items:center;font-size:18px;line-height:1">3</span>יום 1 · כלי 3 מתוך 6</span></div><h1>איתור מקורות מידע ומדדי הצלחה</h1></div>
       <div class="qbox ${q?'':'missing'}">${q
         ? `<div class="ql"><span>האתגר משולחן העבודה שלכם</span><a href="../question/">לעריכה ←</a></div>${E(q)}`
-        : `<div class="ql"><span>עדיין אין אתגר משולחן העבודה</span><a href="../question/">לבונה האתגר ←</a></div>אפשר להמשיך גם בלי, אבל קל יותר כשהאתגר מול העיניים.`}</div>
+        : `<div class="ql"><span>עדיין אין אתגר משולחן העבודה</span><a href="../question/">לבונה האתגר ←</a></div>אפשר להמשיך גם בלי.`}</div>
 
       <div class="panel">
-        <div class="stephead"><span class="num">1</span><h2>איפה יכול להיות המידע?${DD.help('מיפוי ראשוני בלבד: יש קובץ בכלל, ואיפה הוא עשוי להיות. המיפוי המלא נעשה בכלי <b>מיפוי מקורות המידע</b>.')}</h2></div>
+        <div class="stephead"><span class="num">1</span><h2>איפה יכול להיות המידע?${DD.help('רק כיוון ראשון. המיפוי המלא בכלי 6, <b>מיפוי מקורות המידע</b>.')}</h2></div>
         <div class="field-label" style="margin-top:0">יש לכם כבר קובץ נתונים על האתגר?</div>
         <div class="hasfile">${HAS.map(h=>`<button type="button" class="${rec.ideas.hasFile===h[0]?'on':''}" aria-pressed="${rec.ideas.hasFile===h[0]}" onclick="K.has('${h[0]}')">${h[1]}</button>`).join('')}</div>
         <div class="field-label">איפה נראה לכם שיש קובץ נתונים?</div>
         <div class="eg">${PLACES.map(x=>`<button type="button" onclick="K.idea('${x}')">+ ${x}</button>`).join('')}</div>
         <textarea data-idea="internal" aria-label="איפה נראה לכם שיש קובץ נתונים">${E(rec.ideas.internal)}</textarea>
-        <div class="exrow"><button class="btn btn-ghost btn-sm" onclick="K.ideasExample()">הדוגמה מהמצגת</button></div>
       </div>
 
       <div class="panel">
-        <div class="stephead"><span class="num">2</span><h2>איך נדע שהצלחנו? (KPI)${DD.help('<b>KPI</b> = Key Performance Indicator, מדד ביצוע מרכזי. הצלחה היא מספר, לא תחושה: מדד אחד שאפשר לספור, המספר של היום, ולאן רוצים להגיע ועד מתי.')}</h2></div>
+        <div class="stephead"><span class="num">2</span><h2>איך נדע שהצלחנו? (KPI)${DD.help('<b>KPI</b> = מדד ביצוע מרכזי. הצלחה היא מספר: מה סופרים, כמה היום, לאן ועד מתי.')}</h2></div>
         <div class="out" id="sentence" style="margin:0 0 12px"></div>
         <div class="kpi3">
           <div class="k"><b>מדד</b><span>מה בדיוק סופרים</span>${input('metric')}</div>
@@ -120,9 +119,9 @@ const K=(()=>{
         </div>
         <div class="sub">תפוקה · תוצאה · השפעה</div>
         <div class="levels">
-          <div><b>תפוקה</b>כמה עשינו?<em>50 סדנאות לבעלי עסקים</em></div><i aria-hidden="true">←</i>
-          <div class="main"><b>תוצאה</b>מה השתנה בשטח?<em>פחות עסקים נסגרים</em></div><i aria-hidden="true">←</i>
-          <div><b>השפעה</b>האם המצב באמת טוב יותר?<em>מרכז מסחרי חי ותוסס</em></div>
+          <div><b>תפוקה</b>כמה עשינו?</div><i aria-hidden="true">←</i>
+          <div class="main"><b>תוצאה</b>מה השתנה בשטח?</div><i aria-hidden="true">←</i>
+          <div><b>השפעה</b>האם המצב באמת טוב יותר?</div>
         </div>
       </div>
 
