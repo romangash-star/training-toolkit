@@ -73,8 +73,8 @@
   .addbtn:hover{border-color:var(--brand);background:#FBF1EA}
   .aihint{font-size:12px;color:var(--ink-soft);margin-top:9px;display:flex;align-items:center;gap:6px}
 
-  .exportbar{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:18px}
-  .exportbar .btn{width:100%}
+  .exportbar{display:flex;justify-content:center;margin-top:18px}
+  .exportbar .btn{min-width:220px}
   .cloud{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--paper)}
   .cloud h4{font-size:14px;display:flex;align-items:center;gap:7px}
   .cloud .row{display:flex;gap:8px;margin-top:10px}.cloud .row input{flex:1}
@@ -85,13 +85,14 @@
   footer.credit a{color:var(--brand-deep);font-weight:700;text-decoration:none}
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#FFFDF8;padding:12px 22px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:100;box-shadow:var(--shadow)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  @media (max-width:640px){.cols{grid-template-columns:1fr}.exportbar{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){.cols{grid-template-columns:1fr}}
   @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}.toast{transition:none}}
 </style>
+<style>.kicker{font-size:14px;font-weight:700;letter-spacing:.2px;margin:0 0 6px}.nextcta{display:flex;margin:22px auto 0;max-width:440px;padding:15px 22px;font-size:17px}.nexthint{text-align:center;font-size:13.5px;color:var(--ink-soft);margin-top:6px}</style>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=40">
+<link rel="stylesheet" href="../../assets/site.css?v=41">
 </head>
 <body>
   <header class="bar">
@@ -103,7 +104,6 @@
   <main class="wrap" id="app"></main>
 
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
-  <input type="file" id="fileIn" accept="application/json,.json" style="display:none">
   <div class="toast" id="toast"></div>
 
 <script>
@@ -112,16 +112,20 @@ const App=(()=>{
   const LS='dd_role_worksheet_v1';
   const PRESETS=[7,5,3];
   let uid=1; function nid(){return 'n'+(uid++);}
+  const ROWS=8;
+  const rows=()=>Array.from({length:ROWS},()=>({id:nid(),text:'',ai:false}));
   let data=fresh();
   let timer={total:300,remain:300,running:false,id:null};
 
-  function fresh(){ return {meta:{author:''}, role:'', big:[{id:nid(),text:'',ai:false}], daily:[{id:nid(),text:'',ai:false}]}; }
+  function fresh(){ return {meta:{author:''}, role:'', big:rows(), daily:rows()}; }
+  /* older saves had one row; top every list up so there is always room to write */
+  function pad(){ ['big','daily'].forEach(k=>{ data[k]=data[k]||[]; data[k].forEach(it=>{ if(+String(it.id).slice(1)>=uid) uid=+String(it.id).slice(1)+1; }); while(data[k].length<ROWS) data[k].push({id:nid(),text:'',ai:false}); }); data.meta=data.meta||{author:''}; }
   function persist(){ try{localStorage.setItem(LS,JSON.stringify(data));}catch(e){} }
   function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   function attr(s){return esc(s).replace(/"/g,'&quot;');}
 
   function setHub(){}
-  function init(){ setHub(); try{const s=JSON.parse(localStorage.getItem(LS)); if(s&&s.big)data=s;}catch(e){} document.getElementById('fileIn').addEventListener('change',onFile); render(); }
+  function init(){ setHub(); try{const s=JSON.parse(localStorage.getItem(LS)); if(s&&s.big)data=s;}catch(e){} pad(); render(); }
   function onFile(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{data=JSON.parse(r.result);render();toast('נטען');}catch(err){toast('קובץ לא תקין');}};r.readAsText(f);e.target.value='';}
   function fmt(s){s=Math.max(0,s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
 
@@ -147,9 +151,8 @@ const App=(()=>{
           </div>
         </div>
         <div class="titles">
-          <span class="pill"><span class="dot"></span>דף עבודה אישי · ממלאים לבד</span>
-          <div class="tooltag" style="text-align:center;margin:0 0 8px"><span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:#1F5F5B;background:#FFFDF8;border:2px solid #1F5F5B;border-radius:999px;padding:4px 16px 4px 5px"><span style="width:32px;height:32px;border-radius:50%;background:#1F5F5B;color:#FFFDF8;display:inline-grid;place-items:center;font-size:18px;line-height:1">1</span>יום 1 · כלי 1 מתוך 6</span></div><h1>מה אני עושה ברשות?</h1>
-          <p>רשימה אישית שממנה בוחרים על מה עובדים היום. לא חובה למלא הכל.</p>
+          <div class="kicker" style="color:#1F5F5B;text-align:right">יום 1 · שלב 1 מתוך 5</div><h1>מה אני עושה ברשות?</h1>
+          <p>ממלאים לבד. לא חובה למלא הכל.</p>
         </div>
       </div>
 
@@ -170,12 +173,8 @@ const App=(()=>{
       </div>
       <div class="aihint">סמנו AI ליד משימה שבה AI יכול לחסוך לכם זמן.</div>
 
-      <div class="exportbar">
-        <button class="btn btn-brand" onclick="App.exportPNG()">תמונה</button>
-        <button class="btn btn-ghost" onclick="App.copyText()">העתקה</button>
-        <button class="btn btn-ghost" onclick="App.saveFile()">שמירה</button>
-        <button class="btn btn-ghost" onclick="document.getElementById('fileIn').click()">טעינה</button>
-      </div>`;
+      <div class="exportbar"><button class="btn btn-ghost" onclick="App.exportPNG()">⬇ שמירה כתמונה</button></div>
+      <a class="btn btn-brand nextcta" href="../question/">לשלב הבא: בונה האתגר משולחן העבודה ←</a><div class="nexthint">(עוברים כשרומן אומר)</div>`;
     wire();
   }
 
@@ -250,6 +249,6 @@ const App=(()=>{
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=40" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=41" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

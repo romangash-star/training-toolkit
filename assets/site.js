@@ -98,7 +98,6 @@
 
   /* help marks for the older tools, whose markup is rendered by their own scripts */
   var AUTO=[
-    ['[data-page="role-worksheet"] .titles h1','דף עבודה אישי. ממלאים שלושה חלקים, ובסוף לוחצים <b>תמונה</b> כדי להוריד. בצד יש טיימר לתרגיל: בוחרים 3, 5 או 7 דקות ולוחצים <b>התחל</b>.'],
     ['[data-page="role-worksheet"] .s1 .sh h3','שם התפקיד כמו שהייתם מציגים אותו למישהו מחוץ לרשות. משפט אחד מספיק.'],
     ['[data-page="role-worksheet"] .s2 .sh h3','דברים שלוקחים ימים או שבועות ושיש להם תוצר: דוח, תוכנית, מכרז, אירוע.'],
     ['[data-page="role-worksheet"] .s3 .sh h3','דברים קטנים שחוזרים כל יום או כל שבוע: מיילים, פניות, עדכון טבלאות.'],

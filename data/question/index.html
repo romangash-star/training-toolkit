@@ -6,7 +6,7 @@
 <title>בונה האתגר משולחן העבודה — קבלת החלטות מבוססת נתונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/dd.css?v=40">
+<link rel="stylesheet" href="../assets/dd.css?v=41">
 <style>
   .wrap{max-width:1040px}
   .narrow{max-width:760px;margin-inline:auto}
@@ -15,7 +15,7 @@
   .pagehead h1{font-size:clamp(24px,3vw,30px)}
   .stepper{display:flex;align-items:stretch;gap:6px;margin:0 0 18px}
   .sgroup{display:flex;flex-direction:column;gap:5px;min-width:0}
-  .sgroup:first-child{flex:5}.sgroup:nth-child(3){flex:1.15}.sgroup:last-child{flex:.9}
+  .sgroup:first-child{flex:6}.sgroup:nth-child(3){flex:1.15}.sgroup:last-child{flex:.9}
   .sglabel{font-size:12.5px;font-weight:700;color:var(--ink-soft);padding-inline-start:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sgroup.on .sglabel{color:var(--brand)}
   .srow{display:flex;align-items:stretch;gap:4px;flex:1}
@@ -74,7 +74,6 @@
   .srcsum{font-weight:700;text-align:center;border-radius:9px;padding:6px}
   .srcsum.g{background:#E7F4EC;color:#1e5e45}.srcsum.y{background:#FCF3E1;color:#7a5410}.srcsum.r{background:#FBE9E6;color:#7d2a20}
   @media (max-width:760px){.stepper{gap:3px}.stepper{justify-content:center}.sgroup{flex:0 0 auto!important}.sglabel{display:none}.stepper .stepbtn{flex:0 0 auto;padding:7px}.stepper .stepbtn .nm{display:none}.stepper .arrow{font-size:15px;padding:0}.stepper .arrow.part{height:auto;align-self:center}.ladder{flex-direction:column}.ladder i{display:none}.gap{flex-direction:column}.gap b{display:none}.signs{grid-template-columns:1fr}}
-  .nextcta{display:flex;margin:18px auto 0;max-width:420px;padding:15px 22px;font-size:17px}
   .idea{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;background:#fff}
   .idea h3{font-size:18px;display:flex;align-items:center}
   .idea p{margin:2px 0 8px;font-size:14.5px;color:var(--ink-soft)}
@@ -92,12 +91,27 @@
     .srcT td:nth-child(1),.srcT td.delcell{grid-column:1 / -1}
     .srcT .delcell .lbl{display:inline}.srcT .delcell{text-align:left}
   }
+  /* KPI step: metric, starting point, target and date; output, outcome, impact */
+  .kpi3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 6px}
+  .kpi3 .k{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;display:flex;flex-direction:column;gap:6px}
+  .kpi3 .k b{font-size:16px}
+  .kpi3 .k span{font-size:13px;color:var(--ink-soft)}
+  .kpi3 .mini{font-size:12.5px;color:var(--ink-soft);display:flex;flex-direction:column;gap:3px}
+  .kpi3 .pair{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .levels{display:flex;align-items:stretch;gap:6px;margin:6px 0 4px}
+  .levels div{flex:1;border-radius:12px;padding:10px 12px;background:var(--paper);font-size:13.5px;color:var(--ink-soft)}
+  .levels div b{display:block;color:var(--ink);font-size:15px}
+  .levels div.main{background:var(--teal-tint,#dcedea);outline:2px solid var(--teal,#1f5f5b)}
+  .levels i{font-style:normal;align-self:center;color:#c4b49a;font-weight:700}
+  .sub{font-size:15px;font-weight:700;margin:14px 0 6px}
+  @media (max-width:640px){.kpi3{grid-template-columns:1fr}.levels{flex-direction:column}.levels i{display:none}}
   @media (max-width:640px){.three{grid-template-columns:1fr}.why-row{flex-direction:column;align-items:stretch;gap:3px}.why-row .lbl{flex:none}.stephead h2{font-size:20px}}
 </style>
+<style>.kicker{font-size:14px;font-weight:700;letter-spacing:.2px;margin:0 0 6px}.nextcta{display:flex;margin:22px auto 0;max-width:440px;padding:15px 22px;font-size:17px}.nexthint{text-align:center;font-size:13.5px;color:var(--ink-soft);margin-top:6px}</style>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=40">
+<link rel="stylesheet" href="../../assets/site.css?v=41">
 </head>
 <body>
   <header class="bar">
@@ -111,12 +125,12 @@
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=40"></script>
+<script src="../assets/dd.js?v=41"></script>
 <script>
 const Q=(()=>{
   'use strict';
-  /* Follows the day-1 deck, slides 26–37: the pain, the four components, five checks, five whys.
-     Where the data might be and the KPI (slides 38–45) are the next tool. */
+  /* The day-1 deck: the pain, the challenge in free words, five checks, five whys, and how we will know it worked (KPI).
+     Mapping the data sources is the next tool. The KPI used to be its own page (kpi/ now redirects here, #kpi). */
   const LS='dd_question_v3', E=DD.esc;
   const DBN='<small class="dbn">(מבוסס נתונים)</small>';
   const FIELDS=[
@@ -137,9 +151,9 @@ const Q=(()=>{
   /* slides 39–40: three directions, with the deck's example */
   const SIGNS=['פוגע ביכולת לבצע את המשימה','חוזר על עצמו שוב ושוב','יש לו עלות: בזמן, בכסף או באמון','תושבים או עובדים מתלוננים עליו'];
   const SOLUTION_WORDS=/^\s*(אין|חסר|חסרים|חסרה|צריך|צריכים|לא מספיק|אנחנו צריכים|יש צורך|איך נקים|איך נבנה)/;
-  const STEPS=['pain','template','tests','whys','export'];
-  const STEP_NAMES=['הכאב','ניסוח האתגר','5 בדיקות','5 פעמים למה','מוכן'];
-  const PARTS=[{t:'האתגר משולחן העבודה',steps:[0,1,2,3]},{t:'',steps:[4]}];
+  const STEPS=['pain','template','tests','whys','kpi','export'];
+  const STEP_NAMES=['הכאב','ניסוח האתגר','5 בדיקות','5 פעמים למה','איך נדע שהצלחנו','מוכן'];
+  const PARTS=[{t:'האתגר משולחן העבודה',steps:[0,1,2,3,4]},{t:'',steps:[5]}];
 
   function fresh(){ return { step:0, problem:'', whys:['','','','','',''],
     q:{who:'',decision:'',measure:'',scope:'',own:''}, tests:TESTS.map(()=>''),
@@ -148,17 +162,24 @@ const Q=(()=>{
   let data=DD.load(LS,fresh());
   data.ideas=Object.assign({internal:'',open:'',field:''},data.ideas||{});
   if(!Array.isArray(data.signs)) data.signs=[false,false,false,false];
+  data.kpi=Object.assign({metric:'',base:'',target:'',date:'',output:''},data.kpi||{});
+  if(!(data.q.own||'').trim() && FIELDS.some(f=>(data.q[f.k]||'').trim())) { const t=k=>(data.q[k]||'').trim(), rest=[t('measure'),t('scope')].filter(Boolean).join(' '); data.q.own=(t('who')?'כדי לעזור ל'+t('who')+' להחליט ':'')+(t('decision')||'')+(rest?' — '+rest:'')+'?'; }
   function save(){ DD.save(LS,data); }
 
   const slot=html=>(v,ph)=>{ v=(v||'').trim(); return html ? `<span class="slot ${v?'':'empty'}">${E(v||ph)}</span>` : (v||'['+ph+']'); };
   /* the question in the participant's own words wins over the assembled one */
-  function sentence(html){ const own=(data.q.own||'').trim(); return own ? (html?E(own):own) : DD.questionSentence(data.q, slot(html)); }
+  function sentence(html){ const own=(data.q.own||'').trim(); return own ? (html?E(own):own) : (html?'<span class="slot empty">עוד לא ניסחתם</span>':'—'); }
+  const kv=()=>data.kpi;
+  function kpiSentence(html){ const s=slot(html); return `נדע שהצלחנו כאשר ${s(kv().metric,'מדד')} ישתנה מ-${s(kv().base,'נקודת מוצא')} ל-${s(kv().target,'יעד')} עד ${s(kv().date,'מועד')}.`; }
+  const hasKpi=()=>['metric','base','target','date'].some(f=>(kv()[f]||'').trim());
+  const KL={metric:'מדד',base:'נקודת מוצא',target:'יעד',date:'מועד'};
+  const kin=f=>`<input class="txt" data-k="${f}" aria-label="${KL[f]}" value="${E(kv()[f])}">`;
   const plain=t=>E(t).replace(/\n/g,'<br>');
   const root=()=>[...data.whys].reverse().find(w=>w.trim())||'';
 
   const SCREENS={
     pain:()=>`
-      ${head(1,'הכאב'+DD.help('מה <b>לא עובד היום</b>, בלי פתרון בפנים.'),'שלב 1 מתוך 4')}
+      ${head(1,'הכאב'+DD.help('מה <b>לא עובד היום</b>, בלי פתרון בפנים.'),'שלב 1 מתוך 5')}
       <p class="lead">מה לא עובד היום? איפה תושבים מתלוננים, איפה תהליך נתקע? אפשר להיעזר ברשימה מ<a href="../role-worksheet/">מה אני עושה ברשות</a>.</p>
       <p class="gapnote"><b>כאב = הפער בין הרצוי למצוי.</b></p>
       <div class="field-label">הכאב שלכם</div>
@@ -168,15 +189,13 @@ const Q=(()=>{
       <div class="signs">${SIGNS.map((x,i)=>`<button type="button" class="${data.signs[i]?'on':''}" aria-pressed="${!!data.signs[i]}" onclick="Q.sign(${i})">${data.signs[i]?'✓ ':''}${x}</button>`).join('')}</div>
       <div id="signNote"></div>`,
     template:()=>`
-      ${head(2,'ניסוח האתגר'+DD.help('שאלה שמובילה להחלטה, ושאפשר לענות עליה בנתונים. <b>אם נקבל תשובה, מה נעשה אחרת?</b>'),'שלב 2 מתוך 4')}
-      <p class="lead">ארבעה רכיבים. ממלאים מה שאפשר, והמשפט נבנה תוך כדי.</p>
-      <div class="grid2">${FIELDS.map(f=>`<div><div class="field-label" style="margin-top:4px">${f.l}${DD.help(f.h)}</div><input class="txt" data-q="${f.k}" aria-label="${f.l}" value="${E(data.q[f.k])}"></div>`).join('')}</div>
+      ${head(2,'ניסוח האתגר','שלב 2 מתוך 5')}
+      <p class="lead">במילים שלכם: מה רוצים לדעת, כדי לעזור להחליט?</p>
       <div class="field-label">האתגר שלכם</div>
-      <div class="out" id="sentence"></div>
-      <details class="more"><summary>רוצים לנסח במילים שלכם?</summary>
-        <textarea data-q="own" style="margin-top:8px" aria-label="האתגר במילים שלכם">${E(data.q.own)}</textarea></details>`,
+      <textarea data-q="own" style="min-height:110px" aria-label="האתגר שלכם">${E(data.q.own)}</textarea>`,
     tests:()=>`
-      ${head(3,'חמש בדיקות לאתגר שלכם'+DD.help('עניתם ״לא״? חוזרים לשלב 2 ומחדדים.'),'שלב 3 מתוך 4')}
+      ${head(3,'חמש בדיקות לאתגר שלכם','שלב 3 מתוך 5')}
+      <p class="lead">מסמנים כן או לא.</p>
       <div class="out" style="font-size:15.5px;margin-bottom:14px">${plain(sentence(false))}</div>
       ${TESTS.map((t,i)=>`
         <div class="check ${data.tests[i]==='y'?'on':data.tests[i]==='n'?'bad':''}">
@@ -185,23 +204,38 @@ const Q=(()=>{
         </div>`).join('')}
       ${data.tests.includes('n')?'<div class="callout warn">עניתם "לא" על אחת הבדיקות. <a href="#" onclick="Q.go(1);return false">חוזרים ומחדדים את הניסוח ←</a></div>':''}`,
     whys:()=>`
-      ${head(4,'חמש פעמים "למה"'+DD.help('כל שורה עונה על ״למה?״ לשורה שמעליה. לא חייבים חמש: עוצרים בסיבה שאפשר לבדוק.'),'שלב 4 מתוך 4')}
+      ${head(4,'חמש פעמים "למה"'+DD.help('כל שורה עונה על ״למה?״ לשורה שמעליה. לא חייבים חמש: עוצרים בסיבה שאפשר לבדוק.'),'שלב 4 מתוך 5')}
       <p class="lead">שואלים "למה?" שוב ושוב. השורש שונה מהניסוח? <a href="#" onclick="Q.go(1);return false">חוזרים לניסוח</a>.</p>
       ${data.whys.map((w,i)=>`<div class="why-row"><span class="lbl">${i===0?'הכאב':'← למה? '+i}</span><input class="txt" data-why="${i}" aria-label="${i===0?'הכאב':'למה '+i}" value="${E(w)}"></div>`).join('')}
       <div class="field-label">השורש שאליו הגעתם</div>
       <div class="out" id="root"></div>`,
+    kpi:()=>`
+      ${head(5,'איך נדע שהצלחנו? (KPI)'+DD.help('<b>KPI</b> = מדד ביצוע מרכזי. הצלחה היא מספר: מה סופרים, כמה היום, לאן ועד מתי.'),'שלב 5 מתוך 5')}
+      <div class="out" id="kpiSentence" style="margin:0 0 12px"></div>
+      <div class="kpi3">
+        <div class="k"><b>מדד</b><span>מה בדיוק סופרים</span>${kin('metric')}</div>
+        <div class="k"><b>נקודת מוצא</b><span>איפה אנחנו היום</span>${kin('base')}</div>
+        <div class="k"><b>יעד ומועד</b><span>לאן ועד מתי</span><div class="pair"><label class="mini">יעד${kin('target')}</label><label class="mini">מועד${kin('date')}</label></div></div>
+      </div>
+      <div class="sub">תפוקה · תוצאה · השפעה</div>
+      <div class="levels">
+        <div><b>תפוקה</b>כמה עשינו?</div><i aria-hidden="true">←</i>
+        <div class="main"><b>תוצאה</b>מה השתנה בשטח?</div><i aria-hidden="true">←</i>
+        <div><b>השפעה</b>האם המצב באמת טוב יותר?</div>
+      </div>`,
     export:()=>`
       <div class="party">
         <div class="big">✓</div>
         <h2>יש לכם אתגר משולחן העבודה ${DBN}</h2>
         <div class="out">${plain(sentence(false))}</div>
+        ${hasKpi()?`<div class="out" style="margin-top:8px">${E(kpiSentence(false))}</div>`:''}
         <div class="exportbar" style="margin:16px 0 0">
           <button class="btn btn-ghost" onclick="Q.doc()">ייצוא ל-Word</button>
           <button class="btn btn-ghost" onclick="Q.copyAll()">העתקה</button>
           <button class="btn btn-ghost" onclick="Q.saveJson()">שמירה</button>
           <button class="btn btn-ghost" onclick="Q.loadJson()">טעינה</button>
         </div>
-        <a class="btn btn-brand nextcta" href="../kpi/">ממשיכים: איתור מקורות מידע ומדדי הצלחה ←</a>
+        <a class="btn btn-brand nextcta" href="../sources/">לשלב הבא: מיפוי מקורות המידע ←</a><div class="nexthint">(עוברים כשרומן אומר)</div>
         <div style="margin-top:14px"><button class="btn btn-ghost btn-sm" onclick="Q.reset()">להתחיל מחדש</button></div>
       </div>`
   };
@@ -212,9 +246,9 @@ const Q=(()=>{
     const btn=k=>`<button class="stepbtn ${st===k?'on':st>k?'done':''}" onclick="Q.go(${k})" ${st===k?'aria-current="step"':''}><span class="sn">${st>k||k===last?'✓':k+1}</span><span class="nm">${STEP_NAMES[k]}</span></button>`;
     const arrow=k=>`<span class="arrow ${st>=k?'done':''}" aria-hidden="true">←</span>`;
     const stepper=PARTS.map((p,i)=>`<div class="sgroup${p.steps.includes(st)?' on':''}">${p.t?`<div class="sglabel">${p.t}</div>`:'<div class="sglabel">&nbsp;</div>'}<div class="srow">${p.steps.map((k,j)=>(j?arrow(k):'')+btn(k)).join('')}</div></div>`).join(`<span class="arrow part" aria-hidden="true">←</span>`);
-    const nextLabel={whys:'סיימתי, לאתגר המוכן ←'}[key]||'הבא: '+STEP_NAMES[st+1]+' ←';
+    const nextLabel={kpi:'סיימתי, לאתגר המוכן ←'}[key]||'הבא: '+STEP_NAMES[st+1]+' ←';
     document.getElementById('app').innerHTML=`
-      <div class="pagehead"><div class="tooltag" style="text-align:center;margin:0 0 8px"><span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:#B4502F;background:#FFFDF8;border:2px solid #B4502F;border-radius:999px;padding:4px 16px 4px 5px"><span style="width:32px;height:32px;border-radius:50%;background:#B4502F;color:#FFFDF8;display:inline-grid;place-items:center;font-size:18px;line-height:1">2</span>יום 1 · כלי 2 מתוך 6</span></div><h1>בונה האתגר משולחן העבודה ${DBN}</h1></div>
+      <div class="pagehead"><div class="kicker" style="color:#B4502F;text-align:center">יום 1 · שלב 2 מתוך 5</div><h1>בונה האתגר משולחן העבודה ${DBN}</h1></div>
       <nav class="stepper" aria-label="שלבים">${stepper}</nav>
       <div class="panel narrow">${SCREENS[key]()}</div>
       <div class="navrow narrow">
@@ -228,6 +262,7 @@ const Q=(()=>{
     on('#problem',el=>data.problem=el.value);
     on('[data-why]',el=>data.whys[+el.dataset.why]=el.value);
     on('[data-q]',el=>data.q[el.dataset.q]=el.value);
+    on('[data-k]',el=>data.kpi[el.dataset.k]=el.value);
   }
   function paintLive(){
     const set=(id,html)=>{const el=document.getElementById(id); if(el) el.innerHTML=html;};
@@ -236,21 +271,16 @@ const Q=(()=>{
     set('signNote', !n ? '' : n>=2 ? '<div class="callout ok">נשמע כמו כאב אמיתי. ממשיכים.</div>' : '<div class="callout warn">סימן אחד בלבד: אולי זה חוסר נוחות. נסו לחדד, או לבחור בעיה אחרת.</div>');
     set('probWarn', p&&SOLUTION_WORDS.test(p) ? '<div class="callout warn">זה נשמע כמו <b>פתרון</b>, לא כמו כאב. נסו לתאר מה לא עובד היום, רצוי במספר.</div>' : '');
     set('root', root()?E(root()):'<span style="color:#9aa6b1">יופיע כאן</span>');
-    set('sentence', sentence(true));
+    set('kpiSentence', kpiSentence(true));
   }
   function go(n){
     if(!data.whys[0].trim() && data.problem.trim()) data.whys[0]=data.problem;   // the pain opens the "why" chain
     data.step=Math.max(0,Math.min(STEPS.length-1,n)); save(); render(); window.scrollTo({top:0,behavior:'smooth'});
   }
   if(!(data.step>=0 && data.step<STEPS.length)) data.step=0;   // saves from an older step layout
+  if(location.hash==='#kpi') data.step=STEPS.indexOf('kpi');   // the old KPI page sends people here
   function sign(i){ data.signs[i]=!data.signs[i]; save(); render(); }
   function test(i,v){ data.tests[i]=data.tests[i]===v?'':v; save(); render(); }
-  function example(){
-    if(FIELDS.some(f=>data.q[f.k].trim()) && !confirm('להחליף את מה שכתבתם בדוגמה?')) return;
-    FIELDS.forEach(f=>data.q[f.k]=f.ph); data.q.own='';
-    save(); render();
-  }
-
   /* ---------- export ---------- */
   const TITLE='האתגר משולחן העבודה (מבוסס נתונים)';
   function asText(){
@@ -260,6 +290,7 @@ const Q=(()=>{
     L.push('','האתגר: '+sentence(false),'');
     TESTS.forEach((t,i)=>L.push(`  ${data.tests[i]==='y'?'✓':data.tests[i]==='n'?'✗':'☐'} ${t.q}`));
     if(data.whys.slice(1).some(Boolean)){ L.push('','חמש פעמים למה:'); data.whys.forEach((w,i)=>{ if(i>0&&w) L.push(`  למה ${i}: ${w}`); }); }
+    if(hasKpi()) L.push('','איך נדע שהצלחנו: '+kpiSentence(false));
     return L.join('\n');
   }
   function copyQuestion(){ DD.copy('האתגר שלי משולחן העבודה\n'+sentence(false),'האתגר הועתק ✓'); }
@@ -275,16 +306,17 @@ const Q=(()=>{
     b+='<p style="font-size:15px"><b>האתגר:</b> '+plain(sentence(false))+'</p>';
     b+='<table>'+TESTS.map((t,i)=>'<tr><td>'+E(t.q)+'</td><td>'+(data.tests[i]==='y'?'✓ כן':data.tests[i]==='n'?'✗ לא':'')+'</td></tr>').join('')+'</table>';
     if(data.whys.slice(1).some(Boolean)) b+='<p><b>חמש פעמים למה</b></p><ol>'+data.whys.slice(1).filter(Boolean).map(w=>'<li>'+E(w)+'</li>').join('')+'</ol>';
+    if(hasKpi()) b+='<p><b>איך נדע שהצלחנו:</b> '+E(kpiSentence(false))+'</p>';
     DD.downloadDoc('האתגר משולחן העבודה',TITLE,b); DD.toast('המסמך הורד');
   }
-  function saveJson(){ DD.download(DD.safeName(data.q.decision,'אתגר משולחן העבודה')+'.json', JSON.stringify(data,null,2)); }
+  function saveJson(){ DD.download('אתגר משולחן העבודה'+'.json', JSON.stringify(data,null,2)); }
   function loadJson(){ DD.loadFile(d=>{ data=Object.assign(fresh(),d); save(); render(); }); }
   function reset(){ if(confirm('למחוק את כל מה שמילאתם ולהתחיל מחדש?')){ data=fresh(); save(); render(); } }
 
   render();
-  return {go,sign,test,example,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
+  return {go,sign,test,copyQuestion,docQuestion,copyAll,doc,saveJson,loadJson,reset};
 })();
 </script>
-<script src="../../assets/site.js?v=40" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=41" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>

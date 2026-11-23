@@ -75,10 +75,11 @@
   .toast{max-width:90vw}
   .pullrow{margin:0 0 16px}.pullrow .btn{width:100%;font-size:15px;padding:12px 16px}
 </style>
+<style>.kicker{font-size:14px;font-weight:700;letter-spacing:.2px;margin:0 0 6px}.nextcta{display:flex;margin:22px auto 0;max-width:440px;padding:15px 22px;font-size:17px}.nexthint{text-align:center;font-size:13.5px;color:var(--ink-soft);margin-top:6px}</style>
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
-<link rel="stylesheet" href="../../assets/site.css?v=40">
+<link rel="stylesheet" href="../../assets/site.css?v=41">
 </head>
 <body>
   <header class="bar">
@@ -88,7 +89,7 @@
 
   <main class="wrap">
     <div class="head">
-      <div class="tooltag" style="text-align:center;margin:0 0 8px"><span style="display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:15px;color:#6A4C93;background:#FFFDF8;border:2px solid #6A4C93;border-radius:999px;padding:4px 16px 4px 5px"><span style="width:32px;height:32px;border-radius:50%;background:#6A4C93;color:#FFFDF8;display:inline-grid;place-items:center;font-size:18px;line-height:1">4</span>יום 1 · כלי 4 מתוך 6</span></div>
+      <div class="kicker" style="color:#6A4C93;text-align:center">יום 1 · שלב 4 מתוך 5</div>
       <h1>מתייעצים עם ה-AI על האתגר משולחן העבודה <small class="dbn">(מבוסס נתונים)</small></h1>
       <p>לא חובה למלא. ה-AI ישאל אתכם שאלות עד שהאתגר ברור.</p>
     </div>
@@ -120,12 +121,13 @@
         </div>
       </div>
     </div>
+    <a class="btn btn-brand nextcta" href="../anonymize/">לשלב הבא: התממת קובץ לפני AI ←</a><div class="nexthint">(עוברים כשרומן אומר)</div>
   </main>
 
   <footer class="credit"><img class="credit-ava" src="../../assets/roman.jpg" alt="רומן גרינשטיין"><span>נבנה ע"י רומן גרינשטיין · <a href="mailto:romangash@gmail.com">romangash@gmail.com</a></span></footer>
   <div class="toast" id="toast"></div>
 
-<script src="../assets/dd.js?v=40"></script>
+<script src="../assets/dd.js?v=41"></script>
 <script>
 const App=(()=>{
   'use strict';
@@ -164,13 +166,13 @@ const App=(()=>{
     F.forEach(id=>{ const el=document.getElementById(id); el.value=data[id]||''; grow(el); });
     persist(); preview(); toast('נמשך ✓ הכל נכנס לפרומפט');
   }
-  /* part 2 of the builder (where the data might be), as one line per direction */
+  /* part 3, the sources map: what we have, what is public, what we still need (older saves: the ideas from the old KPI page) */
   function ideasText(){
-    const i=DD.builderIdeas(), L=[], hf=(builder().ideas||{}).hasFile;
-    if(hf) L.push('יש קובץ נתונים? '+({yes:'כן',unsure:'לא בטוח',no:'עוד אין'}[hf]||hf));
-    if(i.internal.length) L.push('בתוך הרשות: '+i.internal.join(', '));
-    if(i.open.length) L.push('מידע פתוח: '+i.open.join(', '));
-    if(i.field.length) L.push('איסוף בשטח: '+i.field.join(', '));
+    const m=DD.load('dd_sources_v3',{}), L=[], col=k=>(m[k]||[]).map(r=>((r&&(r[0]||r[1]))||'').trim()).filter(Boolean);
+    const have=col('have').length?col('have'):DD.builderIdeas().internal, pub=col('pub'), need=col('need');
+    if(have.length) L.push('כבר יש ברשות: '+have.join(', '));
+    if(pub.length) L.push('באתרים ציבוריים: '+pub.join(', '));
+    if(need.length) L.push('עוד צריך להשיג: '+need.join(', '));
     return L.join('\n');
   }
   const ROLE='אתה יועץ מנוסה לקבלת החלטות מבוססת נתונים ברשויות מקומיות בישראל. התפקיד שלך: לראיין אותי בקצרה, לעזור לי לדייק "אתגר משולחן העבודה" (שאלה אחת מבוססת נתונים, שמובילה להחלטה), ולברר אם יש לי מקור נתונים שאפשר לנתח. אתה לא פותר את האתגר במקומי.';
@@ -235,6 +237,6 @@ const App=(()=>{
 })();
 window.App=App; App.init();
 </script>
-<script src="../../assets/site.js?v=40" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
+<script src="../../assets/site.js?v=41" data-crumbs='כל ההכשרות|../../;קבלת החלטות מבוססת נתונים|../'></script>
 </body>
 </html>
